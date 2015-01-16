@@ -83,37 +83,35 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 	//Left Joystick
 	input_data[IN_SPINNER_LEFT_UP].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 0;
 	input_data[IN_SPINNER_LEFT_UP].input_type = TYPE_MANUAL;
-
+	input_data[IN_SPINNER_LEFT_UP].active = false;
 	//!
 	input_data[IN_SPINNER_LEFT_FLOAT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 0;
 	input_data[IN_SPINNER_LEFT_FLOAT].input_type = TYPE_MANUAL;
-
+	input_data[IN_SPINNER_LEFT_FLOAT].active = false;
 
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_TELE_OUT].active = false;
 
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_TELE_IN].active = false;
+
 
 
 	//Right Joystick
 	input_data[IN_SPINNER_RIGHT_UP].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 2;
 	input_data[IN_SPINNER_RIGHT_UP].input_type = TYPE_MANUAL;
+	input_data[IN_SPINNER_RIGHT_UP].active = false;
 
 	input_data[IN_SPINNER_RIGHT_FLOAT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 2;
 	input_data[IN_SPINNER_RIGHT_FLOAT].input_type = TYPE_MANUAL;
-
+	input_data[IN_SPINNER_RIGHT_FLOAT].active = false;
 
 	//!
 	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_TELE_OUT].active = false;
 
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_TELE_IN].active = false;
 
 
 	//Middle Joystick
@@ -158,11 +156,11 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 	input_data[IN_MOD_LR_UNUSED2].input_pin = PIN_ARDUINO_START + 7;
 	input_data[IN_MOD_LR_UNUSED2].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_WEEL_TELE_R].input_pin = PIN_ARDUINO_START + 8;
-	input_data[IN_MOD_LR_WEEL_TELE_R].input_type = TYPE_MANUAL;
+	input_data[IN_MOD_LR_WEEL_RIGHT_TELE].input_pin = PIN_ARDUINO_START + 8;
+	input_data[IN_MOD_LR_WEEL_RIGHT_TELE].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_WEEL_TELE_L].input_pin = PIN_ARDUINO_START + 9;
-	input_data[IN_MOD_LR_WEEL_TELE_L].input_type = TYPE_MANUAL;
+	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_pin = PIN_ARDUINO_START + 9;
+	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_type = TYPE_MANUAL;
 
 
 	//Modifier Buttons Links Rechts
@@ -476,9 +474,9 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 }
 
 void OutputObject::setOutput(int output_id, bool output_value){
-	////Serial.println(" OutputObject::setOutput()");
+//	Serial.println(" OutputObject::setOutput()");
 	if(output_data[output_id].state != output_value){
-		////Serial.println(" OutputObject::setOutput() CHANGED VALUE");
+//		Serial.println(" OutputObject::setOutput() CHANGED VALUE");
 		output_data[output_id].state = output_value;
 		output_data[output_id].state_changed = true;
 	}
@@ -499,21 +497,22 @@ void OutputObject::setCylinder(int output_id_move_out, int output_id_move_in_or_
 	//output id 1 ist für ausfahren outputid 2 ist für einfahren oder schwimmstellung, je nach zylindertyp
 	if(cylinder_state == CYLINDER_HOLD){
 
-		//Serial.println("OutputObject::setCylinder CYLINDER_HOLD");
+//		Serial.println("OutputObject::setCylinder CYLINDER_HOLD");
 
 		setOutput(output_id_move_out, INACTIVE);
 		setOutput(output_id_move_in_or_float, INACTIVE);
 
 	} else if (cylinder_state == CYLINDER_MOVE_OUT){
 
-		//Serial.println("OutputObject::setCylinder CYLINDER_MOVE_OUT");
+//		Serial.print(output_id_move_out);
+//		Serial.println(" OutputObject::setCylinder CYLINDER_MOVE_OUT");
 
 		setOutput(output_id_move_out, ACTIVE);
 		setOutput(output_id_move_in_or_float, INACTIVE);
 
 	} else if (cylinder_state == CYLINDER_MOVE_IN_OR_FLOAT){
 
-		//Serial.println("OutputObject::setCylinder CYLINDER_MOVE_IN_OR_FLOAT");
+//		Serial.println("OutputObject::setCylinder CYLINDER_MOVE_IN_OR_FLOAT");
 
 		setOutput(output_id_move_out, INACTIVE);
 		setOutput(output_id_move_in_or_float, ACTIVE);

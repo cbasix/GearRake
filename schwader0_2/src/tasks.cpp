@@ -2,6 +2,69 @@
 #include "task_management.h"
 #include "tasks.h"
 
+
+//General Abstact Tasks
+SimpleCylinderMappingTask::SimpleCylinderMappingTask(int task_id_to_set,
+		int input_id,
+		int output_id_move_out,
+		int output_id_move_in_or_float,
+		int cylinder_state){
+
+	task_state = STATE_STOPPED;
+	task_id = task_id_to_set;
+	mapped_input_id = input_id;
+	mapped_output_id_move_out = output_id_move_out;
+	mapped_output_id_move_in_or_float = output_id_move_in_or_float;
+	mapped_cylinder_state = cylinder_state;
+}
+void SimpleCylinderMappingTask::testStartConditions(InputEventData* inp) {
+//	Serial.print("Test Start TSK: ");
+//	Serial.print(task_id);
+//	Serial.print(" Expected INP_ID: ");
+//	Serial.print(mapped_input_id);
+//	Serial.print(" got INP_ID: ");
+//	Serial.println(inp->input_id);
+
+
+	if (inp->input_type == TYPE_MANUAL
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == ACTIVE){
+//		Serial.print("Starting TSK: ");
+//		Serial.println(task_id);
+
+		tm->startTask(task_id);
+	}
+}
+void SimpleCylinderMappingTask::start() {
+	Task::start();
+//	Serial.print("Starting Simple TSK: ");
+//	Serial.println(task_id);
+
+	tm->outp->setCylinder(mapped_output_id_move_out, mapped_output_id_move_in_or_float, mapped_cylinder_state);
+}
+
+void SimpleCylinderMappingTask::update(InputEventData* inp) {
+	if (inp->input_type == TYPE_MANUAL
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == INACTIVE){
+		tm->stopTask(task_id);
+	}
+}
+
+void SimpleCylinderMappingTask::exit() {
+	Task::exit();
+//	Serial.print("Stopping Simple TSK: ");
+//	Serial.println(task_id);
+
+	tm->outp->setCylinder(mapped_output_id_move_out, mapped_output_id_move_in_or_float, CYLINDER_HOLD);
+}
+
+void SimpleCylinderMappingTask::timer() {
+}
+
+
+
+
 //MINIMAL TASK
 /*MinimalTask::MinimalTask() {
 	task_state = STATE_STOPPED;
@@ -87,12 +150,12 @@ void BothSpinnerUpTask::exit() {
 }
 
 // Left Spinner up ----------------------------------------------------
-LeftSpinnerUpTask::LeftSpinnerUpTask() {
+SpinnerLeftUpTask::SpinnerLeftUpTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_SPINNER_LEFT_UP;
 }
 
-void LeftSpinnerUpTask::testStartConditions(InputEventData *inp){
+void SpinnerLeftUpTask::testStartConditions(InputEventData *inp){
 	//normal start joystick move
 	if (inp->input_type == TYPE_MANUAL
 			&& inp->input_id == IN_SPINNER_LEFT_UP
@@ -114,7 +177,7 @@ void LeftSpinnerUpTask::testStartConditions(InputEventData *inp){
 
 }
 
-void LeftSpinnerUpTask::start() {
+void SpinnerLeftUpTask::start() {
 	Task::start();
 
 	//Serial.println("LeftSpinnerUpTask::start()");
@@ -122,7 +185,7 @@ void LeftSpinnerUpTask::start() {
 	tm->outp->setCylinder(OUT_SPINNER_LEFT_UP, OUT_SPINNER_LEFT_FLOAT, CYLINDER_MOVE_OUT);
 }
 
-void LeftSpinnerUpTask::update(InputEventData *inp) {
+void SpinnerLeftUpTask::update(InputEventData *inp) {
 	if (inp->input_id == SENS_SPINNER_LEFT_UP
 			&& inp->input_value == ACTIVE) {
 		exit();
@@ -133,9 +196,9 @@ void LeftSpinnerUpTask::update(InputEventData *inp) {
 	}
 }
 
-void LeftSpinnerUpTask::timer() {}
+void SpinnerLeftUpTask::timer() {}
 
-void LeftSpinnerUpTask::exit() {
+void SpinnerLeftUpTask::exit() {
 	Task::exit();
 
 	//Serial.println("LeftSpinnerUpTask::exit()");
@@ -144,12 +207,12 @@ void LeftSpinnerUpTask::exit() {
 }
 
 
-RightSpinnerUpTask::RightSpinnerUpTask() {
+SpinnerRightUpTask::SpinnerRightUpTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_SPINNER_RIGHT_UP;
 }
 
-void RightSpinnerUpTask::testStartConditions(InputEventData *inp){
+void SpinnerRightUpTask::testStartConditions(InputEventData *inp){
 	//normal start joystick move
 	if (inp->input_type == TYPE_MANUAL
 			&& inp->input_id == IN_SPINNER_RIGHT_UP
@@ -171,14 +234,14 @@ void RightSpinnerUpTask::testStartConditions(InputEventData *inp){
 
 }
 
-void RightSpinnerUpTask::start() {
+void SpinnerRightUpTask::start() {
 	Task::start();
 
 	tm->outp->setCylinder(OUT_SPINNER_RIGHT_UP, OUT_SPINNER_RIGHT_FLOAT, CYLINDER_MOVE_OUT);
 
 }
 
-void RightSpinnerUpTask::update(InputEventData *inp) {
+void SpinnerRightUpTask::update(InputEventData *inp) {
 	if (inp->input_id == SENS_SPINNER_RIGHT_UP
 			&& inp->input_value == ACTIVE) {
 		exit();
@@ -189,21 +252,21 @@ void RightSpinnerUpTask::update(InputEventData *inp) {
 	}
 }
 
-void RightSpinnerUpTask::timer() {}
+void SpinnerRightUpTask::timer() {}
 
-void RightSpinnerUpTask::exit() {
+void SpinnerRightUpTask::exit() {
 	Task::exit();
 
 	tm->outp->setCylinder(OUT_SPINNER_RIGHT_UP, OUT_SPINNER_RIGHT_FLOAT, CYLINDER_HOLD);
 }
 
 
-LeftSpinnerFloatTask::LeftSpinnerFloatTask() {
+SpinnerLeftFloatTask::SpinnerLeftFloatTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_SPINNER_LEFT_FLOAT;
 }
 
-void LeftSpinnerFloatTask::testStartConditions(InputEventData* inp){
+void SpinnerLeftFloatTask::testStartConditions(InputEventData* inp){
 	//normal start joystick move
 	if (inp->input_id == IN_SPINNER_LEFT_FLOAT
 			&& inp->input_value == ACTIVE
@@ -213,29 +276,29 @@ void LeftSpinnerFloatTask::testStartConditions(InputEventData* inp){
 	}
 }
 
-void LeftSpinnerFloatTask::start() {
+void SpinnerLeftFloatTask::start() {
 	Task::start();
 //	Serial.println("LeftSpinnerFloatTask::start()");
 	tm->outp->setCylinder(OUT_SPINNER_LEFT_UP, OUT_SPINNER_LEFT_FLOAT, CYLINDER_MOVE_IN_OR_FLOAT);
 }
 
-void LeftSpinnerFloatTask::update(InputEventData *inp) {
+void SpinnerLeftFloatTask::update(InputEventData *inp) {
 	exit();
 }
 
-void LeftSpinnerFloatTask::timer() {}
+void SpinnerLeftFloatTask::timer() {}
 
-void LeftSpinnerFloatTask::exit() {
+void SpinnerLeftFloatTask::exit() {
 	Task::exit();
 }
 
 
-RightSpinnerFloatTask::RightSpinnerFloatTask() {
+SpinnerRightFloatTask::SpinnerRightFloatTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_SPINNER_RIGHT_FLOAT;
 }
 
-void RightSpinnerFloatTask::testStartConditions(InputEventData* inp){
+void SpinnerRightFloatTask::testStartConditions(InputEventData* inp){
 	//normal start joystick move
 	if (inp->input_id == IN_SPINNER_RIGHT_FLOAT
 			&& inp->input_value == ACTIVE
@@ -245,19 +308,19 @@ void RightSpinnerFloatTask::testStartConditions(InputEventData* inp){
 	}
 }
 
-void RightSpinnerFloatTask::start() {
+void SpinnerRightFloatTask::start() {
 	Task::start();
 
 	tm->outp->setCylinder(OUT_SPINNER_RIGHT_UP, OUT_SPINNER_RIGHT_FLOAT, CYLINDER_MOVE_IN_OR_FLOAT);
 }
 
-void RightSpinnerFloatTask::update(InputEventData *inp) {
+void SpinnerRightFloatTask::update(InputEventData *inp) {
 	exit();
 }
 
-void RightSpinnerFloatTask::timer() {}
+void SpinnerRightFloatTask::timer() {}
 
-void RightSpinnerFloatTask::exit() {
+void SpinnerRightFloatTask::exit() {
 	Task::exit();
 }
 

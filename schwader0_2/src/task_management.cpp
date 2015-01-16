@@ -54,11 +54,37 @@ void TaskMonitor::beginn() {
 	//BothSpinnerUpTask both_spinner_up_task;
 
 	task_list[TSK_SPINNER_BOTH_UP] = new BothSpinnerUpTask();
-	task_list[TSK_SPINNER_LEFT_UP] = new LeftSpinnerUpTask();
-	task_list[TSK_SPINNER_RIGHT_UP] = new RightSpinnerUpTask();
-	task_list[TSK_SPINNER_LEFT_FLOAT] = new LeftSpinnerFloatTask();
-	task_list[TSK_SPINNER_RIGHT_FLOAT] = new RightSpinnerFloatTask();
+	task_list[TSK_SPINNER_LEFT_UP] = new SpinnerLeftUpTask();
+	task_list[TSK_SPINNER_RIGHT_UP] = new SpinnerRightUpTask();
 
+	task_list[TSK_SPINNER_LEFT_FLOAT] = new SpinnerLeftFloatTask();
+	task_list[TSK_SPINNER_RIGHT_FLOAT] = new SpinnerRightFloatTask();
+
+	task_list[TSK_SPINNER_LEFT_TELE_OUT] = new SimpleCylinderMappingTask(
+			TSK_SPINNER_LEFT_TELE_OUT,
+			IN_SPINNER_LEFT_TELE_OUT,
+			OUT_SPINNER_LEFT_TELE_OUT,
+			OUT_SPINNER_LEFT_TELE_IN,
+			CYLINDER_MOVE_OUT);
+	task_list[TSK_SPINNER_RIGHT_TELE_OUT] = new SimpleCylinderMappingTask(
+			TSK_SPINNER_RIGHT_TELE_OUT,
+			IN_SPINNER_RIGHT_TELE_OUT,
+			OUT_SPINNER_RIGHT_TELE_OUT,
+			OUT_SPINNER_RIGHT_TELE_IN,
+			CYLINDER_MOVE_OUT);
+
+	task_list[TSK_SPINNER_LEFT_TELE_IN] = new SimpleCylinderMappingTask(
+			TSK_SPINNER_LEFT_TELE_IN,
+			IN_SPINNER_LEFT_TELE_IN,
+			OUT_SPINNER_LEFT_TELE_OUT,
+			OUT_SPINNER_LEFT_TELE_IN,
+			CYLINDER_MOVE_IN_OR_FLOAT);
+	task_list[TSK_SPINNER_RIGHT_TELE_IN] = new SimpleCylinderMappingTask(
+			TSK_SPINNER_RIGHT_TELE_IN,
+			IN_SPINNER_RIGHT_TELE_IN,
+			OUT_SPINNER_RIGHT_TELE_OUT,
+			OUT_SPINNER_RIGHT_TELE_IN,
+			CYLINDER_MOVE_IN_OR_FLOAT);
 
 	//LED Task / Pressure Task müssen ganz am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden können.
 	task_list[TSK_LED] = new LedTask();
@@ -80,7 +106,7 @@ void TaskMonitor::beginn() {
 void TaskMonitor::addInput(InputEventData* inp) {
 	inp_queue->add(*inp);
 
-/*#if ENVIRONMENT == 0*/
+//#if ENVIRONMENT == 0*/
 //	Serial.print(">>> Event <<< Id: ");
 //	Serial.print(inp->input_id);
 //	Serial.print(" Type: ");
@@ -88,7 +114,7 @@ void TaskMonitor::addInput(InputEventData* inp) {
 //	Serial.print(" Value 0->A/1->IA: ");
 //	Serial.println(inp->input_value);
 
-/*#endif*/
+//#endif
 
 }
 
@@ -99,10 +125,10 @@ void TaskMonitor::processInputQueue() {
 		for(int i = 0; i < TSK_LIST_LENGTH; i++){
 			if(task_list[i]->getState() == STATE_RUNNING){
 				task_list[i]->update(inp);
-				//Serial.print(">> Event toTask <<  Id: ");
-				//Serial.print(inp->input_id);
-				//Serial.print(" Send to active task: ");
-				//Serial.println(i);
+//				Serial.print(">> Event toTask <<  Id: ");
+//				Serial.print(inp->input_id);
+//				Serial.print(" Send to active task: ");
+//				Serial.println(i);
 			} else if (task_list[i]->getState() == STATE_STOPPED) {
 				task_list[i]->testStartConditions(inp);
 			}
@@ -129,7 +155,9 @@ void TaskMonitor::startTask(int task_id) {
 }
 
 void TaskMonitor::stopTask(int task_id) {
-	task_list[task_id]->exit();
+	if(task_list[task_id]->getState() != STATE_STOPPED){
+		task_list[task_id]->exit();
+	}
 }
 
 int TaskMonitor::getTaskStatus(int task_id) {

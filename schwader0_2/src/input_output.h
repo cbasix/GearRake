@@ -55,10 +55,10 @@ class TaskMonitor;
 #define IN_MOD_LR_STEER 15
 #define IN_MOD_LR_UNUSED1 16
 #define IN_MOD_LR_UNUSED2 17
-#define IN_MOD_LR_WEEL_TELE_R 18
-#define IN_MOD_LR_WEEL_TELE_L 19
+#define IN_MOD_LR_WEEL_RIGHT_TELE 18
+#define IN_MOD_LR_WEEL_LEFT_TELE 19
 
-//Modifier Buttons Links Rechts
+//Modifier Buttons Oben Unten
 #define IN_MOD_OU_SPINNER_BACK 20
 #define IN_MOD_OU_FRAME 21
 #define IN_MOD_OU_UNUSED 22

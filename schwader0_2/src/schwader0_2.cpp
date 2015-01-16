@@ -126,6 +126,7 @@ int main() {
 	*/
 
 	TaskMonitor tm;
+	tm.beginn();
 
 	tm.addInput(inp_left_b_h);
 	tm.addInput(inp_left_b_l);
