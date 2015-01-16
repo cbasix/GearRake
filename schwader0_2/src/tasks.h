@@ -84,6 +84,17 @@ class SimpleCylinderMappingTask : public Task {
 		void testStartConditions(InputEventData* inp);
 };*/
 
+class TranslationTask : public Task {
+	public:
+		TranslationTask();
+
+		void start();
+		void update(InputEventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(InputEventData* inp);
+};
+
 /**
  * Beim Hochfahren werden beide Ventile aktiviert, es fahren aber nicht beide
  * Kreisel gleichzeitig nach oben deshalb muss der Kreisel der zuerst bei 1/3 Stellung ankommt

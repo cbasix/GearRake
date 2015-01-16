@@ -91,6 +91,33 @@ void MinimalTask::exit() {
 
 	tm->outp->setOutput(OUT_..., INACTIVE);
 }*/
+TranslationTask::TranslationTask() {
+}
+
+void TranslationTask::testStartConditions(InputEventData* inp){
+	//Serial.println(" LedTask::testStartConditions()");
+
+	if(inp->input_type == TYPE_MESSAGE
+			&& inp->input_id == MESSAGE_STARTUP){
+		start();
+	}
+}
+
+void TranslationTask::start() {
+	Task::start();
+}
+
+void TranslationTask::update(InputEventData* inp) {
+	77
+}
+
+void TranslationTask::exit() {
+	Task::exit();
+}
+
+void TranslationTask::timer() {
+}
+
 
 //OTHER TASKS------------------------------------------
 
@@ -471,9 +498,5 @@ void PressureTask::exit() {
 
 	tm->outp->setRawOutput(OUT_PRESSURE, INACTIVE);
 }
-
-
-
-
 
 
