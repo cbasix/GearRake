@@ -63,6 +63,7 @@ class TaskMonitor{
 		void beginn();
 
 		void addInput(InputEventData *inp);
+		void addMessage(int message_id, bool message_state);
 		void processInputQueue();
 		void processTimers();
 

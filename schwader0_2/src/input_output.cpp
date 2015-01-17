@@ -163,7 +163,7 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_type = TYPE_MANUAL;
 
 
-	//Modifier Buttons Links Rechts
+	//Modifier Buttons oben unten
 	input_data[IN_MOD_OU_SPINNER_BACK].input_pin = PIN_ARDUINO_START + 10;
 	input_data[IN_MOD_OU_SPINNER_BACK].input_type = TYPE_MANUAL;
 
@@ -288,7 +288,8 @@ void InputObject::readInput(){
 		if(input_data[i].input_pin >= PIN_ARDUINO_START
 				&& input_data[i].input_pin <= PIN_ARDUINO_END){
 
-			readed = digitalRead(input_data[i].input_pin);
+			//inputs are all pulled up if input button is pressed digitalRead outputs 0 -> negate with !
+			readed = !digitalRead(input_data[i].input_pin);
 
 
 
@@ -526,6 +527,8 @@ void OutputObject::writeOutput() {
 	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 		if(output_data[i].state_changed){
 
+			//ALL OUTPUTS ARE INVERTED! They are active when they are connected to ground. -> invert output with !
+
 			//Serial.print("              <<| PIN: ");
 			//Serial.print(output_data[i].output_pin);
 
@@ -534,7 +537,7 @@ void OutputObject::writeOutput() {
 			if(output_data[i].output_pin >= PIN_ARDUINO_START &&
 							output_data[i].output_pin <= PIN_ARDUINO_END){
 
-				digitalWrite(output_data[i].output_pin - PIN_ARDUINO_START, output_data[i].state);
+				digitalWrite(output_data[i].output_pin - PIN_ARDUINO_START, !output_data[i].state);
 
 				//Serial.print(" Arduino pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_ARDUINO_START);
@@ -544,7 +547,7 @@ void OutputObject::writeOutput() {
 			} else if(output_data[i].output_pin >= PIN_EXP1_START &&
 					output_data[i].output_pin <= PIN_EXP1_END){
 
-				exp1->digitalWrite(output_data[i].output_pin - PIN_EXP1_START, output_data[i].state);
+				exp1->digitalWrite(output_data[i].output_pin - PIN_EXP1_START, !output_data[i].state);
 
 				//Serial.print(" exp1 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP1_START);
@@ -554,7 +557,7 @@ void OutputObject::writeOutput() {
 			} else if(output_data[i].output_pin >= PIN_EXP2_START &&
 					output_data[i].output_pin <= PIN_EXP2_END){
 
-				exp2->digitalWrite(output_data[i].output_pin - PIN_EXP2_START, output_data[i].state);
+				exp2->digitalWrite(output_data[i].output_pin - PIN_EXP2_START, !output_data[i].state);
 
 				//Serial.print(" exp2 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP2_START);
@@ -564,7 +567,7 @@ void OutputObject::writeOutput() {
 			} else if(output_data[i].output_pin >= PIN_EXP3_START &&
 					output_data[i].output_pin <= PIN_EXP3_END){
 
-				exp3->digitalWrite(output_data[i].output_pin - PIN_EXP3_START, output_data[i].state);
+				exp3->digitalWrite(output_data[i].output_pin - PIN_EXP3_START, !output_data[i].state);
 
 				//Serial.print(" exp3 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP3_START);

@@ -111,11 +111,20 @@ void TaskMonitor::addInput(InputEventData* inp) {
 //	Serial.print(inp->input_id);
 //	Serial.print(" Type: ");
 //	Serial.print(inp->input_type);
-//	Serial.print(" Value 0->A/1->IA: ");
+//	Serial.print(" Value 1->A/0->IA: ");
 //	Serial.println(inp->input_value);
 
 //#endif
 
+}
+
+void TaskMonitor::addMessage(int message_id, bool message_value){
+	InputEventData e;
+	e.input_id = message_id;
+	e.input_type = TYPE_MESSAGE;
+	e.input_value = message_value;
+
+	addInput(&e);
 }
 
 void TaskMonitor::processInputQueue() {

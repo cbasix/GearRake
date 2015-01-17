@@ -10,8 +10,8 @@ class TaskMonitor;
 #define HIGH true
 #define LOW false
 
-#define ACTIVE false
-#define INACTIVE true
+#define ACTIVE true
+#define INACTIVE false
 
 #define TYPE_SENSOR 1
 #define TYPE_MANUAL 2
@@ -39,7 +39,7 @@ class TaskMonitor;
 #define IN_SPINNER_RIGHT_TELE_OUT 6
 #define IN_SPINNER_RIGHT_TELE_IN 7
 
-//Middle Joystick
+//Middle Joystick  UP is pulling the joystick!!!
 #define IN_MULTI_UP 8
 #define IN_MULTI_DOWN 9
 

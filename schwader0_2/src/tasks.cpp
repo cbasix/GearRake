@@ -91,10 +91,11 @@ void MinimalTask::exit() {
 
 	tm->outp->setOutput(OUT_..., INACTIVE);
 }*/
-TranslationTask::TranslationTask() {
+ModeTask::ModeTask() {
+	active_mode = NULL;
 }
 
-void TranslationTask::testStartConditions(InputEventData* inp){
+void ModeTask::testStartConditions(InputEventData* inp){
 	//Serial.println(" LedTask::testStartConditions()");
 
 	if(inp->input_type == TYPE_MESSAGE
@@ -103,19 +104,142 @@ void TranslationTask::testStartConditions(InputEventData* inp){
 	}
 }
 
-void TranslationTask::start() {
+void ModeTask::start() {
 	Task::start();
+	setActiveMode(IN_MOD_OU_SPINNER_BACK);
+
 }
 
-void TranslationTask::update(InputEventData* inp) {
-	77
+void ModeTask::update(InputEventData* inp) {
+	if(inp->input_type == TYPE_MANUAL){
+		if(inp->input_value == ACTIVE){
+			setActiveMode(inp->input_id);
+		}
+
+
+
+		//lenkmodus
+		if(active_mode == IN_MOD_LR_STEER){
+
+			if(inp->input_id == IN_MULTI_LEFT ){
+
+				tm->addMessage(MESSAGE_IN_STEER_LEFT, inp->input_value);
+
+			}else if(inp->input_id == IN_MULTI_RIGHT ){
+
+				tm->addMessage(MESSAGE_IN_STEER_RIGHT, inp->input_value);
+			}
+		}
+
+		//radteleskop links
+		if(active_mode == IN_MOD_LR_WEEL_LEFT_TELE){
+
+			if(inp->input_id == IN_MULTI_LEFT ){
+
+				tm->addMessage(MESSAGE_IN_WEEL_LEFT_TELE_OUT, inp->input_value);
+
+			}else if(inp->input_id == IN_MULTI_RIGHT ){
+
+				tm->addMessage(MESSAGE_IN_WEEL_LEFT_TELE_IN, inp->input_value);
+			}
+		}
+
+		//radteleskop links
+		if(active_mode == IN_MOD_LR_WEEL_RIGHT_TELE){
+
+			if(inp->input_id == IN_MULTI_LEFT ){
+
+				tm->addMessage(MESSAGE_IN_WEEL_LEFT_TELE_IN, inp->input_value);
+
+			}else if(inp->input_id == IN_MULTI_RIGHT ){
+
+				tm->addMessage(MESSAGE_IN_WEEL_LEFT_TELE_OUT, inp->input_value);
+			}
+		}
+
+		//kreiselhub hinten
+		if(active_mode == IN_MOD_OU_SPINNER_BACK){
+
+			if(inp->input_id == IN_MULTI_UP ){
+
+				tm->addMessage(MESSAGE_IN_SPINNER_BACK_UP, inp->input_value);
+
+			}else if(inp->input_id == IN_MULTI_DOWN ){
+
+				tm->addMessage(MESSAGE_IN_SPINNER_BACK_DOWN, inp->input_value);
+			}
+		}
+
+		//rahmenhub
+		if(active_mode == IN_MOD_OU_FRAME){
+
+			if(inp->input_id == IN_MULTI_UP ){
+
+				tm->addMessage(MESSAGE_IN_FRAME_UP, inp->input_value);
+
+			}else if(inp->input_id == IN_MULTI_DOWN ){
+
+				tm->addMessage(MESSAGE_IN_FRAME_DOWN, inp->input_value);
+
+			}
+		}
+	}
 }
 
-void TranslationTask::exit() {
+void ModeTask::exit() {
 	Task::exit();
 }
 
-void TranslationTask::timer() {
+void ModeTask::timer() {
+}
+
+void ModeTask::setActiveMode(int new_active_mode){
+	if(new_active_mode != active_mode){
+		//disable old mode led
+		if(active_mode == IN_MOD_LR_STEER){
+			tm->outp->setLed(LED_MOD_LR_STEER, INACTIVE);
+			tm->addMessage(IN_MOD_LR_STEER, INACTIVE);
+
+		} else if(active_mode == IN_MOD_LR_WEEL_LEFT_TELE){
+			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_L, INACTIVE);
+			tm->addMessage(IN_MOD_LR_WEEL_LEFT_TELE, INACTIVE);
+
+		} else if(active_mode == IN_MOD_LR_WEEL_RIGHT_TELE){
+			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_R, INACTIVE);
+			tm->addMessage(IN_MOD_LR_WEEL_RIGHT_TELE, INACTIVE);
+
+		} else if(active_mode == IN_MOD_OU_FRAME){
+			tm->outp->setLed(LED_MOD_OU_FRAME, INACTIVE);
+			tm->addMessage(IN_MOD_OU_FRAME, INACTIVE);
+
+		} else if(active_mode == IN_MOD_OU_SPINNER_BACK){
+			tm->outp->setLed(LED_MOD_OU_SPINNER_BACK, INACTIVE);
+			tm->addMessage(IN_MOD_OU_SPINNER_BACK, INACTIVE);
+
+		}
+
+		if(new_active_mode == IN_MOD_LR_STEER){
+			tm->outp->setLed(LED_MOD_LR_STEER, ACTIVE);
+
+		} else if(new_active_mode == IN_MOD_LR_WEEL_LEFT_TELE){
+			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_L, ACTIVE);
+
+		} else if(new_active_mode == IN_MOD_LR_WEEL_RIGHT_TELE){
+			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_R, ACTIVE);
+
+		} else if(new_active_mode == IN_MOD_OU_FRAME){
+			tm->outp->setLed(LED_MOD_OU_FRAME, ACTIVE);
+
+		} else if(new_active_mode == IN_MOD_OU_SPINNER_BACK){
+			tm->outp->setLed(LED_MOD_OU_SPINNER_BACK, ACTIVE);
+
+		}
+
+		active_mode = new_active_mode;
+	}
+
+
+
 }
 
 

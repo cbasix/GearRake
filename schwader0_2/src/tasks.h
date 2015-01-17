@@ -20,20 +20,21 @@
 //messages
 #define MESSAGE_STARTUP 12001
 
-#define MESSAGE_IN_STEER_LEFT 12002
-#define MESSAGE_IN_STEER_RIGHT 12003
+#define MESSAGE_MOD_CHANGED 12002
+#define MESSAGE_IN_STEER_LEFT 12003
+#define MESSAGE_IN_STEER_RIGHT 12004
 
-#define MESSAGE_IN_WEEL_RIGHT_TELE_OUT 12003
-#define MESSAGE_IN_WEEL_RIGHT_TELE_IN 12004
+#define MESSAGE_IN_WEEL_RIGHT_TELE_OUT 12005
+#define MESSAGE_IN_WEEL_RIGHT_TELE_IN 12006
 
-#define MESSAGE_IN_WEEL_LEFT_TELE_OUT 12003
-#define MESSAGE_IN_WEEL_LEFT_TELE_IN 12004
+#define MESSAGE_IN_WEEL_LEFT_TELE_OUT 12007
+#define MESSAGE_IN_WEEL_LEFT_TELE_IN 12008
 
-#define MESSAGE_IN_SPINNER_BACK_UP 12003
-#define MESSAGE_IN_SPINNER_BACK_DOWN 12004
+#define MESSAGE_IN_SPINNER_BACK_UP 12009
+#define MESSAGE_IN_SPINNER_BACK_DOWN 12010
 
-#define MESSAGE_IN_FRAME_UP 12003
-#define MESSAGE_IN_FRAME_DOWN 12003
+#define MESSAGE_IN_FRAME_UP 12011
+#define MESSAGE_IN_FRAME_DOWN 12012
 
 
 
@@ -84,15 +85,18 @@ class SimpleCylinderMappingTask : public Task {
 		void testStartConditions(InputEventData* inp);
 };*/
 
-class TranslationTask : public Task {
+class ModeTask : public Task {
 	public:
-		TranslationTask();
+		ModeTask();
 
 		void start();
 		void update(InputEventData *inp);
 		void exit();
 		void timer();
 		void testStartConditions(InputEventData* inp);
+	private:
+		int active_mode;
+		void setActiveMode(int active_mode);
 };
 
 /**
