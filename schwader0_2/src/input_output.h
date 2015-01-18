@@ -16,10 +16,16 @@ class TaskMonitor;
 #define TYPE_SENSOR 1
 #define TYPE_MANUAL 2
 #define TYPE_MESSAGE 3
+#define TYPE_TIMEOUT 4
+#define TYPE_ERROR 5
 
 #define CYLINDER_HOLD 0
-#define CYLINDER_MOVE_OUT 1
-#define CYLINDER_MOVE_IN_OR_FLOAT 2
+
+#define CYLINDER_FUNCTION_1 1
+#define CYLINDER_FUNCTION_2 2
+
+#define ERR_SENSOR_TIMEOUT 99001
+
 
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -184,16 +190,17 @@ class TaskMonitor;
 
 #define DEBOUNCE_TIME 5
 
-#define INPUT_QUEUE_SIZE 100
+#define EVENT_QUEUE_SIZE 100
 //usable size is one less because one slot must be kept free in circular queue
 //#define INPUT_DATA_SIZE 1
 
 
-struct InputEventData
+struct EventData
 {
 	int input_id;
 	bool input_value;
 	int input_type;
+	int additional_info;
 };
 
 struct InputData {
@@ -227,13 +234,13 @@ class InputObject{
 class FifoInputQueue{
 	public:
 		FifoInputQueue();
-		void add(InputEventData evt);
-		InputEventData* get();
+		void add(EventData evt);
+		EventData* get();
 		int size();
 	private:
 		int next_in;
 		int next_out;
-		InputEventData event_data[INPUT_QUEUE_SIZE];
+		EventData event_data[EVENT_QUEUE_SIZE];
 };
 
 class OutputObject{
@@ -241,7 +248,7 @@ class OutputObject{
 		OutputObject(TaskMonitor* task_monitor);
 		void setRawOutput(int output_id, bool output_value);
 		void setLed(int output_id, bool output_value);
-		void setCylinder(int output_id_move_out, int output_id_move_in_or_float, int cylinder_state);
+		void setCylinder(int function_1_output_id, int function_2_output_id, int cylinder_state);
 
 		bool getOutputState(int output_id);
 		bool isOutputChanging(int output_id);

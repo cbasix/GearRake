@@ -1,5 +1,5 @@
 // ids for tasks must be continous! (stored in array with id as index)
-#define TSK_LIST_LENGTH 11
+#define TSK_LIST_LENGTH 24
 
 #define TSK_SPINNER_BOTH_UP 0
 #define TSK_SPINNER_RIGHT_UP 1
@@ -14,27 +14,53 @@
 #define TSK_SPINNER_LEFT_TELE_OUT 7
 #define TSK_SPINNER_LEFT_TELE_IN 8
 
-#define TSK_LED 9 //LED Task muss am ende der Tasklist stehen, sodass er die isOutputChanging() Funktion nutzen kann.
-#define TSK_PRESSURE 10
+#define TSK_STEER_LEFT 9
+#define TSK_STEER_RIGHT 10
+
+#define TSK_WEEL_RIGHT_TELE_OUT 11
+#define TSK_WEEL_RIGHT_TELE_IN 12
+
+#define TSK_WEEL_LEFT_TELE_OUT 13
+#define TSK_WEEL_LEFT_TELE_IN 14
+
+#define TSK_SPINNER_REAR_UP 15
+#define TSK_SPINNER_REAR_FLOAT 16
+
+#define TSK_FRAME_UP 17
+#define TSK_FRAME_DOWN 18
+
+#define TSKPART_FRAME_SHORT_UP 19
+
+#define TSKPART_FRAME_LOCK_UP 20
+#define TSKPART_FRAME_LOCK_DOWN 21
+
+#define TSK_LED 22 //LED Task muss am ende der Tasklist stehen, sodass er die isOutputChanging() Funktion nutzen kann.
+#define TSK_PRESSURE 23
+
 
 //messages
-#define MESSAGE_STARTUP 12001
+#define MSG_STARTUP 12001
 
-#define MESSAGE_MOD_CHANGED 12002
-#define MESSAGE_IN_STEER_LEFT 12003
-#define MESSAGE_IN_STEER_RIGHT 12004
+#define MSG_IN_STEER_LEFT 12003
+#define MSG_IN_STEER_RIGHT 12004
 
-#define MESSAGE_IN_WEEL_RIGHT_TELE_OUT 12005
-#define MESSAGE_IN_WEEL_RIGHT_TELE_IN 12006
+#define MSG_IN_WEEL_RIGHT_TELE_OUT 12005
+#define MSG_IN_WEEL_RIGHT_TELE_IN 12006
 
-#define MESSAGE_IN_WEEL_LEFT_TELE_OUT 12007
-#define MESSAGE_IN_WEEL_LEFT_TELE_IN 12008
+#define MSG_IN_WEEL_LEFT_TELE_OUT 12007
+#define MSG_IN_WEEL_LEFT_TELE_IN 12008
 
-#define MESSAGE_IN_SPINNER_BACK_UP 12009
-#define MESSAGE_IN_SPINNER_BACK_DOWN 12010
+#define MSG_IN_SPINNER_REAR_UP 12009
+#define MSG_IN_SPINNER_REAR_FLOAT 12010
 
-#define MESSAGE_IN_FRAME_UP 12011
-#define MESSAGE_IN_FRAME_DOWN 12012
+#define MSG_IN_FRAME_UP 12011
+#define MSG_IN_FRAME_DOWN 12012
+
+//taskpart start/ready messages
+#define MSG_TSKPART_FRAME_SHORT_UP 12013
+
+#define MSG_TSKPART_FRAME_LOCK_UP 12015
+#define MSG_TSKPART_FRAME_LOCK_DOWN 12016
 
 
 
@@ -54,21 +80,113 @@
 		int mapped_output_id;
 };*/
 
-class SimpleCylinderMappingTask : public Task {
+class SimpleCylinderTask : public Task {
 	public:
-		SimpleCylinderMappingTask(int task_id_to_set, int input_id, int output_id_move_out, int output_id_move_in_or_float, int cylinder_state);
+		SimpleCylinderTask(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int cylinder_function_1_output_id,
+				int cylinder_function_2_output_id,
+				int cylinder_state);
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 
 	private:
+		int mapped_input_type;
 		int mapped_input_id;
-		int mapped_output_id_move_out;
-		int mapped_output_id_move_in_or_float;
+		int mapped_cylinder_function_1_output_id;
+		int mapped_cylinder_function_2_output_id;
 		int mapped_cylinder_state;
+};
+
+//moves a cylinder till a specified amout of time
+class CylinderTimerTaskpart : public Task {
+	public:
+		CylinderTimerTaskpart(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int cylinder_function_1_output_id,
+				int cylinder_function_2_output_id,
+				int cylinder_state,
+				unsigned int run_duration );
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_cylinder_function_1_output_id;
+		int mapped_cylinder_function_2_output_id;
+		int mapped_cylinder_state;
+		unsigned int start_time;
+		unsigned int run_duration;
+};
+
+//moves a cylinder till a specified sensor input or timeout
+class CylinderSensorTaskpart : public Task {
+	public:
+		CylinderSensorTaskpart(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int cylinder_function_1_output_id,
+				int cylinder_function_2_output_id,
+				int cylinder_state,
+				int sensor_input_id,
+				unsigned int timeout);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_cylinder_function_1_output_id;
+		int mapped_cylinder_function_2_output_id;
+		int mapped_cylinder_state;
+		unsigned int start_time;
+		int sensor_input_id;
+		unsigned int timeout;
+};
+
+class CylinderTwoSensorTaskpart : public Task {
+	public:
+		CylinderTwoSensorTaskpart(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int cylinder_function_1_output_id,
+				int cylinder_function_2_output_id,
+				int cylinder_state,
+				int sensor_1_input_id,
+				int sensor_2_input_id,
+				unsigned int timeout);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_cylinder_function_1_output_id;
+		int mapped_cylinder_function_2_output_id;
+		int mapped_cylinder_state;
+		unsigned int start_time;
+		int sensor_1_input_id;
+		int sensor_2_input_id;
+		unsigned int timeout;
 };
 
 
@@ -90,10 +208,10 @@ class ModeTask : public Task {
 		ModeTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 	private:
 		int active_mode;
 		void setActiveMode(int active_mode);
@@ -109,10 +227,10 @@ class BothSpinnerUpTask : public Task {
 		BothSpinnerUpTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 	private:
 			bool spinner_left_is_done;
 			bool spinner_right_is_done;
@@ -123,10 +241,10 @@ class SpinnerLeftUpTask : public Task {
 		SpinnerLeftUpTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 };
 
 class SpinnerRightUpTask : public Task {
@@ -134,10 +252,10 @@ class SpinnerRightUpTask : public Task {
 		SpinnerRightUpTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 };
 
 class SpinnerLeftFloatTask : public Task {
@@ -145,10 +263,10 @@ class SpinnerLeftFloatTask : public Task {
 		SpinnerLeftFloatTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 };
 
 class SpinnerRightFloatTask : public Task {
@@ -156,10 +274,35 @@ class SpinnerRightFloatTask : public Task {
 		SpinnerRightFloatTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
+};
+
+class SpinnerRearFloatTask : public Task {
+	public:
+		SpinnerRearFloatTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};
+
+class FrameDownTask : public Task {
+	public:
+		FrameDownTask(unsigned int upward_time);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+	private:
+		unsigned int start_time;
+		unsigned int upward_time;
 };
 
 //last in tasks to executep need to use the isOutputChanged Method
@@ -168,10 +311,10 @@ class LedTask : public Task {
 		LedTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 };
 
 class PressureTask : public Task {
@@ -179,10 +322,10 @@ class PressureTask : public Task {
 		PressureTask();
 
 		void start();
-		void update(InputEventData *inp);
+		void update(EventData *inp);
 		void exit();
 		void timer();
-		void testStartConditions(InputEventData* inp);
+		void testStartConditions(EventData* inp);
 };
 
 

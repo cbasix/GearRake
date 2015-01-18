@@ -5,7 +5,7 @@
 #define STATE_RUNNING 1
 #define STATE_STOPPED 0
 
-struct InputEventData;
+struct EventData;
 class InputObject;
 class FifoInputQueue;
 class OutputObject;
@@ -39,10 +39,10 @@ class Task {
 
 
 		virtual void start();
-		virtual void update(InputEventData *inp) = 0;
+		virtual void update(EventData *inp) = 0;
 		virtual void exit();
 		virtual void timer();
-		virtual void testStartConditions(InputEventData *inp) = 0;
+		virtual void testStartConditions(EventData *inp) = 0;
 
 		void setTaskMonitor(TaskMonitor* tm);
 
@@ -62,8 +62,10 @@ class TaskMonitor{
 
 		void beginn();
 
-		void addInput(InputEventData *inp);
+		void addInput(EventData *inp);
 		void addMessage(int message_id, bool message_state);
+		void addError(int error_id, int error_param);
+		void addTimeout(int sensor_id);
 		void processInputQueue();
 		void processTimers();
 

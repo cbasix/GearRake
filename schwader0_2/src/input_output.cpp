@@ -10,12 +10,12 @@ FifoInputQueue::FifoInputQueue() {
 }
 
 
-void FifoInputQueue::add(InputEventData evt) {
+void FifoInputQueue::add(EventData evt) {
 
 	//if queue is full the oldest input gets overwritten
-	if(size() >= INPUT_QUEUE_SIZE - 1){
+	if(size() >= EVENT_QUEUE_SIZE - 1){
 		next_out++;
-		if(next_out >= INPUT_QUEUE_SIZE){
+		if(next_out >= EVENT_QUEUE_SIZE){
 			next_out = 0;
 		}
 	}
@@ -23,7 +23,7 @@ void FifoInputQueue::add(InputEventData evt) {
 	event_data[next_in] = evt;
 
 	next_in++;
-	if(next_in >= INPUT_QUEUE_SIZE){
+	if(next_in >= EVENT_QUEUE_SIZE){
 		next_in = 0;
 	}
 
@@ -31,15 +31,15 @@ void FifoInputQueue::add(InputEventData evt) {
 
 }
 
-InputEventData* FifoInputQueue::get() {
+EventData* FifoInputQueue::get() {
 
 	if(size() > 0){
 
 
-		InputEventData* temp =  &event_data[next_out];
+		EventData* temp =  &event_data[next_out];
 
 		next_out++;
-		if(next_out >= INPUT_QUEUE_SIZE){
+		if(next_out >= EVENT_QUEUE_SIZE){
 			next_out = 0;
 		}
 
@@ -55,7 +55,7 @@ int FifoInputQueue::size() {
 		return next_in - next_out;
 
 	} else if (next_in < next_out){
-		return (INPUT_QUEUE_SIZE - next_out) + next_in;
+		return (EVENT_QUEUE_SIZE - next_out) + next_in;
 	}
 
 	return 0;
@@ -341,7 +341,7 @@ void InputObject::readInput(){
 
 			input_data[i].debounced_state = input_data[i].temp_state;
 
-			InputEventData e;
+			EventData e;
 			e.input_id = i;
 			e.input_type = input_data[i].input_type;
 			e.input_value = input_data[i].debounced_state;
@@ -494,29 +494,29 @@ void OutputObject::setRawOutput(int output_id, bool output_value){
 	//std::cout << "Set output: " << output_id << " to value:"<< output_value  << std::endl;
 }
 
-void OutputObject::setCylinder(int output_id_move_out, int output_id_move_in_or_float, int cylinder_state){
+void OutputObject::setCylinder(int output_id_function_1, int output_id_function_2, int cylinder_state){
 	//output id 1 ist für ausfahren outputid 2 ist für einfahren oder schwimmstellung, je nach zylindertyp
 	if(cylinder_state == CYLINDER_HOLD){
 
 //		Serial.println("OutputObject::setCylinder CYLINDER_HOLD");
 
-		setOutput(output_id_move_out, INACTIVE);
-		setOutput(output_id_move_in_or_float, INACTIVE);
+		setOutput(output_id_function_1, INACTIVE);
+		setOutput(output_id_function_2, INACTIVE);
 
-	} else if (cylinder_state == CYLINDER_MOVE_OUT){
+	} else if (cylinder_state == CYLINDER_FUNCTION_1){
 
 //		Serial.print(output_id_move_out);
-//		Serial.println(" OutputObject::setCylinder CYLINDER_MOVE_OUT");
+//		Serial.println(" OutputObject::setCylinder FUNCTION_1");
 
-		setOutput(output_id_move_out, ACTIVE);
-		setOutput(output_id_move_in_or_float, INACTIVE);
+		setOutput(output_id_function_1, ACTIVE);
+		setOutput(output_id_function_2, INACTIVE);
 
-	} else if (cylinder_state == CYLINDER_MOVE_IN_OR_FLOAT){
+	} else if (cylinder_state == CYLINDER_FUNCTION_2){
 
-//		Serial.println("OutputObject::setCylinder CYLINDER_MOVE_IN_OR_FLOAT");
+//		Serial.println("OutputObject::setCylinder CYLINDER_FUNCTION_2");
 
-		setOutput(output_id_move_out, INACTIVE);
-		setOutput(output_id_move_in_or_float, ACTIVE);
+		setOutput(output_id_function_1, INACTIVE);
+		setOutput(output_id_function_2, ACTIVE);
 	}
 	//std::cout << "Set output: " << output_id << " to value:"<< output_value  << std::endl;
 }
