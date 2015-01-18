@@ -91,9 +91,11 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_type = TYPE_MANUAL;
+	input_data[IN_SPINNER_LEFT_TELE_OUT].active = false;
 
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_type = TYPE_MANUAL;
+	input_data[IN_SPINNER_LEFT_TELE_IN].active = false;
 
 
 
@@ -109,30 +111,32 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 	//!
 	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_type = TYPE_MANUAL;
+	input_data[IN_SPINNER_RIGHT_TELE_OUT].active = false;
 
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_type = TYPE_MANUAL;
+	input_data[IN_SPINNER_RIGHT_TELE_IN].active = false;
 
 
 	//Middle Joystick
 	//!
 	input_data[IN_MULTI_UP].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 4;
 	input_data[IN_MULTI_UP].input_type = TYPE_MANUAL;
-	input_data[IN_MULTI_UP].active = false;
+	//input_data[IN_MULTI_UP].active = false;
 
 	input_data[IN_MULTI_DOWN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 4;
 	input_data[IN_MULTI_DOWN].input_type = TYPE_MANUAL;
-	input_data[IN_MULTI_DOWN].active = false;
+	//input_data[IN_MULTI_DOWN].active = false;
 
 
 	//!
 	input_data[IN_MULTI_RIGHT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 5;
 	input_data[IN_MULTI_RIGHT].input_type = TYPE_MANUAL;
-	input_data[IN_MULTI_RIGHT].active = false;
+	//input_data[IN_MULTI_RIGHT].active = false;
 
 	input_data[IN_MULTI_LEFT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 5;
 	input_data[IN_MULTI_LEFT].input_type = TYPE_MANUAL;
-	input_data[IN_MULTI_LEFT].active = false;
+	//input_data[IN_MULTI_LEFT].active = false;
 
 
 	//Top Buttons
@@ -430,6 +434,7 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 	output_data[LED_MOD_OU_UNUSED].output_pin = PIN_EXP3_START + 4;
 
 
+	//all initalisations inverted because outputs are active when connected to ground and internal active = 1
 	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 		output_data[i].state = INACTIVE;
 		output_data[i].state_changed = false;
@@ -438,7 +443,7 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 				output_data[i].output_pin <= PIN_ARDUINO_END){
 
 			pinMode(output_data[i].output_pin - PIN_ARDUINO_START, OUTPUT);
-			digitalWrite(output_data[i].output_pin - PIN_ARDUINO_START, INACTIVE);
+			digitalWrite(output_data[i].output_pin - PIN_ARDUINO_START, !INACTIVE);
 
 			////Serial.print(" PIN MODE to OUTPUT Arduino: ");
 			////Serial.println(output_data[i].output_pin - PIN_ARDUINO_START);
@@ -447,7 +452,7 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 				output_data[i].output_pin <= PIN_EXP1_END){
 
 			exp1->pinMode(output_data[i].output_pin - PIN_EXP1_START, OUTPUT);
-			exp1->digitalWrite(output_data[i].output_pin - PIN_EXP1_START, INACTIVE);
+			exp1->digitalWrite(output_data[i].output_pin - PIN_EXP1_START, !INACTIVE);
 
 			////Serial.print(" PIN MODE to OUTPUT exp1: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP1_START);
@@ -456,7 +461,7 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 				output_data[i].output_pin <= PIN_EXP2_END){
 
 			exp2->pinMode(output_data[i].output_pin - PIN_EXP2_START, OUTPUT);
-			exp2->digitalWrite(output_data[i].output_pin - PIN_EXP2_START, INACTIVE);
+			exp2->digitalWrite(output_data[i].output_pin - PIN_EXP2_START, !INACTIVE);
 
 			////Serial.print(" PIN MODE to OUTPUT exp2: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP2_START);
@@ -465,7 +470,7 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 				output_data[i].output_pin <= PIN_EXP3_END){
 
 			exp3->pinMode(output_data[i].output_pin - PIN_EXP3_START, OUTPUT);
-			exp3->digitalWrite(output_data[i].output_pin - PIN_EXP3_START, INACTIVE);
+			exp3->digitalWrite(output_data[i].output_pin - PIN_EXP3_START, !INACTIVE);
 
 			////Serial.print(" PIN MODE to OUTPUT exp3: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP3_START);

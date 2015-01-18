@@ -73,7 +73,7 @@ CylinderTimerTaskpart::CylinderTimerTaskpart(int task_id_to_set,
 		int output_id_move_out,
 		int output_id_move_in_or_float,
 		int cylinder_state,
-		unsigned int run_duration_parm){
+		unsigned long run_duration_parm){
 
 	task_state = STATE_STOPPED;
 	task_id = task_id_to_set;
@@ -128,9 +128,10 @@ void CylinderTimerTaskpart::exit() {
 
 void CylinderTimerTaskpart::timer() {
 	if(start_time + run_duration < millis()){
+		//Serial.println("timer timerkill");
 
 		//send message back to activator task that work of this parttask is done
-		tm->addMessage(task_id, INACTIVE);
+		tm->addMessage(mapped_input_id, INACTIVE);
 		tm->stopTask(task_id);
 	}
 }
@@ -143,7 +144,7 @@ CylinderSensorTaskpart::CylinderSensorTaskpart(int task_id_to_set,
 		int output_id_move_in_or_float,
 		int cylinder_state,
 		int sensor_input_id_parm,
-		unsigned int timeout_parm){
+		unsigned long timeout_parm){
 
 	task_state = STATE_STOPPED;
 	task_id = task_id_to_set;
@@ -178,7 +179,12 @@ void CylinderSensorTaskpart::start() {
 //	Serial.print("Starting Simple TSK: ");
 //	Serial.println(task_id);
 	start_time = millis();
+
 	tm->outp->setCylinder(mapped_cylinder_function_1_output_id, mapped_cylinder_function_2_output_id, mapped_cylinder_state);
+
+	if(tm->inp->getInputState(sensor_input_id) == ACTIVE){
+		tm->stopTask(task_id);
+	}
 }
 
 void CylinderSensorTaskpart::update(EventData* inp) {
@@ -208,7 +214,7 @@ void CylinderSensorTaskpart::exit() {
 void CylinderSensorTaskpart::timer() {
 	if(start_time + timeout < millis()){
 		//send message to activator task that timeout occured.
-		tm->addTimeout(task_id);
+		tm->addTimeout(mapped_input_id);
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
 		tm->stopTask(task_id);
 	}
@@ -223,7 +229,7 @@ CylinderTwoSensorTaskpart::CylinderTwoSensorTaskpart(int task_id_to_set,
 		int cylinder_state,
 		int sensor_1_input_id_parm,
 		int sensor_2_input_id_parm,
-		unsigned int timeout_parm){
+		unsigned long timeout_parm){
 
 	task_state = STATE_STOPPED;
 	task_id = task_id_to_set;
@@ -297,7 +303,7 @@ void CylinderTwoSensorTaskpart::exit() {
 void CylinderTwoSensorTaskpart::timer() {
 	if(start_time + timeout < millis()){
 		//send message to activator task that timeout occured.
-		tm->addTimeout(task_id);
+		tm->addTimeout(mapped_input_id);
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_1_input_id);
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_2_input_id);
 		tm->stopTask(task_id);
@@ -333,11 +339,14 @@ void MinimalTask::exit() {
 	tm->outp->setOutput(OUT_..., INACTIVE);
 }*/
 ModeTask::ModeTask() {
+	task_state = STATE_STOPPED;
+	task_id = TSK_MODE;
+
 	active_mode = IN_MOD_OU_SPINNER_BACK;
 }
 
 void ModeTask::testStartConditions(EventData* inp){
-	//Serial.println(" LedTask::testStartConditions()");
+
 
 	if(inp->input_type == TYPE_MESSAGE
 			&& inp->input_id == MSG_STARTUP){
@@ -354,11 +363,11 @@ void ModeTask::start() {
 void ModeTask::update(EventData* inp) {
 	if(inp->input_type == TYPE_MANUAL){
 		if(inp->input_value == ACTIVE
-				&& (inp->input_value == IN_MOD_LR_STEER
-					|| inp->input_value == IN_MOD_LR_WEEL_LEFT_TELE
-					|| inp->input_value == IN_MOD_LR_WEEL_RIGHT_TELE
-					|| inp->input_value == IN_MOD_OU_FRAME
-					|| inp->input_value == IN_MOD_OU_SPINNER_BACK
+				&& (inp->input_id == IN_MOD_LR_STEER
+					|| inp->input_id == IN_MOD_LR_WEEL_LEFT_TELE
+					|| inp->input_id == IN_MOD_LR_WEEL_RIGHT_TELE
+					|| inp->input_id == IN_MOD_OU_FRAME
+					|| inp->input_id == IN_MOD_OU_SPINNER_BACK
 				)
 		){
 			setActiveMode(inp->input_id);
@@ -443,6 +452,7 @@ void ModeTask::timer() {
 }
 
 void ModeTask::setActiveMode(int new_active_mode){
+
 	if(new_active_mode != active_mode){
 		//disable old mode led
 		if(active_mode == IN_MOD_LR_STEER){
@@ -755,10 +765,9 @@ void SpinnerRearFloatTask::exit() {
 	Task::exit();
 }
 
-FrameDownTask::FrameDownTask(unsigned int upward_time_parm) {
+FrameDownTask::FrameDownTask(unsigned long upward_time_parm) {
 	task_state = STATE_STOPPED;
 	task_id = TSK_FRAME_DOWN;
-	upward_time = upward_time_parm;
 }
 
 void FrameDownTask::testStartConditions(EventData* inp){
@@ -776,25 +785,25 @@ void FrameDownTask::start() {
 //	Serial.println("LeftSpinnerFloatTask::start()");
 
 	//erst mal 2sec hochfahren, so dass frameLock geöffnet werden kann
-	tm->addMessage(TSKPART_FRAME_SHORT_UP, ACTIVE);
+	tm->addMessage(MSG_TSKPART_FRAME_SHORT_UP, ACTIVE);
 }
 
 void FrameDownTask::update(EventData *inp) {
 	if(inp->input_type == TYPE_MESSAGE
-			&& inp->input_id == TSKPART_FRAME_SHORT_UP
+			&& inp->input_id == MSG_TSKPART_FRAME_SHORT_UP
 			&& inp->input_value == INACTIVE){
 		//step 1: 2sec up is done -> start step 2: open framelock
-		tm->addMessage(TSKPART_FRAME_LOCK_UP, ACTIVE);
+		tm->addMessage(MSG_TSKPART_FRAME_LOCK_UP, ACTIVE);
 
 	} else if(inp->input_type == TYPE_MESSAGE
-			&& inp->input_id == TSKPART_FRAME_LOCK_UP
+			&& inp->input_id == MSG_TSKPART_FRAME_LOCK_UP
 			&& inp->input_value == INACTIVE){
 		//step 2: open framelock is done -> start step 3: move frame down
 		tm->outp->setCylinder(OUT_FRAME_UP, OUT_FRAME_DOWN, CYLINDER_FUNCTION_2);
 
 	//timout handling
 	} else if(inp->input_type == TYPE_TIMEOUT
-			&& inp->input_id == TSKPART_FRAME_SHORT_UP){
+			&& inp->input_id == MSG_TSKPART_FRAME_LOCK_UP){
 		//step 2: open framelock is not done but try 3 anyway -> start step 3: frame down
 		tm->outp->setCylinder(OUT_FRAME_UP, OUT_FRAME_DOWN, CYLINDER_FUNCTION_2);
 
@@ -804,9 +813,6 @@ void FrameDownTask::update(EventData *inp) {
 			&& inp->input_value == INACTIVE){
 		tm->stopTask(task_id);
 	}
-
-
-	exit();
 }
 
 void FrameDownTask::timer() {
@@ -816,12 +822,12 @@ void FrameDownTask::timer() {
 void FrameDownTask::exit() {
 	Task::exit();
 	//stop eventually running tasks
-	tm->addMessage(TSKPART_FRAME_SHORT_UP, INACTIVE);
-	tm->addMessage(TSKPART_FRAME_LOCK_UP, INACTIVE);
+	tm->addMessage(MSG_TSKPART_FRAME_SHORT_UP, INACTIVE);
+	tm->addMessage(MSG_TSKPART_FRAME_LOCK_UP, INACTIVE);
 	tm->outp->setCylinder(OUT_FRAME_UP, OUT_FRAME_DOWN, CYLINDER_HOLD);
 
 	//close framelock on exit!
-	tm->addMessage(TSKPART_FRAME_LOCK_DOWN, ACTIVE);
+	tm->addMessage(MSG_TSKPART_FRAME_LOCK_DOWN, ACTIVE);
 
 
 }
@@ -883,6 +889,30 @@ void LedTask::update(EventData *inp) {
 
 		}
 	}
+
+	//input checks
+	//rahmensicherung
+	if(inp->input_type == TYPE_SENSOR
+			&& inp->input_id == SENS_FRAME_LOCK_CLOSED){
+		if(inp->input_value == ACTIVE){
+			tm->outp->setLed(LED_FRAME_LOCK, INACTIVE);
+		} else {
+			tm->outp->setLed(LED_FRAME_LOCK, ACTIVE);
+		}
+	}
+
+	//radmittelstellung
+	if(inp->input_type == TYPE_SENSOR
+			&& inp->input_id == SENS_WEEL_TRACK_MIDDLE){
+		if(inp->input_value == ACTIVE){
+			tm->outp->setLed(LED_FRAME_LOCK, ACTIVE);
+		} else {
+			tm->outp->setLed(LED_FRAME_LOCK, INACTIVE);
+		}
+	}
+
+
+
 }
 
 void LedTask::timer() {}
@@ -974,4 +1004,44 @@ void PressureTask::exit() {
 	tm->outp->setRawOutput(OUT_PRESSURE, INACTIVE);
 }
 
+
+DiagnoseTask::DiagnoseTask() {
+	task_state = STATE_STOPPED;
+	task_id = TSK_DIAGNOSE;
+}
+
+void DiagnoseTask::testStartConditions(EventData* inp) {
+	//Serial.println(" LedTask::testStartConditions()");
+
+	if(inp->input_type == TYPE_MESSAGE
+			&& inp->input_id == MSG_STARTUP){
+		start();
+	}
+}
+
+void DiagnoseTask::start() {
+	Task::start();
+
+	Serial.begin(9600);
+}
+
+void DiagnoseTask::update(EventData* inp) {
+	Serial.print("Got Event of Type: ");
+	Serial.print(inp->input_type);
+	Serial.print(" EventID: ");
+	Serial.print(inp->input_id);
+	Serial.print(" Value: ");
+	Serial.println(inp->input_value);
+
+}
+
+void DiagnoseTask::exit() {
+	Task::exit();
+
+	Serial.end();
+}
+
+void DiagnoseTask::timer() {
+	//read?
+}
 

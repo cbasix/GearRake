@@ -193,6 +193,9 @@ void TaskMonitor::beginn() {
 			5000);
 
 
+	task_list[TSK_DIAGNOSE] = new DiagnoseTask();
+	task_list[TSK_MODE] = new ModeTask();
+
 	//LED Task / Pressure Task müssen ganz am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden können.
 	task_list[TSK_LED] = new LedTask();
 	task_list[TSK_PRESSURE] = new PressureTask();

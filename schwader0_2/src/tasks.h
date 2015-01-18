@@ -1,5 +1,5 @@
 // ids for tasks must be continous! (stored in array with id as index)
-#define TSK_LIST_LENGTH 24
+#define TSK_LIST_LENGTH 26
 
 #define TSK_SPINNER_BOTH_UP 0
 #define TSK_SPINNER_RIGHT_UP 1
@@ -34,8 +34,11 @@
 #define TSKPART_FRAME_LOCK_UP 20
 #define TSKPART_FRAME_LOCK_DOWN 21
 
-#define TSK_LED 22 //LED Task muss am ende der Tasklist stehen, sodass er die isOutputChanging() Funktion nutzen kann.
-#define TSK_PRESSURE 23
+#define TSK_DIAGNOSE 22
+#define TSK_MODE 23
+
+#define TSK_LED 24 //LED Task muss am ende der Tasklist stehen, sodass er die isOutputChanging() Funktion nutzen kann.
+#define TSK_PRESSURE 25
 
 
 //messages
@@ -112,7 +115,7 @@ class CylinderTimerTaskpart : public Task {
 				int cylinder_function_1_output_id,
 				int cylinder_function_2_output_id,
 				int cylinder_state,
-				unsigned int run_duration );
+				unsigned long run_duration );
 
 		void start();
 		void update(EventData *inp);
@@ -126,8 +129,8 @@ class CylinderTimerTaskpart : public Task {
 		int mapped_cylinder_function_1_output_id;
 		int mapped_cylinder_function_2_output_id;
 		int mapped_cylinder_state;
-		unsigned int start_time;
-		unsigned int run_duration;
+		unsigned long start_time;
+		unsigned long run_duration;
 };
 
 //moves a cylinder till a specified sensor input or timeout
@@ -140,7 +143,7 @@ class CylinderSensorTaskpart : public Task {
 				int cylinder_function_2_output_id,
 				int cylinder_state,
 				int sensor_input_id,
-				unsigned int timeout);
+				unsigned long timeout);
 
 		void start();
 		void update(EventData *inp);
@@ -154,9 +157,9 @@ class CylinderSensorTaskpart : public Task {
 		int mapped_cylinder_function_1_output_id;
 		int mapped_cylinder_function_2_output_id;
 		int mapped_cylinder_state;
-		unsigned int start_time;
+		unsigned long start_time;
 		int sensor_input_id;
-		unsigned int timeout;
+		unsigned long timeout;
 };
 
 class CylinderTwoSensorTaskpart : public Task {
@@ -169,7 +172,7 @@ class CylinderTwoSensorTaskpart : public Task {
 				int cylinder_state,
 				int sensor_1_input_id,
 				int sensor_2_input_id,
-				unsigned int timeout);
+				unsigned long timeout);
 
 		void start();
 		void update(EventData *inp);
@@ -183,10 +186,10 @@ class CylinderTwoSensorTaskpart : public Task {
 		int mapped_cylinder_function_1_output_id;
 		int mapped_cylinder_function_2_output_id;
 		int mapped_cylinder_state;
-		unsigned int start_time;
+		unsigned long start_time;
 		int sensor_1_input_id;
 		int sensor_2_input_id;
-		unsigned int timeout;
+		unsigned long timeout;
 };
 
 
@@ -293,16 +296,13 @@ class SpinnerRearFloatTask : public Task {
 
 class FrameDownTask : public Task {
 	public:
-		FrameDownTask(unsigned int upward_time);
+		FrameDownTask(unsigned long upward_time);
 
 		void start();
 		void update(EventData *inp);
 		void exit();
 		void timer();
 		void testStartConditions(EventData* inp);
-	private:
-		unsigned int start_time;
-		unsigned int upward_time;
 };
 
 //last in tasks to executep need to use the isOutputChanged Method
@@ -328,5 +328,15 @@ class PressureTask : public Task {
 		void testStartConditions(EventData* inp);
 };
 
+class DiagnoseTask : public Task {
+	public:
+		DiagnoseTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};
 
 

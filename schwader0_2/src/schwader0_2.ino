@@ -20,8 +20,8 @@ void setup() {
 
 	//delay(5000);
 
-	Serial.begin(9600);
-	Serial.println("Starting");
+	//Serial.begin(9600);
+	//Serial.println("Starting");
 
 	tm.beginn();
 
