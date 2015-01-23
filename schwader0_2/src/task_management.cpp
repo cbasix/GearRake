@@ -66,7 +66,7 @@ void TaskMonitor::beginn() {
 				TYPE_MESSAGE,
 				MSG_IN_SPINNER_REAR_UP,
 				OUT_SPINNER_REAR_UP,
-				OUT_WEEL_TELE_LEFT_IN,
+				OUT_SPINNER_REAR_FLOAT,
 				CYLINDER_FUNCTION_1);
 
 	task_list[TSK_SPINNER_REAR_FLOAT] = new SpinnerRearFloatTask();
@@ -193,10 +193,11 @@ void TaskMonitor::beginn() {
 			5000);
 
 
-	task_list[TSK_DIAGNOSE] = new DiagnoseTask();
+
 	task_list[TSK_MODE] = new ModeTask();
 
 	//LED Task / Pressure Task müssen ganz am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden können.
+	task_list[TSK_DIAGNOSE] = new DiagnoseTask();
 	task_list[TSK_LED] = new LedTask();
 	task_list[TSK_PRESSURE] = new PressureTask();
 
@@ -210,10 +211,10 @@ void TaskMonitor::beginn() {
 	startupEvent.input_id = MSG_STARTUP;
 	startupEvent.input_type = TYPE_MESSAGE;
 	startupEvent.input_value = 0;
-	this->addInput(&startupEvent);
+	this->addEvent(&startupEvent);
 }
 
-void TaskMonitor::addInput(EventData* inp) {
+void TaskMonitor::addEvent(EventData* inp) {
 	inp_queue->add(*inp);
 
 //#if ENVIRONMENT == 0*/
@@ -234,7 +235,7 @@ void TaskMonitor::addMessage(int message_id, bool message_value){
 	e.input_type = TYPE_MESSAGE;
 	e.input_value = message_value;
 
-	addInput(&e);
+	addEvent(&e);
 }
 
 void TaskMonitor::addError(int error_id, int error_param){
@@ -244,7 +245,7 @@ void TaskMonitor::addError(int error_id, int error_param){
 	e.input_value = ACTIVE;
 	e.additional_info = error_param;
 
-	addInput(&e);
+	addEvent(&e);
 }
 
 void TaskMonitor::addTimeout(int task_id){
@@ -253,7 +254,7 @@ void TaskMonitor::addTimeout(int task_id){
 	e.input_type = TYPE_TIMEOUT;
 	e.input_value = ACTIVE;
 
-	addInput(&e);
+	addEvent(&e);
 }
 
 

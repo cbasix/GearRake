@@ -34,11 +34,12 @@
 #define TSKPART_FRAME_LOCK_UP 20
 #define TSKPART_FRAME_LOCK_DOWN 21
 
-#define TSK_DIAGNOSE 22
-#define TSK_MODE 23
+#define TSK_MODE 22
 
-#define TSK_LED 24 //LED Task muss am ende der Tasklist stehen, sodass er die isOutputChanging() Funktion nutzen kann.
-#define TSK_PRESSURE 25
+//Diese Tasks müssen am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden kann.
+#define TSK_LED 23
+#define TSK_PRESSURE 24
+#define TSK_DIAGNOSE 25
 
 
 //messages
@@ -66,6 +67,26 @@
 #define MSG_TSKPART_FRAME_LOCK_DOWN 12016
 
 
+
+//DIAG commands
+#define DIAG_ERROR 0
+
+#define DIAG_GET_SETTING 10
+#define DIAG_SET_SETTING 11
+#define DIAG_GET_ALL_SETTINGS 12
+
+#define DIAG_SIMULATE_INPUT 21
+
+#define DIAG_GET_ALL_ERRORS 32
+#define DIAG_CLEAR_ALL_ERRORS 34
+
+#define DIAG_GET_ALL_IN_VALUES 41
+#define DIAG_GET_ALL_OUT_VALUES 42
+
+#define DIAG_SET_LOG_LISTENER 50
+
+#define DIAG_SET_IN_LISTENER 60
+#define DIAG_SET_OUT_LISTENER 61
 
 //GENERAL Abstact Tasks
 /*class SimpleMappingTask : public Task {
@@ -337,6 +358,12 @@ class DiagnoseTask : public Task {
 		void exit();
 		void timer();
 		void testStartConditions(EventData* inp);
+	private:
+		bool log_listener;
+		bool in_listener;
+		bool out_listener;
+		unsigned long last_run;
+		void sendCommand(int command, int arg1, int arg2, int arg3, int arg4);
 };
 
 

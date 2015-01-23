@@ -5,6 +5,8 @@
 #define STATE_RUNNING 1
 #define STATE_STOPPED 0
 
+
+
 struct EventData;
 class InputObject;
 class FifoInputQueue;
@@ -62,7 +64,7 @@ class TaskMonitor{
 
 		void beginn();
 
-		void addInput(EventData *inp);
+		void addEvent(EventData *inp);
 		void addMessage(int message_id, bool message_state);
 		void addError(int error_id, int error_param);
 		void addTimeout(int sensor_id);

@@ -225,8 +225,8 @@ class InputObject{
 		bool getInputState(int input_id);
 		//void setTaskMonitor(TaskMonitor *tm);
 		void readInput();
-	private:
 		InputData input_data[INPUT_ID_COUNT];
+	private:
 		TaskMonitor *tm;
 };
 

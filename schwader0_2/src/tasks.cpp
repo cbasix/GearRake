@@ -342,7 +342,7 @@ ModeTask::ModeTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_MODE;
 
-	active_mode = IN_MOD_OU_SPINNER_BACK;
+	active_mode = NULL;
 }
 
 void ModeTask::testStartConditions(EventData* inp){
@@ -743,7 +743,7 @@ void SpinnerRearFloatTask::testStartConditions(EventData* inp){
 	//normal start joystick move
 	if (inp->input_id == MSG_IN_SPINNER_REAR_FLOAT
 			&& inp->input_value == ACTIVE
-			&& inp->input_type == TYPE_MANUAL) {
+			&& inp->input_type == TYPE_MESSAGE) {
 
 		start();
 	}
@@ -1008,6 +1008,9 @@ void PressureTask::exit() {
 DiagnoseTask::DiagnoseTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_DIAGNOSE;
+	log_listener = false;
+	in_listener = false;
+	out_listener = false;
 }
 
 void DiagnoseTask::testStartConditions(EventData* inp) {
@@ -1017,21 +1020,49 @@ void DiagnoseTask::testStartConditions(EventData* inp) {
 			&& inp->input_id == MSG_STARTUP){
 		start();
 	}
+
+	last_run = millis();
 }
 
 void DiagnoseTask::start() {
 	Task::start();
 
+	last_run = millis();
 	Serial.begin(9600);
 }
 
 void DiagnoseTask::update(EventData* inp) {
-	Serial.print("Got Event of Type: ");
-	Serial.print(inp->input_type);
-	Serial.print(" EventID: ");
-	Serial.print(inp->input_id);
-	Serial.print(" Value: ");
-	Serial.println(inp->input_value);
+
+
+	if(log_listener){
+		sendCommand(DIAG_SET_LOG_LISTENER, inp->input_type, inp->input_id, inp->input_value, inp->additional_info);
+	}
+
+	if(in_listener){
+
+		for(int i = 0; i < INPUT_ID_COUNT; i++){
+			//alle inputs die sich seit dem letzten Lauf geändert haben
+			unsigned long chgtime = tm->inp->input_data[i].temp_change_time;
+			//sendCommand(DIAG_SET_IN_LISTENER, chgtime + DEBOUNCE_TIME, last_run, 0, 0);
+			if(chgtime + DEBOUNCE_TIME >= last_run){
+				bool state = tm->inp->getInputState(i);
+				sendCommand(DIAG_SET_IN_LISTENER, i, state, 0, 0);
+			}
+		}
+	}
+
+	last_run = millis();
+
+	if(out_listener){
+		for(int i = 0; i < OUTPUT_ID_COUNT; i++){
+			//alle outputs die sich geändert haben
+			if(tm->outp->isOutputChanging(i)){
+				bool state = tm->outp->getOutputState(i);
+				sendCommand(DIAG_SET_OUT_LISTENER, i, state, 0, 0);
+			}
+		}
+	}
+
 
 }
 
@@ -1042,6 +1073,91 @@ void DiagnoseTask::exit() {
 }
 
 void DiagnoseTask::timer() {
-	//read?
+
+	// protocol is "CCaaaa...", two bytes of command, two bytes per arg
+	if( Serial.available() >= 10 ) {  // command length is 10 bytes
+		char buf[10];
+		for(int i = 0; i < 10; i++){
+		 buf[i] = Serial.read();
+		}
+
+		//least significant byte first
+		int command = buf[0] << 8 | buf[1];
+		int arg1 = buf[2] << 8 | buf[3];
+		int arg2 = buf[4] << 8 | buf[5];
+		int arg3 = buf[6] << 8 | buf[7];
+		int arg4 = buf[8] << 8 | buf[9];
+
+
+		/*if(command == DIAG_GET_ALL_SETTINGS){
+		 getAllSettings();
+
+		} else if(command == DIAG_GET_SETTING){
+
+		 getSetting(setting_id);
+		} else if(command == DIAG_SET_SETTING){
+
+		 setSetting(setting_id, value);*/
+		if(command == DIAG_SIMULATE_INPUT){
+			EventData evt;
+			evt.input_type = arg1;
+			evt.input_id = arg2;
+			evt.input_value = arg3;
+			evt.additional_info = arg4;
+
+			tm->addEvent(&evt);
+		} else if(command == DIAG_SET_IN_LISTENER){
+			bool activate_in_listener= arg1;
+			in_listener = activate_in_listener;
+
+		} else if(command == DIAG_SET_OUT_LISTENER){
+			bool activate_out_listener= arg1;
+			out_listener = activate_out_listener;
+
+		} else if(command == DIAG_SET_LOG_LISTENER){
+			bool activate_log = arg1;
+			log_listener = activate_log;
+
+		} else if(command == DIAG_GET_ALL_IN_VALUES){
+			for (int i = 0; i < INPUT_ID_COUNT; i++){
+				bool state = tm->inp->getInputState(i);
+				sendCommand(DIAG_GET_ALL_IN_VALUES, i, state, 0, 0);
+
+			}
+		}else if(command == DIAG_GET_ALL_OUT_VALUES){
+			for (int i = 0; i < OUTPUT_ID_COUNT; i++){
+				bool state = tm->outp->getOutputState(i);
+				sendCommand(DIAG_GET_ALL_OUT_VALUES, i, state, 0, 0);
+
+			}
+		}else{
+			sendCommand(DIAG_ERROR, 1, 0, 0, 0);
+		}
+
+	}
+
+}
+
+void DiagnoseTask::sendCommand(int command, int arg1, int arg2, int arg3, int arg4){
+	char buf[10];
+	//most significant byte first
+	buf[1] = command;
+	buf[0] = command >> 8;
+
+	buf[3] = arg1;
+	buf[2] = arg1 >> 8;
+
+	buf[5] = arg2;
+	buf[4] = arg2 >> 8;
+
+	buf[7] = arg3;
+	buf[6] = arg3 >> 8;
+
+	buf[9] = arg4;
+	buf[8] = arg4 >> 8;
+
+	for(int i = 0; i < 10; i++){
+		Serial.write(buf[i]);
+	}
 }
 

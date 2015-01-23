@@ -350,7 +350,7 @@ void InputObject::readInput(){
 			e.input_type = input_data[i].input_type;
 			e.input_value = input_data[i].debounced_state;
 
-			tm->addInput(&e);
+			tm->addEvent(&e);
 
 		}
 
@@ -442,8 +442,9 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 		if(output_data[i].output_pin >= PIN_ARDUINO_START &&
 				output_data[i].output_pin <= PIN_ARDUINO_END){
 
-			pinMode(output_data[i].output_pin - PIN_ARDUINO_START, OUTPUT);
 			digitalWrite(output_data[i].output_pin - PIN_ARDUINO_START, !INACTIVE);
+			pinMode(output_data[i].output_pin - PIN_ARDUINO_START, OUTPUT);
+
 
 			////Serial.print(" PIN MODE to OUTPUT Arduino: ");
 			////Serial.println(output_data[i].output_pin - PIN_ARDUINO_START);
@@ -451,8 +452,8 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 		} else if(output_data[i].output_pin >= PIN_EXP1_START &&
 				output_data[i].output_pin <= PIN_EXP1_END){
 
-			exp1->pinMode(output_data[i].output_pin - PIN_EXP1_START, OUTPUT);
 			exp1->digitalWrite(output_data[i].output_pin - PIN_EXP1_START, !INACTIVE);
+			exp1->pinMode(output_data[i].output_pin - PIN_EXP1_START, OUTPUT);
 
 			////Serial.print(" PIN MODE to OUTPUT exp1: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP1_START);
@@ -460,8 +461,8 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 		} else if(output_data[i].output_pin >= PIN_EXP2_START &&
 				output_data[i].output_pin <= PIN_EXP2_END){
 
-			exp2->pinMode(output_data[i].output_pin - PIN_EXP2_START, OUTPUT);
 			exp2->digitalWrite(output_data[i].output_pin - PIN_EXP2_START, !INACTIVE);
+			exp2->pinMode(output_data[i].output_pin - PIN_EXP2_START, OUTPUT);
 
 			////Serial.print(" PIN MODE to OUTPUT exp2: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP2_START);
@@ -469,8 +470,8 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 		} else if(output_data[i].output_pin >= PIN_EXP3_START &&
 				output_data[i].output_pin <= PIN_EXP3_END){
 
-			exp3->pinMode(output_data[i].output_pin - PIN_EXP3_START, OUTPUT);
 			exp3->digitalWrite(output_data[i].output_pin - PIN_EXP3_START, !INACTIVE);
+			exp3->pinMode(output_data[i].output_pin - PIN_EXP3_START, OUTPUT);
 
 			////Serial.print(" PIN MODE to OUTPUT exp3: ");
 			////Serial.println(output_data[i].output_pin - PIN_EXP3_START);

@@ -36,4 +36,27 @@ inline void pinMode(int pin, int mode){
 	std::cout << "Pinmode arduino: " << pin << " to mode:"<< mode  << std::endl;
 }
 
+class ser{
+public:
+	void print(std::string print_string){
+		std::cout << print_string;
+	}
+	void print(int print_int){
+		std::cout << print_int;
+	}
+	void println(std::string print_string){
+		std::cout << print_string << std::endl;
+	}
+	void println(int print_int){
+		std::cout << print_int << std::endl;
+	}
+	void begin(int beaud){}
+	int available(){}
+	void end(){}
+	int read(){}
+	void write(char to_write){}
+};
+
+ser Serial;
+
 #endif /* ARDUINO_H */

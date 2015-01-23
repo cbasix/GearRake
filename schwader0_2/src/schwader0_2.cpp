@@ -128,17 +128,17 @@ int main() {
 	TaskMonitor tm;
 	tm.beginn();
 
-	tm.addInput(inp_left_b_h);
-	tm.addInput(inp_left_b_l);
+	tm.addEvent(inp_left_b_h);
+	tm.addEvent(inp_left_b_l);
 
-	tm.addInput(inp_right_h);
-	tm.addInput(inp_left_h);
-	tm.addInput(inp_right_h);
-	tm.addInput(inp_right_h);
-	tm.addInput(inp_left_h);
-	tm.addInput(inp_left_l);
-	tm.addInput(inp_right_h);
-	tm.addInput(inp_right_l);
+	tm.addEvent(inp_right_h);
+	tm.addEvent(inp_left_h);
+	tm.addEvent(inp_right_h);
+	tm.addEvent(inp_right_h);
+	tm.addEvent(inp_left_h);
+	tm.addEvent(inp_left_l);
+	tm.addEvent(inp_right_h);
+	tm.addEvent(inp_right_l);
 
 	while(true){
 		tm.inp->readInput();
