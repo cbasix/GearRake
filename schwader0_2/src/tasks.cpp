@@ -1028,11 +1028,10 @@ void DiagnoseTask::start() {
 	Task::start();
 
 	last_run = millis();
-	Serial.begin(9600);
+	Serial.begin(115200);
 }
 
 void DiagnoseTask::update(EventData* inp) {
-
 
 	if(log_listener){
 		sendCommand(DIAG_SET_LOG_LISTENER, inp->input_type, inp->input_id, inp->input_value, inp->additional_info);
@@ -1042,9 +1041,9 @@ void DiagnoseTask::update(EventData* inp) {
 
 		for(int i = 0; i < INPUT_ID_COUNT; i++){
 			//alle inputs die sich seit dem letzten Lauf geändert haben
-			unsigned long chgtime = tm->inp->input_data[i].temp_change_time;
+			//unsigned long chgtime = tm->inp->input_data[i].temp_change_time;
 			//sendCommand(DIAG_SET_IN_LISTENER, chgtime + DEBOUNCE_TIME, last_run, 0, 0);
-			if(chgtime + DEBOUNCE_TIME >= last_run){
+			if(tm->inp->hasInputChanged(i)){
 				bool state = tm->inp->getInputState(i);
 				sendCommand(DIAG_SET_IN_LISTENER, i, state, 0, 0);
 			}

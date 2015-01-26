@@ -210,6 +210,7 @@ struct InputData {
 	bool temp_state;
 	unsigned int temp_change_time;
 	bool active;
+	bool state_changed;
 };
 
 struct OutputData {
@@ -225,6 +226,7 @@ class InputObject{
 		bool getInputState(int input_id);
 		//void setTaskMonitor(TaskMonitor *tm);
 		void readInput();
+		bool hasInputChanged(int input_id);
 		InputData input_data[INPUT_ID_COUNT];
 	private:
 		TaskMonitor *tm;

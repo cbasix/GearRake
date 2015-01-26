@@ -283,6 +283,10 @@ void InputObject::readInput(){
 
 
 	for(int i = 0; i < INPUT_ID_COUNT; i++){
+		if(input_data[i].state_changed){
+			input_data[i].state_changed = false;
+		}
+
 		if(!input_data[i].active){
 			continue;
 		}
@@ -344,6 +348,7 @@ void InputObject::readInput(){
 				&& input_data[i].temp_change_time + DEBOUNCE_TIME < now){
 
 			input_data[i].debounced_state = input_data[i].temp_state;
+			input_data[i].state_changed = true;
 
 			EventData e;
 			e.input_id = i;
@@ -356,6 +361,10 @@ void InputObject::readInput(){
 
 	}
 
+}
+
+bool InputObject::hasInputChanged(int input_id){
+	return input_data[input_id].state_changed;
 }
 
 
