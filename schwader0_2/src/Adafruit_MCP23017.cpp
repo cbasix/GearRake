@@ -17,6 +17,7 @@
 #include "Adafruit_MCP23017.h"
 
 #include "stdint.h"
+#include <iostream>
 
 
 // minihelper to keep Arduino backward compatibility
@@ -70,7 +71,6 @@ void Adafruit_MCP23017::updateRegisterBit(uint8_t pin, uint8_t pValue, uint8_t p
  * Initializes the MCP23017 given its HW selected address, see datasheet for Address selection.
  */
 void Adafruit_MCP23017::begin(uint8_t addr) {
-
 }
 
 /**
@@ -113,6 +113,7 @@ void Adafruit_MCP23017::writeGPIOAB(uint16_t ba) {
 }
 
 void Adafruit_MCP23017::digitalWrite(uint8_t pin, uint8_t d) {
+	std::cout << "Set exp output: " << pin << " to ACTIVE(1) or INACTIVE(0):"<< d  << std::endl;
 
 }
 

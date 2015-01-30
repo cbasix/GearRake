@@ -197,9 +197,9 @@ void TaskMonitor::beginn() {
 	task_list[TSK_MODE] = new ModeTask();
 
 	//LED Task / Pressure Task müssen ganz am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden können.
-	task_list[TSK_DIAGNOSE] = new DiagnoseTask();
 	task_list[TSK_LED] = new LedTask();
 	task_list[TSK_PRESSURE] = new PressureTask();
+	task_list[TSK_DIAGNOSE] = new DiagnoseTask();
 
 
 	for(int i = 0; i < TSK_LIST_LENGTH; i++){
@@ -234,6 +234,7 @@ void TaskMonitor::addMessage(int message_id, bool message_value){
 	e.input_id = message_id;
 	e.input_type = TYPE_MESSAGE;
 	e.input_value = message_value;
+	e.additional_info = -1;
 
 	addEvent(&e);
 }
@@ -242,7 +243,7 @@ void TaskMonitor::addError(int error_id, int error_param){
 	EventData e;
 	e.input_id = error_id;
 	e.input_type = TYPE_ERROR;
-	e.input_value = ACTIVE;
+	e.input_value = -1;
 	e.additional_info = error_param;
 
 	addEvent(&e);
@@ -252,7 +253,27 @@ void TaskMonitor::addTimeout(int task_id){
 	EventData e;
 	e.input_id = task_id;
 	e.input_type = TYPE_TIMEOUT;
-	e.input_value = ACTIVE;
+	e.input_value = -1;
+
+	addEvent(&e);
+}
+
+void TaskMonitor::addDebug(int debug_id, int debug_data, int test){
+	EventData e;
+	e.input_id = debug_id;
+	e.input_type = TYPE_DEBUG;
+	e.input_value = -1;
+	e.additional_info = debug_data;
+
+	addEvent(&e);
+}
+
+void TaskMonitor::addOutput(int output_id, int value){
+	EventData e;
+	e.input_id = output_id;
+	e.input_type = TYPE_OUTPUT;
+	e.input_value = value;
+	e.additional_info = -1;
 
 	addEvent(&e);
 }
@@ -265,6 +286,7 @@ void TaskMonitor::processInputQueue() {
 		for(int i = 0; i < TSK_LIST_LENGTH; i++){
 			if(task_list[i]->getState() == STATE_RUNNING){
 				task_list[i]->update(inp);
+
 //				Serial.print(">> Event toTask <<  Id: ");
 //				Serial.print(inp->input_id);
 //				Serial.print(" Send to active task: ");

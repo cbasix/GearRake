@@ -42,15 +42,28 @@ int main() {
 	t1->start();
 	*/
 
-	EventData *inp_left_b_h = new EventData();
-	inp_left_b_h->input_id = IN_SPINNER_LEFT_UP;
-	inp_left_b_h->input_type = TYPE_MANUAL;
-	inp_left_b_h->input_value = HIGH;
+	EventData *inp_frame_u = new EventData();
+	inp_frame_u->input_id = IN_MOD_OU_FRAME;
+	inp_frame_u->input_type = TYPE_MANUAL;
+	inp_frame_u->input_value = HIGH;
 
-	EventData *inp_right_b_h = new EventData();
-	inp_right_b_h->input_id = IN_SPINNER_RIGHT_UP;
-	inp_right_b_h->input_type = TYPE_MANUAL;
-	inp_right_b_h->input_value = HIGH;
+	EventData *inp_frame_d = new EventData();
+	inp_frame_d->input_id = IN_MOD_OU_FRAME;
+	inp_frame_d->input_type = TYPE_MANUAL;
+	inp_frame_d->input_value = LOW;
+
+	EventData *inp_multi_up_u = new EventData();
+	inp_multi_up_u->input_id = IN_MULTI_UP;
+	inp_multi_up_u->input_type = TYPE_MANUAL;
+	inp_multi_up_u->input_value = HIGH;
+
+	EventData *inp_multi_up_d = new EventData();
+	inp_multi_up_d->input_id = IN_MULTI_UP;
+	inp_multi_up_d->input_type = TYPE_MANUAL;
+	inp_multi_up_d->input_value = LOW;
+
+
+
 
 	EventData *inp_left_b_l = new EventData();
 	inp_left_b_l->input_id = IN_SPINNER_LEFT_UP;
@@ -128,17 +141,12 @@ int main() {
 	TaskMonitor tm;
 	tm.beginn();
 
-	tm.addEvent(inp_left_b_h);
-	tm.addEvent(inp_left_b_l);
+	tm.addEvent(inp_frame_u);
+	tm.addEvent(inp_frame_d);
 
-	tm.addEvent(inp_right_h);
-	tm.addEvent(inp_left_h);
-	tm.addEvent(inp_right_h);
-	tm.addEvent(inp_right_h);
-	tm.addEvent(inp_left_h);
-	tm.addEvent(inp_left_l);
-	tm.addEvent(inp_right_h);
-	tm.addEvent(inp_right_l);
+	tm.addEvent(inp_multi_up_u);
+	tm.addEvent(inp_multi_up_d);
+
 
 	while(true){
 		tm.inp->readInput();

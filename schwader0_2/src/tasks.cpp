@@ -200,6 +200,7 @@ void CylinderSensorTaskpart::update(EventData* inp) {
 		//send message to activater task that parttask is ready
 		tm->addMessage(mapped_input_id, INACTIVE);
 		tm->stopTask(task_id);
+
 	}
 }
 
@@ -207,8 +208,8 @@ void CylinderSensorTaskpart::exit() {
 	Task::exit();
 //	Serial.print("Stopping Simple TSK: ");
 //	Serial.println(task_id);
-
 	tm->outp->setCylinder(mapped_cylinder_function_1_output_id, mapped_cylinder_function_2_output_id, CYLINDER_HOLD);
+
 }
 
 void CylinderSensorTaskpart::timer() {
@@ -217,6 +218,7 @@ void CylinderSensorTaskpart::timer() {
 		tm->addTimeout(mapped_input_id);
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
 		tm->stopTask(task_id);
+
 	}
 }
 
@@ -407,11 +409,11 @@ void ModeTask::update(EventData* inp) {
 
 			if(inp->input_id == IN_MULTI_LEFT ){
 
-				tm->addMessage(MSG_IN_WEEL_LEFT_TELE_IN, inp->input_value);
+				tm->addMessage(MSG_IN_WEEL_RIGHT_TELE_IN, inp->input_value);
 
 			}else if(inp->input_id == IN_MULTI_RIGHT ){
 
-				tm->addMessage(MSG_IN_WEEL_LEFT_TELE_OUT, inp->input_value);
+				tm->addMessage(MSG_IN_WEEL_RIGHT_TELE_OUT, inp->input_value);
 			}
 		}
 
@@ -457,23 +459,28 @@ void ModeTask::setActiveMode(int new_active_mode){
 		//disable old mode led
 		if(active_mode == IN_MOD_LR_STEER){
 			tm->outp->setLed(LED_MOD_LR_STEER, INACTIVE);
-			tm->addMessage(IN_MOD_LR_STEER, INACTIVE);
+			tm->addMessage(MSG_IN_STEER_LEFT, INACTIVE);
+			tm->addMessage(MSG_IN_STEER_RIGHT, INACTIVE);
 
 		} else if(active_mode == IN_MOD_LR_WEEL_LEFT_TELE){
 			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_L, INACTIVE);
-			tm->addMessage(IN_MOD_LR_WEEL_LEFT_TELE, INACTIVE);
+			tm->addMessage(MSG_IN_WEEL_LEFT_TELE_IN, INACTIVE);
+			tm->addMessage(MSG_IN_WEEL_LEFT_TELE_OUT, INACTIVE);
 
 		} else if(active_mode == IN_MOD_LR_WEEL_RIGHT_TELE){
 			tm->outp->setLed(LED_MOD_LR_WEEL_TELE_R, INACTIVE);
-			tm->addMessage(IN_MOD_LR_WEEL_RIGHT_TELE, INACTIVE);
+			tm->addMessage(MSG_IN_WEEL_RIGHT_TELE_IN, INACTIVE);
+			tm->addMessage(MSG_IN_WEEL_RIGHT_TELE_OUT, INACTIVE);
 
 		} else if(active_mode == IN_MOD_OU_FRAME){
 			tm->outp->setLed(LED_MOD_OU_FRAME, INACTIVE);
-			tm->addMessage(IN_MOD_OU_FRAME, INACTIVE);
+			tm->addMessage(MSG_IN_FRAME_UP, INACTIVE);
+			tm->addMessage(MSG_IN_FRAME_DOWN, INACTIVE);
 
 		} else if(active_mode == IN_MOD_OU_SPINNER_BACK){
 			tm->outp->setLed(LED_MOD_OU_SPINNER_BACK, INACTIVE);
-			tm->addMessage(IN_MOD_OU_SPINNER_BACK, INACTIVE);
+			tm->addMessage(MSG_IN_SPINNER_REAR_UP, INACTIVE);
+			tm->addMessage(MSG_IN_SPINNER_REAR_FLOAT, INACTIVE);
 
 		}
 
@@ -854,7 +861,7 @@ void LedTask::testStartConditions(EventData* inp){
 
 void LedTask::start() {
 	Task::start();
-	//Serial.println(" LedTask::start()");
+	tm->outp->setLed(LED_FRAME_LOCK, ACTIVE);
 }
 
 void LedTask::update(EventData *inp) {
@@ -890,6 +897,22 @@ void LedTask::update(EventData *inp) {
 		}
 	}
 
+	//LED Schwimmstellung hinten
+	if (tm->outp->isOutputChanging(OUT_SPINNER_REAR_FLOAT)){
+		//Serial.println(" LedTask::update OutputChanging(OUT_SPINNER_LEFT_FLOAT)");
+
+		if (tm->outp->getOutputState(OUT_SPINNER_REAR_FLOAT) == ACTIVE) {
+
+			//Serial.println(" LedTask::update OutputChanging(OUT_SPINNER_LEFT_FLOAT) ACTIVE");
+			tm->outp->setLed(LED_SPINNER_REAR_FLOAT, ACTIVE);
+
+		} else {
+			//Serial.println(" LedTask::update OutputChanging(OUT_SPINNER_LEFT_FLOAT) INACTIVE");
+			tm->outp->setLed(LED_SPINNER_REAR_FLOAT, INACTIVE);
+
+		}
+	}
+
 	//input checks
 	//rahmensicherung
 	if(inp->input_type == TYPE_SENSOR
@@ -905,9 +928,9 @@ void LedTask::update(EventData *inp) {
 	if(inp->input_type == TYPE_SENSOR
 			&& inp->input_id == SENS_WEEL_TRACK_MIDDLE){
 		if(inp->input_value == ACTIVE){
-			tm->outp->setLed(LED_FRAME_LOCK, ACTIVE);
+			tm->outp->setLed(LED_WEEL_TRACK_MIDDLE, ACTIVE);
 		} else {
-			tm->outp->setLed(LED_FRAME_LOCK, INACTIVE);
+			tm->outp->setLed(LED_WEEL_TRACK_MIDDLE, INACTIVE);
 		}
 	}
 
@@ -950,7 +973,29 @@ void PressureTask::start() {
 void PressureTask::update(EventData *inp) {
 	//Serial.println(" LedTask::update()");
 	// LED Schwimmstellung rechts
-	if (tm->outp->isOutputChanging(OUT_SPINNER_RIGHT_UP)
+	if(inp->input_type == TYPE_OUTPUT
+			&& (inp->input_id == OUT_SPINNER_RIGHT_UP
+					|| inp->input_id == OUT_SPINNER_LEFT_UP
+					|| inp->input_id == OUT_SPINNER_REAR_UP
+					|| inp->input_id == OUT_SPINNER_RIGHT_TELE_OUT
+					|| inp->input_id == OUT_SPINNER_LEFT_TELE_OUT
+					|| inp->input_id == OUT_SPINNER_RIGHT_TELE_IN
+					|| inp->input_id == OUT_SPINNER_LEFT_TELE_IN
+					|| inp->input_id == OUT_FRAME_UP
+					|| inp->input_id == OUT_FRAME_DOWN
+					|| inp->input_id == OUT_STEER_LEFT
+					|| inp->input_id == OUT_STEER_RIGHT
+					|| inp->input_id == OUT_WEEL_TELE_LEFT_IN
+					|| inp->input_id == OUT_WEEL_TELE_RIGHT_IN
+					|| inp->input_id == OUT_WEEL_TELE_LEFT_OUT
+					|| inp->input_id == OUT_WEEL_TELE_RIGHT_OUT
+					|| inp->input_id == OUT_FRAME_LOCK_UP
+					|| inp->input_id == OUT_FRAME_LOCK_DOWN
+				)
+	){
+
+
+	/*if (tm->outp->isOutputChanging(OUT_SPINNER_RIGHT_UP)
 			|| tm->outp->isOutputChanging(OUT_SPINNER_LEFT_UP)
 			|| tm->outp->isOutputChanging(OUT_SPINNER_REAR_UP)
 			|| tm->outp->isOutputChanging(OUT_SPINNER_RIGHT_TELE_OUT)
@@ -966,7 +1011,7 @@ void PressureTask::update(EventData *inp) {
 			|| tm->outp->isOutputChanging(OUT_WEEL_TELE_LEFT_OUT)
 			|| tm->outp->isOutputChanging(OUT_WEEL_TELE_RIGHT_OUT)
 			|| tm->outp->isOutputChanging(OUT_FRAME_LOCK_UP)
-			|| tm->outp->isOutputChanging(OUT_FRAME_LOCK_DOWN)){
+			|| tm->outp->isOutputChanging(OUT_FRAME_LOCK_DOWN)){*/
 
 		if(tm->outp->getOutputState(OUT_SPINNER_RIGHT_UP) == ACTIVE
 				|| tm->outp->getOutputState(OUT_SPINNER_LEFT_UP) == ACTIVE
@@ -1028,7 +1073,7 @@ void DiagnoseTask::start() {
 	Task::start();
 
 	last_run = millis();
-	Serial.begin(115200);
+	Serial.begin(9600);
 }
 
 void DiagnoseTask::update(EventData* inp) {
@@ -1053,12 +1098,16 @@ void DiagnoseTask::update(EventData* inp) {
 	last_run = millis();
 
 	if(out_listener){
-		for(int i = 0; i < OUTPUT_ID_COUNT; i++){
+		/*for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 			//alle outputs die sich geändert haben
 			if(tm->outp->isOutputChanging(i)){
 				bool state = tm->outp->getOutputState(i);
 				sendCommand(DIAG_SET_OUT_LISTENER, i, state, 0, 0);
 			}
+		}*/
+		if(inp->input_type == TYPE_OUTPUT){
+			sendCommand(DIAG_SET_OUT_LISTENER, inp->input_id, inp->input_value, 0, 0);
+
 		}
 	}
 

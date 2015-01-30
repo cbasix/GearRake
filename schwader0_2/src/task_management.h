@@ -68,6 +68,9 @@ class TaskMonitor{
 		void addMessage(int message_id, bool message_state);
 		void addError(int error_id, int error_param);
 		void addTimeout(int sensor_id);
+		void addDebug(int debug_id, int debug_data, int test);
+		void addOutput(int output_id, int value);
+
 		void processInputQueue();
 		void processTimers();
 

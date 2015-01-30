@@ -18,18 +18,20 @@ class TaskMonitor;
 #define TYPE_MESSAGE 3
 #define TYPE_TIMEOUT 4
 #define TYPE_ERROR 5
+#define TYPE_DEBUG 6
+#define TYPE_OUTPUT 7
 
 #define CYLINDER_HOLD 0
 
 #define CYLINDER_FUNCTION_1 1
 #define CYLINDER_FUNCTION_2 2
 
-#define ERR_SENSOR_TIMEOUT 99001
+#define ERR_SENSOR_TIMEOUT 901
 
 
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define INPUT_ID_COUNT 43
+#define INPUT_ID_COUNT 40
 
 //Left Joystick
 #define IN_SPINNER_LEFT_UP 0
@@ -59,50 +61,50 @@ class TaskMonitor;
 
 //Modifier Buttons Links Rechts
 #define IN_MOD_LR_STEER 15
-#define IN_MOD_LR_UNUSED1 16
-#define IN_MOD_LR_UNUSED2 17
-#define IN_MOD_LR_WEEL_RIGHT_TELE 18
-#define IN_MOD_LR_WEEL_LEFT_TELE 19
+//#define IN_MOD_LR_UNUSED1
+//#define IN_MOD_LR_UNUSED2
+#define IN_MOD_LR_WEEL_RIGHT_TELE 16
+#define IN_MOD_LR_WEEL_LEFT_TELE 17
 
 //Modifier Buttons Oben Unten
-#define IN_MOD_OU_SPINNER_BACK 20
-#define IN_MOD_OU_FRAME 21
-#define IN_MOD_OU_UNUSED 22
+#define IN_MOD_OU_SPINNER_BACK 18
+#define IN_MOD_OU_FRAME 19
+//#define IN_MOD_OU_UNUSED
 
 //Sensors
-#define SENS_SPINNER_LEFT_THIRD 23
-#define SENS_SPINNER_RIGHT_THIRD 24
+#define SENS_SPINNER_LEFT_THIRD 20
+#define SENS_SPINNER_RIGHT_THIRD 21
 
-#define SENS_SPINNER_LEFT_UP 25
-#define SENS_SPINNER_RIGHT_UP 26
+#define SENS_SPINNER_LEFT_UP 22
+#define SENS_SPINNER_RIGHT_UP 23
 
-#define SENS_SPINNER_REAR_UP 27
+#define SENS_SPINNER_REAR_UP 24
 
-#define SENS_SPINNER_LEFT_TELE_OUT 28
-#define SENS_SPINNER_LEFT_TELE_IN 29
+#define SENS_SPINNER_LEFT_TELE_OUT 25
+#define SENS_SPINNER_LEFT_TELE_IN 26
 
-#define SENS_SPINNER_RIGHT_TELE_OUT 30
-#define SENS_SPINNER_RIGHT_TELE_IN 31
+#define SENS_SPINNER_RIGHT_TELE_OUT 27
+#define SENS_SPINNER_RIGHT_TELE_IN 28
 
-#define SENS_FRAME_UP 32
-#define SENS_FRAME_MIDDLE 33
-#define SENS_FRAME_LOW 34
-#define SENS_FRAME_DOWN 35
+#define SENS_FRAME_UP 29
+#define SENS_FRAME_MIDDLE 30
+#define SENS_FRAME_LOW 31
+#define SENS_FRAME_DOWN 32
 
-#define SENS_FRAME_LOCK_OPEN 36
-#define SENS_FRAME_LOCK_CLOSED 37
+#define SENS_FRAME_LOCK_OPEN 33
+#define SENS_FRAME_LOCK_CLOSED 34
 
-#define SENS_WEEL_TELE_RIGHT_OUT 38
-#define SENS_WEEL_TELE_RIGHT_IN 39
+#define SENS_WEEL_TELE_RIGHT_OUT 35
+#define SENS_WEEL_TELE_RIGHT_IN 36
 
-#define SENS_WEEL_TELE_LEFT_OUT 40
-#define SENS_WEEL_TELE_LEFT_IN 41
+#define SENS_WEEL_TELE_LEFT_OUT 37
+#define SENS_WEEL_TELE_LEFT_IN 38
 
-#define SENS_WEEL_TRACK_MIDDLE 42
+#define SENS_WEEL_TRACK_MIDDLE 39
 
 
 // ids for output must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define OUTPUT_ID_COUNT 37
+#define OUTPUT_ID_COUNT 34
 
 #define OUT_SPINNER_RIGHT_UP 0
 #define OUT_SPINNER_LEFT_UP 1
@@ -151,15 +153,17 @@ class TaskMonitor;
 
 //Modifier Leds Links Rechts
 #define LED_MOD_LR_STEER 29
-#define LED_MOD_LR_UNUSED1 30
-#define LED_MOD_LR_UNUSED2 31
-#define LED_MOD_LR_WEEL_TELE_R 32
-#define LED_MOD_LR_WEEL_TELE_L 33
+
+#define LED_MOD_LR_WEEL_TELE_R 30
+#define LED_MOD_LR_WEEL_TELE_L 31
 
 //Modifier Leds Links Rechts
-#define LED_MOD_OU_SPINNER_BACK 34
-#define LED_MOD_OU_FRAME 35
-#define LED_MOD_OU_UNUSED 36
+#define LED_MOD_OU_SPINNER_BACK 32
+#define LED_MOD_OU_FRAME 33
+
+//#define LED_MOD_LR_UNUSED1 30
+//#define LED_MOD_LR_UNUSED2 31
+//#define LED_MOD_OU_UNUSED 36
 
 
 //pin ranges on different devices--------------------------------------------------------

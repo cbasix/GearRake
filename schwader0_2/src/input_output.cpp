@@ -76,46 +76,47 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 			input_data[i].input_type = TYPE_SENSOR;
 			input_data[i].temp_state = INACTIVE;
 			input_data[i].active = true;
+			//input_data[i].state_changed = true;
 
 	}
 
 
-	//Left Joystick
+	//Left Joystick0
 	input_data[IN_SPINNER_LEFT_UP].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 0;
 	input_data[IN_SPINNER_LEFT_UP].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_UP].active = false;
+	//input_data[IN_SPINNER_LEFT_UP].active = false;
 	//!
 	input_data[IN_SPINNER_LEFT_FLOAT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 0;
 	input_data[IN_SPINNER_LEFT_FLOAT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_FLOAT].active = false;
+	//input_data[IN_SPINNER_LEFT_FLOAT].active = false;
 
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_OUT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_TELE_OUT].active = false;
+	//input_data[IN_SPINNER_LEFT_TELE_OUT].active = false;
 
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 1;
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_LEFT_TELE_IN].active = false;
+	//input_data[IN_SPINNER_LEFT_TELE_IN].active = false;
 
 
 
 	//Right Joystick
 	input_data[IN_SPINNER_RIGHT_UP].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 2;
 	input_data[IN_SPINNER_RIGHT_UP].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_UP].active = false;
+	//input_data[IN_SPINNER_RIGHT_UP].active = false;
 
 	input_data[IN_SPINNER_RIGHT_FLOAT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 2;
 	input_data[IN_SPINNER_RIGHT_FLOAT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_FLOAT].active = false;
+	//input_data[IN_SPINNER_RIGHT_FLOAT].active = false;
 
 	//!
-	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 3;
+	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_OUT].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_TELE_OUT].active = false;
+	//input_data[IN_SPINNER_RIGHT_TELE_OUT].active = false;
 
-	input_data[IN_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 3;
+	input_data[IN_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_type = TYPE_MANUAL;
-	input_data[IN_SPINNER_RIGHT_TELE_IN].active = false;
+	//input_data[IN_SPINNER_RIGHT_TELE_IN].active = false;
 
 
 	//Middle Joystick
@@ -130,11 +131,11 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 
 
 	//!
-	input_data[IN_MULTI_RIGHT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 5;
+	input_data[IN_MULTI_RIGHT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 5;
 	input_data[IN_MULTI_RIGHT].input_type = TYPE_MANUAL;
 	//input_data[IN_MULTI_RIGHT].active = false;
 
-	input_data[IN_MULTI_LEFT].input_pin = PIN_ARDUINO_ANALOG_NEGATIVE_START + 5;
+	input_data[IN_MULTI_LEFT].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 5;
 	input_data[IN_MULTI_LEFT].input_type = TYPE_MANUAL;
 	//input_data[IN_MULTI_LEFT].active = false;
 
@@ -151,31 +152,31 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 
 
 	//Modifier Buttons Links Rechts
-	input_data[IN_MOD_LR_STEER].input_pin = PIN_ARDUINO_START + 5;
+	input_data[IN_MOD_LR_STEER].input_pin = PIN_ARDUINO_START + 6;
 	input_data[IN_MOD_LR_STEER].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_UNUSED1].input_pin = PIN_ARDUINO_START + 6;
-	input_data[IN_MOD_LR_UNUSED1].input_type = TYPE_MANUAL;
+	//input_data[IN_MOD_LR_UNUSED1].input_pin = PIN_ARDUINO_START + 6;
+	//input_data[IN_MOD_LR_UNUSED1].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_UNUSED2].input_pin = PIN_ARDUINO_START + 7;
-	input_data[IN_MOD_LR_UNUSED2].input_type = TYPE_MANUAL;
+	//input_data[IN_MOD_LR_UNUSED2].input_pin = PIN_ARDUINO_START + 7;
+	//input_data[IN_MOD_LR_UNUSED2].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_WEEL_RIGHT_TELE].input_pin = PIN_ARDUINO_START + 8;
+	input_data[IN_MOD_LR_WEEL_RIGHT_TELE].input_pin = PIN_ARDUINO_START + 9;
 	input_data[IN_MOD_LR_WEEL_RIGHT_TELE].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_pin = PIN_ARDUINO_START + 9;
+	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_pin = PIN_ARDUINO_START + 8;
 	input_data[IN_MOD_LR_WEEL_LEFT_TELE].input_type = TYPE_MANUAL;
 
 
 	//Modifier Buttons oben unten
-	input_data[IN_MOD_OU_SPINNER_BACK].input_pin = PIN_ARDUINO_START + 10;
+	input_data[IN_MOD_OU_SPINNER_BACK].input_pin = PIN_ARDUINO_START + 5;
 	input_data[IN_MOD_OU_SPINNER_BACK].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_OU_FRAME].input_pin = PIN_ARDUINO_START + 11;
+	input_data[IN_MOD_OU_FRAME].input_pin = PIN_ARDUINO_START + 7;
 	input_data[IN_MOD_OU_FRAME].input_type = TYPE_MANUAL;
 
-	input_data[IN_MOD_OU_UNUSED].input_pin = PIN_ARDUINO_START + 12;
-	input_data[IN_MOD_OU_UNUSED].input_type = TYPE_MANUAL;
+	//input_data[IN_MOD_OU_UNUSED].input_pin = PIN_ARDUINO_START + 12;
+	//input_data[IN_MOD_OU_UNUSED].input_type = TYPE_MANUAL;
 
 
 	//Sensors
@@ -384,63 +385,63 @@ OutputObject::OutputObject(TaskMonitor* task_monitor){
 	//////Serial.println("Settup expanders done");
 
 	//NOTE numbers on relay boards are higher by one because pin numbering on relay board starts with 1
-	output_data[OUT_SPINNER_RIGHT_UP].output_pin = PIN_EXP1_START + 0;
-	output_data[OUT_SPINNER_LEFT_UP].output_pin = PIN_EXP1_START + 1;
-	output_data[OUT_SPINNER_REAR_UP].output_pin = PIN_EXP1_START + 2;
+	output_data[OUT_SPINNER_RIGHT_UP].output_pin = PIN_EXP1_START + 2;//3
+	output_data[OUT_SPINNER_LEFT_UP].output_pin = PIN_EXP1_START + 0;//1
+	output_data[OUT_SPINNER_REAR_UP].output_pin = PIN_EXP1_START + 11;//12
 
-	output_data[OUT_SPINNER_RIGHT_FLOAT].output_pin = PIN_EXP1_START + 3;
-	output_data[OUT_SPINNER_LEFT_FLOAT].output_pin = PIN_EXP1_START + 4;
-	output_data[OUT_SPINNER_REAR_FLOAT].output_pin = PIN_EXP1_START + 5;
+	output_data[OUT_SPINNER_RIGHT_FLOAT].output_pin = PIN_EXP1_START + 3;//4
+	output_data[OUT_SPINNER_LEFT_FLOAT].output_pin = PIN_EXP1_START + 1;//2
+	output_data[OUT_SPINNER_REAR_FLOAT].output_pin = PIN_EXP1_START + 10;//11
 
-	output_data[OUT_SPINNER_RIGHT_TELE_OUT].output_pin = PIN_EXP1_START + 6;
-	output_data[OUT_SPINNER_LEFT_TELE_OUT].output_pin = PIN_EXP1_START + 7;
+	output_data[OUT_SPINNER_RIGHT_TELE_OUT].output_pin = PIN_EXP1_START + 6;//7
+	output_data[OUT_SPINNER_LEFT_TELE_OUT].output_pin = PIN_EXP1_START + 4;//5
 
-	output_data[OUT_SPINNER_RIGHT_TELE_IN].output_pin = PIN_EXP1_START + 8;
-	output_data[OUT_SPINNER_LEFT_TELE_IN].output_pin = PIN_EXP1_START + 9;
+	output_data[OUT_SPINNER_RIGHT_TELE_IN].output_pin = PIN_EXP1_START + 7;//8
+	output_data[OUT_SPINNER_LEFT_TELE_IN].output_pin = PIN_EXP1_START + 5;//6
 
-	output_data[OUT_FRAME_UP].output_pin = PIN_EXP1_START + 10;
-	output_data[OUT_FRAME_DOWN].output_pin = PIN_EXP1_START + 11;
+	output_data[OUT_FRAME_UP].output_pin = PIN_EXP1_START + 15;//16
+	output_data[OUT_FRAME_DOWN].output_pin = PIN_EXP1_START + 14;//15
 
-	output_data[OUT_STEER_LEFT].output_pin = PIN_EXP1_START + 12;
-	output_data[OUT_STEER_RIGHT].output_pin = PIN_EXP1_START + 13;
+	output_data[OUT_STEER_LEFT].output_pin = PIN_EXP1_START + 9;//10
+	output_data[OUT_STEER_RIGHT].output_pin = PIN_EXP1_START + 8;//9
+
+	output_data[OUT_FRAME_LOCK_UP].output_pin = PIN_EXP1_START + 13;//14
+	output_data[OUT_FRAME_LOCK_DOWN].output_pin = PIN_EXP1_START + 12;//13
 
 	//expander 2
-	output_data[OUT_WEEL_TELE_LEFT_IN].output_pin = PIN_EXP1_START + 14;
-	output_data[OUT_WEEL_TELE_RIGHT_IN].output_pin = PIN_EXP1_START + 15;
+	output_data[OUT_WEEL_TELE_LEFT_IN].output_pin = PIN_EXP2_START + 2;//3
+	output_data[OUT_WEEL_TELE_RIGHT_IN].output_pin = PIN_EXP2_START + 4;//5
 
-	output_data[OUT_WEEL_TELE_LEFT_OUT].output_pin = PIN_EXP2_START + 0;
-	output_data[OUT_WEEL_TELE_RIGHT_OUT].output_pin = PIN_EXP2_START + 1;
+	output_data[OUT_WEEL_TELE_LEFT_OUT].output_pin = PIN_EXP2_START + 1;//2
+	output_data[OUT_WEEL_TELE_RIGHT_OUT].output_pin = PIN_EXP2_START + 3;//4
 
-	output_data[OUT_FRAME_LOCK_UP].output_pin = PIN_EXP2_START + 2;
-	output_data[OUT_FRAME_LOCK_DOWN].output_pin = PIN_EXP2_START + 3;
-
-	output_data[OUT_PRESSURE].output_pin = PIN_EXP2_START + 4;
+	output_data[OUT_PRESSURE].output_pin = PIN_EXP2_START + 0;//1
 
 	//Leds
-	output_data[LED_WEEL_TRACK_MIDDLE].output_pin = PIN_EXP2_START + 5;
-	output_data[LED_FRAME_LOCK].output_pin = PIN_EXP2_START + 6;
+	output_data[LED_WEEL_TRACK_MIDDLE].output_pin = PIN_EXP3_START + 0;//1
+	output_data[LED_FRAME_LOCK].output_pin = PIN_EXP3_START + 1;//2
 
 	//Top Buttons
-	output_data[LED_AUTO_TRANSPORT].output_pin = PIN_EXP2_START + 7;
-	output_data[LED_AUTO_LOW].output_pin = PIN_EXP2_START + 8;
-	output_data[LED_AUTO_WORK].output_pin = PIN_EXP2_START + 9;
+	output_data[LED_AUTO_TRANSPORT].output_pin = PIN_EXP3_START + 2;//3
+	output_data[LED_AUTO_LOW].output_pin = PIN_EXP3_START + 3;//4
+	output_data[LED_AUTO_WORK].output_pin = PIN_EXP3_START + 4;//5
 
 	//Float Leds
-	output_data[LED_SPINNER_RIGHT_FLOAT].output_pin = PIN_EXP2_START + 10;
-	output_data[LED_SPINNER_LEFT_FLOAT].output_pin = PIN_EXP2_START + 11;
-	output_data[LED_SPINNER_REAR_FLOAT].output_pin = PIN_EXP2_START + 12;
+	output_data[LED_SPINNER_RIGHT_FLOAT].output_pin = PIN_EXP3_START + 6;//7
+	output_data[LED_SPINNER_LEFT_FLOAT].output_pin = PIN_EXP3_START + 5;//6
+	output_data[LED_SPINNER_REAR_FLOAT].output_pin = PIN_EXP3_START + 8;//9
 
 	//Modifier Leds Links Rechts
-	output_data[LED_MOD_LR_STEER].output_pin = PIN_EXP2_START + 13;
-	output_data[LED_MOD_LR_UNUSED1].output_pin = PIN_EXP2_START + 14;
-	output_data[LED_MOD_LR_UNUSED2].output_pin = PIN_EXP2_START + 15;
-	output_data[LED_MOD_LR_WEEL_TELE_R].output_pin = PIN_EXP3_START + 0;
-	output_data[LED_MOD_LR_WEEL_TELE_L].output_pin = PIN_EXP3_START + 1;
+	output_data[LED_MOD_LR_STEER].output_pin = PIN_EXP3_START + 9;//10
+	//output_data[LED_MOD_LR_UNUSED1].output_pin = PIN_EXP2_START + no;
+	//output_data[LED_MOD_LR_UNUSED2].output_pin = PIN_EXP2_START + no;
+	output_data[LED_MOD_LR_WEEL_TELE_R].output_pin = PIN_EXP3_START + 12;//13
+	output_data[LED_MOD_LR_WEEL_TELE_L].output_pin = PIN_EXP3_START + 11;//12
 
 	//Modifier Leds Links Rechts
-	output_data[LED_MOD_OU_SPINNER_BACK].output_pin = PIN_EXP3_START + 2;
-	output_data[LED_MOD_OU_FRAME].output_pin = PIN_EXP3_START + 3;
-	output_data[LED_MOD_OU_UNUSED].output_pin = PIN_EXP3_START + 4;
+	output_data[LED_MOD_OU_SPINNER_BACK].output_pin = PIN_EXP3_START + 7;//8
+	output_data[LED_MOD_OU_FRAME].output_pin = PIN_EXP3_START + 10;//11
+	//output_data[LED_MOD_OU_UNUSED].output_pin = PIN_EXP3_START + no;
 
 
 	//all initalisations inverted because outputs are active when connected to ground and internal active = 1
@@ -518,6 +519,8 @@ void OutputObject::setCylinder(int output_id_function_1, int output_id_function_
 		setOutput(output_id_function_1, INACTIVE);
 		setOutput(output_id_function_2, INACTIVE);
 
+
+
 	} else if (cylinder_state == CYLINDER_FUNCTION_1){
 
 //		Serial.print(output_id_move_out);
@@ -530,6 +533,7 @@ void OutputObject::setCylinder(int output_id_function_1, int output_id_function_
 
 //		Serial.println("OutputObject::setCylinder CYLINDER_FUNCTION_2");
 
+
 		setOutput(output_id_function_1, INACTIVE);
 		setOutput(output_id_function_2, ACTIVE);
 	}
@@ -541,7 +545,7 @@ void OutputObject::writeOutput() {
 	//std::cout << "Write output." << std::endl;
 	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 		if(output_data[i].state_changed){
-
+			tm->addOutput(i, output_data[i].state);
 			//ALL OUTPUTS ARE INVERTED! They are active when they are connected to ground. -> invert output with !
 
 			//Serial.print("              <<| PIN: ");

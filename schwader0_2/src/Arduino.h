@@ -1,7 +1,6 @@
 #ifndef ARDUINO_H
 #define ARDUINO_H
 
-#include <iostream>
 #include <sys/time.h>
 #include <iostream>
 
@@ -26,10 +25,6 @@ inline int analogRead(int pin){
 
 inline void digitalWrite(int pin, bool value){
 	std::cout << "Set arduino output: " << pin << " to ACTIVE(0) or INACTIVE(1):"<< value  << std::endl;
-}
-
-inline void exp1_digitalWrite(int pin, bool value){
-	std::cout << "Set exp1 output: " << pin << " to ACTIVE(0) or INACTIVE(1):"<< value  << std::endl;
 }
 
 inline void pinMode(int pin, int mode){
@@ -57,6 +52,6 @@ public:
 	void write(char to_write){}
 };
 
-ser Serial;
+static ser Serial;
 
 #endif /* ARDUINO_H */
