@@ -14,6 +14,7 @@ class OutputObject;
 
 #include "Arduino.h"
 #include "input_output.h"
+#include "logging.h"
 
 /*class Task
   public:
@@ -83,8 +84,11 @@ class TaskMonitor{
 		InputObject* inp;
 		OutputObject* outp;
 
+		MyDisplay dsp;
+
 	private:
 		//Task* taskList[];
+		//ist ehere eine Event queue als eine input queue
 		FifoInputQueue* inp_queue;
 
 		Task* task_list[100];

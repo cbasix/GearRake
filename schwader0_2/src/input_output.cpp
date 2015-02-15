@@ -208,7 +208,7 @@ InputObject::InputObject(TaskMonitor* task_monitor) {
 
 	input_data[SENS_FRAME_LOW].input_pin = PIN_ARDUINO_START + 33;
 
-	input_data[SENS_FRAME_DOWN].input_pin = PIN_ARDUINO_START + 34;
+	input_data[SENS_FRAME_GROUND].input_pin = PIN_ARDUINO_START + 34;
 
 
 	input_data[SENS_FRAME_LOCK_OPEN].input_pin = PIN_ARDUINO_START + 35;

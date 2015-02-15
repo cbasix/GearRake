@@ -1,5 +1,5 @@
 // ids for tasks must be continous! (stored in array with id as index)
-#define TSK_LIST_LENGTH 26
+#define TSK_LIST_LENGTH 30
 
 #define TSK_SPINNER_BOTH_UP 0
 #define TSK_SPINNER_RIGHT_UP 1
@@ -34,12 +34,17 @@
 #define TSKPART_FRAME_LOCK_UP 20
 #define TSKPART_FRAME_LOCK_DOWN 21
 
-#define TSK_MODE 22
+#define TSKPART_AUTO_LOW_DELAY 22
+#define TSK_AUTO_LOW 23
+#define TSKPART_FRAME_DOWN 24
+
+#define TSK_MODE 25
+//#define TSKPART_START_DIAG_DELAY 26
 
 //Diese Tasks müssen am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden kann.
-#define TSK_LED 23
-#define TSK_PRESSURE 24
-#define TSK_DIAGNOSE 25
+#define TSK_LED 27
+#define TSK_PRESSURE 28
+#define TSK_DIAGNOSE 29
 
 
 //messages
@@ -65,6 +70,13 @@
 
 #define MSG_TSKPART_FRAME_LOCK_UP 12015
 #define MSG_TSKPART_FRAME_LOCK_DOWN 12016
+
+#define MSG_TSKPART_FRAME_DOWN 12017
+
+#define MSG_START_DIAG 14000
+
+//delayed input messages ( auto buttons erst nach bestimmter drückdauer aktiv)
+#define MSG_AUTO_LOW_DELAYED 13001
 
 
 
@@ -213,6 +225,29 @@ class CylinderTwoSensorTaskpart : public Task {
 		unsigned long timeout;
 };
 
+class DelayedStartTaskpart : public Task {
+	public:
+		DelayedStartTaskpart(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int task_id_to_start,
+				unsigned long delay);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_message_to_start;
+
+		unsigned long start_time;
+		unsigned long delay;
+};
+
 
 
 //minimal task
@@ -325,6 +360,66 @@ class FrameDownTask : public Task {
 		void timer();
 		void testStartConditions(EventData* inp);
 };
+
+class AutoLowTask : public Task {
+	public:
+		AutoLowTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};
+
+class AutoWorkTask : public Task {
+	public:
+		AutoWorkTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int step;
+		bool left_done;
+		bool right_done;
+};
+
+class AutoTransportTask : public Task {
+	public:
+		AutoTransportTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};
+
+/*class AutoWorkTask : public Task {
+	public:
+		AutoWorkTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};
+
+class ButterflyTaskPart : public Task {
+	public:
+		AutoWorkTask();
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+};*/
 
 //last in tasks to executep need to use the isOutputChanged Method
 class LedTask : public Task {

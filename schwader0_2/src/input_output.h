@@ -89,7 +89,7 @@ class TaskMonitor;
 #define SENS_FRAME_UP 29
 #define SENS_FRAME_MIDDLE 30
 #define SENS_FRAME_LOW 31
-#define SENS_FRAME_DOWN 32
+#define SENS_FRAME_GROUND 32
 
 #define SENS_FRAME_LOCK_OPEN 33
 #define SENS_FRAME_LOCK_CLOSED 34

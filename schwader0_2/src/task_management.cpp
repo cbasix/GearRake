@@ -2,6 +2,7 @@
 #include "task_management.h"
 #include "tasks.h"
 #include "input_output.h"
+#include "logging.h"
 
 //TASK------------------------------
 
@@ -40,6 +41,7 @@ TaskMonitor::TaskMonitor() {
 	outp = NULL;
 	inp = NULL;
 	inp_queue = NULL;
+	//dsp = MyDisplay();//39 0x27 I2C address
 
 
 }
@@ -191,10 +193,33 @@ void TaskMonitor::beginn() {
 			CYLINDER_FUNCTION_2,
 			SENS_FRAME_LOCK_CLOSED,
 			5000);
+	task_list[TSKPART_AUTO_LOW_DELAY] = new DelayedStartTaskpart(
+			TSKPART_AUTO_LOW_DELAY,
+			TYPE_MANUAL,
+			IN_AUTO_LOW,
+			MSG_AUTO_LOW_DELAYED,
+			3000);
+	task_list[TSK_AUTO_LOW] = new AutoLowTask();
+	task_list[TSKPART_FRAME_DOWN] = new CylinderSensorTaskpart(
+			TSKPART_FRAME_DOWN,
+			TYPE_MESSAGE,
+			MSG_TSKPART_FRAME_DOWN,
+			OUT_FRAME_UP,
+			OUT_FRAME_DOWN,
+			CYLINDER_FUNCTION_2,
+			SENS_FRAME_LOW,
+			5000);
 
 
 
 	task_list[TSK_MODE] = new ModeTask();
+
+	/*task_list[TSKPART_START_DIAG_DELAY] = new DelayedStartTaskpart(
+				TSKPART_START_DIAG_DELAY,
+				TYPE_MANUAL,
+				IN_AUTO_LOW,
+				MSG_START_DIAG,
+				10000);*/
 
 	//LED Task / Pressure Task müssen ganz am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden können.
 	task_list[TSK_LED] = new LedTask();
