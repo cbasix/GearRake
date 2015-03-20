@@ -9,7 +9,7 @@
 
 struct EventData;
 class InputObject;
-class FifoInputQueue;
+class FifoQueue;
 class OutputObject;
 
 #include "Arduino.h"
@@ -32,7 +32,7 @@ class OutputObject;
 
 
 };*/
-class TaskMonitor; //Forward Declaration
+class TaskManager; //Forward Declaration
 
 class Task {
 	public:
@@ -47,21 +47,21 @@ class Task {
 		virtual void timer();
 		virtual void testStartConditions(EventData *inp) = 0;
 
-		void setTaskMonitor(TaskMonitor* tm);
+		void setTaskManager(TaskManager* tm);
 
 		//virtual ~Task() = 0;
 
 	protected:
 		int task_id;
 		int task_state;
-		TaskMonitor* tm;
+		TaskManager* tm;
 
 };
 
 //MANAGER
-class TaskMonitor{
+class TaskManager{
 	public:
-		TaskMonitor();
+		TaskManager();
 
 		void beginn();
 
@@ -89,7 +89,7 @@ class TaskMonitor{
 	private:
 		//Task* taskList[];
 		//ist ehere eine Event queue als eine input queue
-		FifoInputQueue* inp_queue;
+		FifoQueue* evt_queue;
 
 		Task* task_list[100];
 		//int task_list_length;

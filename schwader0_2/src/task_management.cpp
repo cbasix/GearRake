@@ -23,7 +23,7 @@ void Task::update(EventData *inp) {
 
 void Task::timer() {}
 
-void Task::setTaskMonitor(TaskMonitor* task_monitor) {
+void Task::setTaskManager(TaskManager* task_monitor) {
 	tm = task_monitor;
 }
 
@@ -34,22 +34,22 @@ void Task::exit() {
 
 //TASK MONITOR ---------------------------------------
 
-TaskMonitor::TaskMonitor() {
+TaskManager::TaskManager() {
 	timer_last_run = 0;
 	timer_run_intervall = 200;
 
 	outp = NULL;
 	inp = NULL;
-	inp_queue = NULL;
+	evt_queue = NULL;
 	//dsp = MyDisplay();//39 0x27 I2C address
 
 
 }
 
-void TaskMonitor::beginn() {
+void TaskManager::beginn() {
 	outp = new OutputObject(this);
 	inp = new InputObject(this);
-	inp_queue = new FifoInputQueue;
+	evt_queue = new FifoQueue;
 
 	// todo prüfen
 	//SpawnerTask spawner_task;
@@ -228,7 +228,7 @@ void TaskMonitor::beginn() {
 
 
 	for(int i = 0; i < TSK_LIST_LENGTH; i++){
-		task_list[i]->setTaskMonitor(this);
+		task_list[i]->setTaskManager(this);
 	}
 
 	//send startup event
@@ -239,8 +239,8 @@ void TaskMonitor::beginn() {
 	this->addEvent(&startupEvent);
 }
 
-void TaskMonitor::addEvent(EventData* inp) {
-	inp_queue->add(*inp);
+void TaskManager::addEvent(EventData* inp) {
+	evt_queue->add(*inp);
 
 //#if ENVIRONMENT == 0*/
 //	Serial.print(">>> Event <<< Id: ");
@@ -254,7 +254,7 @@ void TaskMonitor::addEvent(EventData* inp) {
 
 }
 
-void TaskMonitor::addMessage(int message_id, bool message_value){
+void TaskManager::addMessage(int message_id, bool message_value){
 	EventData e;
 	e.input_id = message_id;
 	e.input_type = TYPE_MESSAGE;
@@ -264,7 +264,7 @@ void TaskMonitor::addMessage(int message_id, bool message_value){
 	addEvent(&e);
 }
 
-void TaskMonitor::addError(int error_id, int error_param){
+void TaskManager::addError(int error_id, int error_param){
 	EventData e;
 	e.input_id = error_id;
 	e.input_type = TYPE_ERROR;
@@ -274,7 +274,7 @@ void TaskMonitor::addError(int error_id, int error_param){
 	addEvent(&e);
 }
 
-void TaskMonitor::addTimeout(int task_id){
+void TaskManager::addTimeout(int task_id){
 	EventData e;
 	e.input_id = task_id;
 	e.input_type = TYPE_TIMEOUT;
@@ -283,7 +283,7 @@ void TaskMonitor::addTimeout(int task_id){
 	addEvent(&e);
 }
 
-void TaskMonitor::addDebug(int debug_id, int debug_data, int test){
+void TaskManager::addDebug(int debug_id, int debug_data, int test){
 	EventData e;
 	e.input_id = debug_id;
 	e.input_type = TYPE_DEBUG;
@@ -293,7 +293,7 @@ void TaskMonitor::addDebug(int debug_id, int debug_data, int test){
 	addEvent(&e);
 }
 
-void TaskMonitor::addOutput(int output_id, int value){
+void TaskManager::addOutput(int output_id, int value){
 	EventData e;
 	e.input_id = output_id;
 	e.input_type = TYPE_OUTPUT;
@@ -304,10 +304,10 @@ void TaskMonitor::addOutput(int output_id, int value){
 }
 
 
-void TaskMonitor::processInputQueue() {
+void TaskManager::processInputQueue() {
 	//TODO get InputEvent from queue
-	if(inp_queue->size() > 0){
-		EventData* inp = inp_queue->get();
+	if(evt_queue->size() > 0){
+		EventData* inp = evt_queue->get();
 		for(int i = 0; i < TSK_LIST_LENGTH; i++){
 			if(task_list[i]->getState() == STATE_RUNNING){
 				task_list[i]->update(inp);
@@ -323,7 +323,7 @@ void TaskMonitor::processInputQueue() {
 	}
 }
 
-void TaskMonitor::processTimers() {
+void TaskManager::processTimers() {
 	unsigned long millisec = millis();
 	if(timer_last_run + timer_run_intervall < millisec){
 		timer_last_run = millis();
@@ -337,17 +337,17 @@ void TaskMonitor::processTimers() {
 	}
 }
 
-void TaskMonitor::startTask(int task_id) {
+void TaskManager::startTask(int task_id) {
 	task_list[task_id]->start();
 }
 
-void TaskMonitor::stopTask(int task_id) {
+void TaskManager::stopTask(int task_id) {
 	if(task_list[task_id]->getState() != STATE_STOPPED){
 		task_list[task_id]->exit();
 	}
 }
 
-int TaskMonitor::getTaskStatus(int task_id) {
+int TaskManager::getTaskStatus(int task_id) {
 	return task_list[task_id]->getState();
 }
 

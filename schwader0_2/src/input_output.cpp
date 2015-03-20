@@ -4,13 +4,13 @@
 #include "Adafruit_MCP23017.h"
 
 
-FifoInputQueue::FifoInputQueue() {
+FifoQueue::FifoQueue() {
 	next_in = 0;
 	next_out = 0;
 }
 
 
-void FifoInputQueue::add(EventData evt) {
+void FifoQueue::add(EventData evt) {
 
 	//if queue is full the oldest input gets overwritten
 	if(size() >= EVENT_QUEUE_SIZE - 1){
@@ -31,7 +31,7 @@ void FifoInputQueue::add(EventData evt) {
 
 }
 
-EventData* FifoInputQueue::get() {
+EventData* FifoQueue::get() {
 
 	if(size() > 0){
 
@@ -50,7 +50,7 @@ EventData* FifoInputQueue::get() {
 	return 0;
 }
 
-int FifoInputQueue::size() {
+int FifoQueue::size() {
 	if(next_in > next_out){
 		return next_in - next_out;
 
@@ -62,7 +62,7 @@ int FifoInputQueue::size() {
 }
 
 
-InputObject::InputObject(TaskMonitor* task_monitor) {
+InputObject::InputObject(TaskManager* task_monitor) {
 	tm = task_monitor;
 
 	//Initialize input array -> Pin mapping definition
@@ -369,7 +369,7 @@ bool InputObject::hasInputChanged(int input_id){
 }
 
 
-OutputObject::OutputObject(TaskMonitor* task_monitor){
+OutputObject::OutputObject(TaskManager* task_monitor){
 	tm = task_monitor;
 
 	//////Serial.println("Setting up expanders");

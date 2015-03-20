@@ -1,7 +1,7 @@
 #ifndef INPUT_OUTPUT_H
-#define INPUT_OUTPUT_H
+#define EVENT_MANAGEMENT_H
 
-class TaskMonitor;
+class TaskManager;
 
 #include "Arduino.h"
 #include "task_management.h"
@@ -226,20 +226,20 @@ struct OutputData {
 
 class InputObject{
 	public:
-		InputObject(TaskMonitor *tm);
+		InputObject(TaskManager *tm);
 		bool getInputState(int input_id);
 		//void setTaskMonitor(TaskMonitor *tm);
 		void readInput();
 		bool hasInputChanged(int input_id);
 		InputData input_data[INPUT_ID_COUNT];
 	private:
-		TaskMonitor *tm;
+		TaskManager *tm;
 };
 
 
-class FifoInputQueue{
+class FifoEventQueue{
 	public:
-		FifoInputQueue();
+		FifoEventQueue();
 		void add(EventData evt);
 		EventData* get();
 		int size();
@@ -251,7 +251,7 @@ class FifoInputQueue{
 
 class OutputObject{
 	public:
-		OutputObject(TaskMonitor* task_monitor);
+		OutputObject(TaskManager* task_monitor);
 		void setRawOutput(int output_id, bool output_value);
 		void setLed(int output_id, bool output_value);
 		void setCylinder(int function_1_output_id, int function_2_output_id, int cylinder_state);
@@ -262,7 +262,7 @@ class OutputObject{
 
 	private:
 		OutputData output_data[OUTPUT_ID_COUNT];
-		TaskMonitor* tm;
+		TaskManager* tm;
 		Adafruit_MCP23017* exp1;
 		Adafruit_MCP23017* exp2;
 		Adafruit_MCP23017* exp3;

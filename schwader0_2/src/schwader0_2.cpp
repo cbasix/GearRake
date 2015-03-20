@@ -138,7 +138,7 @@ int main() {
 	cout << "q 3 size:" << q.size() << endl;
 	*/
 
-	TaskMonitor tm;
+	TaskManager tm;
 	tm.beginn();
 
 	tm.addEvent(inp_frame_u);
