@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "task_management.h"
 #include "tasks.h"
+#include "input_output.h"
 
 
 //General Abstact Tasks
@@ -216,6 +217,10 @@ void CylinderSensorTaskpart::timer() {
 	if(start_time + timeout < millis()){
 		//send message to activator task that timeout occured.
 		tm->addTimeout(mapped_input_id);
+
+		//TODO testing only to continue after timeout----------------------------------------
+		tm->addMessage(mapped_input_id, INACTIVE);
+
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
 		tm->stopTask(task_id);
 
@@ -306,11 +311,105 @@ void CylinderTwoSensorTaskpart::timer() {
 	if(start_time + timeout < millis()){
 		//send message to activator task -> timeout occured.
 		tm->addTimeout(mapped_input_id);
+
+		//TODO testing only to continue after timeout----------------------------------------
+		tm->addMessage(mapped_input_id, INACTIVE);
+
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_1_input_id);
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_2_input_id);
 		tm->stopTask(task_id);
 	}
 }
+
+/**--------------
+ *
+ */
+MessageSensorTaskpart::MessageSensorTaskpart(int task_id_to_set,
+		int input_type,
+		int input_id,
+		int mapped_output_message_id_,
+		int sensor_input_id_parm,
+		unsigned long timeout_){
+
+	task_state = STATE_STOPPED;
+	task_id = task_id_to_set;
+	mapped_input_type = input_type;
+	mapped_input_id = input_id;
+	mapped_output_message_id = mapped_output_message_id_;
+	timeout = timeout_;
+	sensor_input_id = sensor_input_id_parm;
+}
+void MessageSensorTaskpart::testStartConditions(EventData* inp) {
+//	Serial.print("Test Start TSK: ");
+//	Serial.print(task_id);
+//	Serial.print(" Expected INP_ID: ");
+//	Serial.print(mapped_input_id);
+//	Serial.print(" got INP_ID: ");
+//	Serial.println(inp->input_id);
+
+
+	if (inp->input_type == mapped_input_type
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == ACTIVE){
+//		Serial.print("Starting TSK: ");
+//		Serial.println(task_id);
+
+		tm->startTask(task_id);
+	}
+}
+void MessageSensorTaskpart::start() {
+	Task::start();
+//	Serial.print("Starting Simple TSK: ");
+//	Serial.println(task_id);
+	start_time = millis();
+
+	tm->addMessage(mapped_output_message_id, ACTIVE);
+
+	if(tm->inp->getInputState(sensor_input_id) == ACTIVE){
+		tm->stopTask(task_id);
+	}
+}
+
+void MessageSensorTaskpart::update(EventData* inp) {
+	if (inp->input_type == mapped_input_type
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == INACTIVE){
+		tm->stopTask(task_id);
+
+	} else if (inp->input_type == TYPE_SENSOR
+			&& (inp->input_id == sensor_input_id)
+			&& inp->input_value == ACTIVE){
+
+		//send message to activater task that parttask is ready
+		tm->addMessage(mapped_input_id, INACTIVE);
+		tm->stopTask(task_id);
+
+	}
+}
+
+void MessageSensorTaskpart::exit() {
+	Task::exit();
+//	Serial.print("Stopping Simple TSK: ");
+//	Serial.println(task_id);
+	tm->addMessage(mapped_output_message_id, INACTIVE);
+
+}
+
+void MessageSensorTaskpart::timer() {
+	if(start_time + timeout < millis()){
+		//send message to activator task that timeout occured.
+		tm->addTimeout(mapped_input_id);
+
+		//TODO testing only to continue after timeout----------------------------------------
+		tm->addMessage(mapped_input_id, INACTIVE);
+
+		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
+		tm->stopTask(task_id);
+
+	}
+}
+
+
 /**
  * startet einen task erst wenn ein button für eine bestimmte zeit lang gedrückt war
  */
@@ -1053,7 +1152,7 @@ void AutoWorkTask::start() {
 }
 
 void AutoWorkTask::update(EventData* inp) {
-
+	//TODO soll bei Timeouts wirklick weitergemacht werden ?
 	//Step 1 endbedingungen -> hochfahren links und rechts erledigt
 	if(step == 1){
 		if(inp->input_type == TYPE_MESSAGE
@@ -1182,12 +1281,12 @@ void AutoWorkTask::update(EventData* inp) {
 			right_done = false;
 
 			//step 21 rahmen hoch bis mittelstellung
-			tm->addMessage(MSG_TSKPART_WEEL_TELE_RIGHT_IN, ACTIVE);
+			tm->addMessage(MSG_TSKPART_FRAME_UP_TWO_SENS, ACTIVE);
 		}
 
-	} else if(step == 20){
+	} else if(step == 21){
 		if(inp->input_type == TYPE_MESSAGE
-				&& inp->input_id == MSG_TSKPART_WEEL_TELE_RIGHT_IN
+				&& inp->input_id == MSG_TSKPART_FRAME_UP_TWO_SENS
 				&& inp->input_value == INACTIVE){
 			//fertig ;) Möglichkeit 2
 			tm->stopTask(TSK_AUTO_WORK);

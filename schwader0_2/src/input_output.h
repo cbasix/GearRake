@@ -1,5 +1,5 @@
 #ifndef INPUT_OUTPUT_H
-#define EVENT_MANAGEMENT_H
+#define INPUT_OUTPUT_H
 
 class TaskManager;
 
@@ -237,9 +237,9 @@ class InputObject{
 };
 
 
-class FifoEventQueue{
+class FifoQueue{
 	public:
-		FifoEventQueue();
+		FifoQueue();
 		void add(EventData evt);
 		EventData* get();
 		int size();

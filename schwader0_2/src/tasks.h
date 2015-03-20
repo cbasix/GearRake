@@ -1,5 +1,5 @@
 // ids for tasks must be continous! (stored in array with id as index)
-#define TSK_LIST_LENGTH 30
+#define TSK_LIST_LENGTH 42
 
 #define TSK_SPINNER_BOTH_UP 0
 #define TSK_SPINNER_RIGHT_UP 1
@@ -36,15 +36,37 @@
 
 #define TSKPART_AUTO_LOW_DELAY 22
 #define TSK_AUTO_LOW 23
-#define TSKPART_FRAME_DOWN 24
 
-#define TSK_MODE 25
+#define TSKPART_AUTO_WORK_DELAY 24
+#define TSK_AUTO_WORK 25
+
+#define TSKPART_FRAME_DOWN 26
+
+#define TSKPART_SPINNER_LEFT_UP_TWO_SENS 27
+#define TSKPART_SPINNER_RIGHT_UP_TWO_SENS 28
+
+#define TSKPART_SPINNER_TELE_LEFT_IN 29
+#define TSKPART_SPINNER_TELE_RIGHT_IN 30
+
+#define TSKPART_SPINNER_LEFT_UP 31
+#define TSKPART_SPINNER_RIGHT_UP 32
+
+#define TSKPART_FRAME_UP_TWO_SENS 33
+
+#define TSKPART_WEEL_TELE_RIGHT_IN 34
+#define TSKPART_WEEL_TELE_LEFT_IN 35
+
+#define TSKPART_FRAME_DOWN_TO_GROUND 36
+#define TSKPART_FRAME_DOWN_TO_MIDDLE 37
+
+
+#define TSK_MODE 38
 //#define TSKPART_START_DIAG_DELAY 26
 
 //Diese Tasks müssen am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden kann.
-#define TSK_LED 27
-#define TSK_PRESSURE 28
-#define TSK_DIAGNOSE 29
+#define TSK_LED 39
+#define TSK_PRESSURE 40
+#define TSK_DIAGNOSE 41
 
 
 //messages
@@ -72,11 +94,26 @@
 #define MSG_TSKPART_FRAME_LOCK_DOWN 12016
 
 #define MSG_TSKPART_FRAME_DOWN 12017
+#define MSG_TSKPART_SPINNER_LEFT_UP_TWO_SENS 12018
+#define MSG_TSKPART_SPINNER_RIGHT_UP_TWO_SENS 12019
+#define MSG_TSKPART_SPINNER_TELE_LEFT_IN 12020
+#define MSG_TSKPART_SPINNER_TELE_RIGHT_IN 12021
+#define MSG_TSKPART_SPINNER_LEFT_UP 12022
+#define MSG_TSKPART_SPINNER_RIGHT_UP 12023
+#define MSG_TSKPART_FRAME_UP_TWO_SENS 12024
+#define MSG_TSKPART_WEEL_TELE_RIGHT_IN 12025
+#define MSG_TSKPART_WEEL_TELE_LEFT_IN 12026
+#define MSG_TSKPART_FRAME_DOWN_TO_GROUND 12027
+#define MSG_TSKPART_FRAME_DOWN_TO_MIDDLE 12028
+
 
 #define MSG_START_DIAG 14000
 
 //delayed input messages ( auto buttons erst nach bestimmter drückdauer aktiv)
 #define MSG_AUTO_LOW_DELAYED 13001
+#define MSG_AUTO_WORK_DELAYED 13002
+#define MSG_AUTO_TRANSPORT_DELAYED 13003
+
 
 
 
@@ -225,6 +262,32 @@ class CylinderTwoSensorTaskpart : public Task {
 		unsigned long timeout;
 };
 
+//sends a message MSG_* = ACTIVE. And the corresponding MSG_* = INACTIVE when a specified sensor input or timeout occours
+class MessageSensorTaskpart : public Task {
+	public:
+		MessageSensorTaskpart(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int output_message_id,
+				int sensor_input_id,
+				unsigned long timeout);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_output_message_type;
+		int mapped_output_message_id;
+		unsigned long start_time;
+		int sensor_input_id;
+		unsigned long timeout;
+};
+
 class DelayedStartTaskpart : public Task {
 	public:
 		DelayedStartTaskpart(int task_id_to_set,
@@ -247,7 +310,6 @@ class DelayedStartTaskpart : public Task {
 		unsigned long start_time;
 		unsigned long delay;
 };
-
 
 
 //minimal task
