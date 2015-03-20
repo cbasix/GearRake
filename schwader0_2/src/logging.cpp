@@ -13,19 +13,19 @@
  */
 
 MyDisplay::MyDisplay() {
-	my_lcd = new LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+	//my_lcd = new LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 	//my_lcd->begin(20, 4, 5);
-	setBacklight(false);
+	//setBacklight(false);
 	//stringToLCD("SwStatusMonitor online. ");
 
 }
 
 void MyDisplay::setBacklight(bool active) {
 	if(active){
-		my_lcd->setBacklight(1);
+		//my_lcd->setBacklight(1);
 	} else {
-		my_lcd->setBacklight(0);
+		//my_lcd->setBacklight(0);
 	}
 }
 
