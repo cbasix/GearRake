@@ -137,6 +137,9 @@
 #define DIAG_SET_IN_LISTENER 60
 #define DIAG_SET_OUT_LISTENER 61
 
+#define DIAG_SIMULATE_INPUT_MODE 71
+#define DIAG_SIMULATE_OUTPUT_MODE 72
+
 //GENERAL Abstact Tasks
 /*class SimpleMappingTask : public Task {
 	public:

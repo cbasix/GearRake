@@ -232,8 +232,11 @@ class InputObject{
 		void readInput();
 		bool hasInputChanged(int input_id);
 		InputData input_data[INPUT_ID_COUNT];
+		void setSimulationMode(bool enabled);
+		bool getSimulationMode();
 	private:
 		TaskManager *tm;
+		bool simulate_input_mode;
 };
 
 
@@ -259,8 +262,11 @@ class OutputObject{
 		bool getOutputState(int output_id);
 		bool isOutputChanging(int output_id);
 		void writeOutput();
+		void setSimulationMode(bool enabled);
+		bool getSimulationMode();
 
 	private:
+		bool simulate_output_mode;
 		OutputData output_data[OUTPUT_ID_COUNT];
 		TaskManager* tm;
 		Adafruit_MCP23017* exp1;

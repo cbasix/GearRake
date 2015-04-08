@@ -63,6 +63,7 @@ int FifoQueue::size() {
 
 
 InputObject::InputObject(TaskManager* task_monitor) {
+	simulate_input_mode = false;
 	tm = task_monitor;
 
 	//Initialize input array -> Pin mapping definition
@@ -294,7 +295,11 @@ void InputObject::readInput(){
 
 		bool readed;
 
-		if(input_data[i].input_pin >= PIN_ARDUINO_START
+		//get simulated input in simulate input mode else read input from the given pins
+		if(simulate_input_mode){
+			readed = input_data[i].temp_state;
+
+		} else if(input_data[i].input_pin >= PIN_ARDUINO_START
 				&& input_data[i].input_pin <= PIN_ARDUINO_END){
 
 			//inputs are all pulled up if input button is pressed digitalRead outputs 0 -> negate with !
@@ -367,9 +372,21 @@ void InputObject::readInput(){
 bool InputObject::hasInputChanged(int input_id){
 	return input_data[input_id].state_changed;
 }
+void InputObject::setSimulationMode(bool enabled) {
+	simulate_input_mode = enabled;
+	//set all inputs to false when entering or leaving simulation mode
+	for(int i = 0; i < INPUT_ID_COUNT; i++){
+		input_data[i].temp_state = 0;
+	}
+}
+
+bool InputObject::getSimulationMode() {
+	return simulate_input_mode;
+}
 
 
 OutputObject::OutputObject(TaskManager* task_monitor){
+	simulate_output_mode = false;
 	tm = task_monitor;
 
 	//////Serial.println("Setting up expanders");
@@ -546,12 +563,18 @@ void OutputObject::writeOutput() {
 	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 		if(output_data[i].state_changed){
 			tm->addOutput(i, output_data[i].state);
+
+
 			//ALL OUTPUTS ARE INVERTED! They are active when they are connected to ground. -> invert output with !
 
 			//Serial.print("              <<| PIN: ");
 			//Serial.print(output_data[i].output_pin);
 
 			output_data[i].state_changed = false;
+
+			if(simulate_output_mode){
+				continue;
+			}
 
 			if(output_data[i].output_pin >= PIN_ARDUINO_START &&
 							output_data[i].output_pin <= PIN_ARDUINO_END){
@@ -610,5 +633,15 @@ bool OutputObject::isOutputChanging(int output_id){
 	return output_data[output_id].state_changed;
 }
 
+void OutputObject::setSimulationMode(bool enabled) {
+	simulate_output_mode = enabled;
 
+	//set all outputs to off when entering or leaving "simulate mode"
+	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
+		output_data[i].state = false;
+	}
+}
 
+bool OutputObject::getSimulationMode() {
+	return simulate_output_mode;
+}

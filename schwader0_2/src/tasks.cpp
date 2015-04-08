@@ -691,12 +691,13 @@ void BothSpinnerUpTask::start() {
 }
 
 void BothSpinnerUpTask::update(EventData *inp) {
-	if (inp->input_id == SENS_SPINNER_LEFT_THIRD && inp->input_value == ACTIVE) {
+	if ((inp->input_id == SENS_SPINNER_LEFT_THIRD && inp->input_value == ACTIVE)
+			|| (inp->input_id == SENS_SPINNER_LEFT_UP && inp->input_value == ACTIVE)) {
 		spinner_left_is_done = true;
 		tm->outp->setCylinder(OUT_SPINNER_LEFT_UP, OUT_SPINNER_LEFT_FLOAT, CYLINDER_HOLD);
 
-	} else if (inp->input_id == SENS_SPINNER_RIGHT_THIRD
-			&& inp->input_value == ACTIVE) {
+	} else if ((inp->input_id == SENS_SPINNER_RIGHT_THIRD && inp->input_value == ACTIVE)
+			|| (inp->input_id == SENS_SPINNER_RIGHT_UP && inp->input_value == ACTIVE)) {
 		spinner_right_is_done = true;
 		tm->outp->setCylinder(OUT_SPINNER_RIGHT_UP, OUT_SPINNER_RIGHT_FLOAT, CYLINDER_HOLD);
 	}
@@ -1621,13 +1622,20 @@ void DiagnoseTask::timer() {
 
 		 setSetting(setting_id, value);*/
 		if(command == DIAG_SIMULATE_INPUT){
-			EventData evt;
+			/*EventData evt;
 			evt.input_type = arg1;
 			evt.input_id = arg2;
 			evt.input_value = arg3;
 			evt.additional_info = arg4;
 
-			tm->addEvent(&evt);
+			tm->addEvent(&evt);*/
+			if(tm->inp->getSimulationMode()){
+				tm->inp->input_data[arg2].temp_state = arg3;
+			}else{
+				//simulation mode not active
+				sendCommand(DIAG_ERROR, 2, 0, 0, 0);
+			}
+
 		} else if(command == DIAG_SET_IN_LISTENER){
 			bool activate_in_listener= arg1;
 			in_listener = activate_in_listener;
@@ -1641,19 +1649,38 @@ void DiagnoseTask::timer() {
 			log_listener = activate_log;
 
 		} else if(command == DIAG_GET_ALL_IN_VALUES){
+			sendCommand(DIAG_ERROR, 13, 0, 0, 0);
 			for (int i = 0; i < INPUT_ID_COUNT; i++){
 				bool state = tm->inp->getInputState(i);
 				sendCommand(DIAG_GET_ALL_IN_VALUES, i, state, 0, 0);
 
 			}
 		}else if(command == DIAG_GET_ALL_OUT_VALUES){
+			sendCommand(DIAG_ERROR, 14, 0, 0, 0);
 			for (int i = 0; i < OUTPUT_ID_COUNT; i++){
 				bool state = tm->outp->getOutputState(i);
 				sendCommand(DIAG_GET_ALL_OUT_VALUES, i, state, 0, 0);
 
 			}
+		}else if(command == DIAG_SIMULATE_INPUT_MODE){
+			if(arg1 == 1){
+				//activate simulate input mode
+				tm->inp->setSimulationMode(true);
+				//sendCommand(DIAG_ERROR, 125, 0, 0, 0);
+			} else {
+				//deactivate simulate input mode
+				tm->inp->setSimulationMode(false);
+			}
+		}else if(command == DIAG_SIMULATE_OUTPUT_MODE){
+			if(arg1 == 1){
+				//activate simulate output mode
+				tm->outp->setSimulationMode(true);
+			} else {
+				//deactivate simulate output mode
+				tm->outp->setSimulationMode(false);
+			}
 		}else{
-			sendCommand(DIAG_ERROR, 1, 0, 0, 0);
+			sendCommand(DIAG_ERROR, 1, command, arg1, arg2);
 		}
 
 	}
