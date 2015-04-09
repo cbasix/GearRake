@@ -5,6 +5,9 @@
 #define STATE_RUNNING 1
 #define STATE_STOPPED 0
 
+#define DEFAULT_TIMER_RUN 200
+#define DIAGNOSE_TIMER_RUN 10
+
 
 
 struct EventData;
@@ -86,6 +89,8 @@ class TaskManager{
 
 		MyDisplay dsp;
 
+		unsigned long timer_run_intervall;
+
 	private:
 		//Task* taskList[];
 		//ist ehere eine Event queue als eine input queue
@@ -95,7 +100,7 @@ class TaskManager{
 		//int task_list_length;
 
 		unsigned long timer_last_run;
-		unsigned long timer_run_intervall;
+
 
 };
 //END MANGER

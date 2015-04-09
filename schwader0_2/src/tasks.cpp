@@ -1546,6 +1546,7 @@ void DiagnoseTask::testStartConditions(EventData* inp) {
 
 void DiagnoseTask::start() {
 	Task::start();
+	tm->timer_run_intervall = DIAGNOSE_TIMER_RUN;
 
 	last_run = millis();
 	Serial.begin(9600);
@@ -1591,7 +1592,7 @@ void DiagnoseTask::update(EventData* inp) {
 
 void DiagnoseTask::exit() {
 	Task::exit();
-
+	tm->timer_run_intervall = DEFAULT_TIMER_RUN;
 	Serial.end();
 }
 
@@ -1649,14 +1650,14 @@ void DiagnoseTask::timer() {
 			log_listener = activate_log;
 
 		} else if(command == DIAG_GET_ALL_IN_VALUES){
-			sendCommand(DIAG_ERROR, 13, 0, 0, 0);
+			//sendCommand(DIAG_ERROR, 13, 0, 0, 0);
 			for (int i = 0; i < INPUT_ID_COUNT; i++){
 				bool state = tm->inp->getInputState(i);
 				sendCommand(DIAG_GET_ALL_IN_VALUES, i, state, 0, 0);
 
 			}
 		}else if(command == DIAG_GET_ALL_OUT_VALUES){
-			sendCommand(DIAG_ERROR, 14, 0, 0, 0);
+			//sendCommand(DIAG_ERROR, 14, 0, 0, 0);
 			for (int i = 0; i < OUTPUT_ID_COUNT; i++){
 				bool state = tm->outp->getOutputState(i);
 				sendCommand(DIAG_GET_ALL_OUT_VALUES, i, state, 0, 0);

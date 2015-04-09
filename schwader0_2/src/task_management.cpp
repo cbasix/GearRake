@@ -36,7 +36,7 @@ void Task::exit() {
 
 TaskManager::TaskManager() {
 	timer_last_run = 0;
-	timer_run_intervall = 100;
+	timer_run_intervall = DEFAULT_TIMER_RUN;
 
 	outp = NULL;
 	inp = NULL;
