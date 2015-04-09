@@ -1,3 +1,5 @@
+// JUST A DUMMY FILE THE REAL ONE COMES WITH THE ADAFRUIT MCP23017 ARDUINO LIBRARY
+
 /*************************************************** 
   This is a library for the MCP23017 i2c port expander
 

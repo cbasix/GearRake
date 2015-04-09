@@ -183,48 +183,48 @@ InputObject::InputObject(TaskManager* task_monitor) {
 	//Sensors
 	input_data[SENS_SPINNER_LEFT_THIRD].input_pin = PIN_ARDUINO_START + 22;
 
-	input_data[SENS_SPINNER_RIGHT_THIRD].input_pin = PIN_ARDUINO_START + 23;
+	input_data[SENS_SPINNER_RIGHT_THIRD].input_pin = PIN_ARDUINO_START + 24;
 
 
-	input_data[SENS_SPINNER_LEFT_UP].input_pin = PIN_ARDUINO_START + 24;
+	input_data[SENS_SPINNER_LEFT_UP].input_pin = PIN_ARDUINO_START + 23;
 
 	input_data[SENS_SPINNER_RIGHT_UP].input_pin = PIN_ARDUINO_START + 25;
 
-	input_data[SENS_SPINNER_REAR_UP].input_pin = PIN_ARDUINO_START + 26;
+	input_data[SENS_SPINNER_REAR_UP].input_pin = PIN_ARDUINO_START + 29;
 
 
-	input_data[SENS_SPINNER_LEFT_TELE_OUT].input_pin = PIN_ARDUINO_START + 27;
+	input_data[SENS_SPINNER_LEFT_TELE_OUT].input_pin = PIN_ARDUINO_START + 26;
 
-	input_data[SENS_SPINNER_LEFT_TELE_IN].input_pin = PIN_ARDUINO_START + 28;
+	input_data[SENS_SPINNER_LEFT_TELE_IN].input_pin = PIN_ARDUINO_START + 27;
 
 
-	input_data[SENS_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_START + 29;
+	input_data[SENS_SPINNER_RIGHT_TELE_OUT].input_pin = PIN_ARDUINO_START + 28;
 
 	input_data[SENS_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_START + 30;
 
 
-	input_data[SENS_FRAME_UP].input_pin = PIN_ARDUINO_START + 31;
+	input_data[SENS_FRAME_UP].input_pin = PIN_ARDUINO_START + 33;
 
-	input_data[SENS_FRAME_MIDDLE].input_pin = PIN_ARDUINO_START + 32;
+	input_data[SENS_FRAME_MIDDLE].input_pin = PIN_ARDUINO_START + 34;
 
-	input_data[SENS_FRAME_LOW].input_pin = PIN_ARDUINO_START + 33;
+	input_data[SENS_FRAME_LOW].input_pin = PIN_ARDUINO_START + 35;
 
-	input_data[SENS_FRAME_GROUND].input_pin = PIN_ARDUINO_START + 34;
-
-
-	input_data[SENS_FRAME_LOCK_OPEN].input_pin = PIN_ARDUINO_START + 35;
-
-	input_data[SENS_FRAME_LOCK_CLOSED].input_pin = PIN_ARDUINO_START + 36;
+	input_data[SENS_FRAME_GROUND].input_pin = PIN_ARDUINO_START + 36;
 
 
-	input_data[SENS_WEEL_TELE_RIGHT_OUT].input_pin = PIN_ARDUINO_START + 37;
+	input_data[SENS_FRAME_LOCK_OPEN].input_pin = PIN_ARDUINO_START + 31;
 
-	input_data[SENS_WEEL_TELE_RIGHT_IN].input_pin = PIN_ARDUINO_START + 38;
+	input_data[SENS_FRAME_LOCK_CLOSED].input_pin = PIN_ARDUINO_START + 32;
 
 
-	input_data[SENS_WEEL_TELE_LEFT_OUT].input_pin = PIN_ARDUINO_START + 39;
+	input_data[SENS_WEEL_TELE_RIGHT_OUT].input_pin = PIN_ARDUINO_START + 39;
 
-	input_data[SENS_WEEL_TELE_LEFT_IN].input_pin = PIN_ARDUINO_START + 40;
+	input_data[SENS_WEEL_TELE_RIGHT_IN].input_pin = PIN_ARDUINO_START + 40;
+
+
+	input_data[SENS_WEEL_TELE_LEFT_OUT].input_pin = PIN_ARDUINO_START + 37;
+
+	input_data[SENS_WEEL_TELE_LEFT_IN].input_pin = PIN_ARDUINO_START + 38;
 
 
 	input_data[SENS_WEEL_TRACK_MIDDLE].input_pin = PIN_ARDUINO_START + 41;
