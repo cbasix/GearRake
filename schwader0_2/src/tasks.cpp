@@ -401,7 +401,98 @@ void MessageSensorTaskpart::timer() {
 		tm->addTimeout(mapped_input_id);
 
 		//TODO testing only to continue after timeout----------------------------------------
+		//tm->addMessage(mapped_input_id, INACTIVE);
+
+		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
+		tm->stopTask(task_id);
+
+	}
+}
+
+/**--------------
+ *
+ */
+MessageMoveToSensorTaskpart::MessageMoveToSensorTaskpart(int task_id_to_set,
+		int input_type,
+		int input_id,
+		int output_message_id_on_sensor_active_,
+		int output_message_id_on_sensor_inactive_,
+		int sensor_input_id_parm,
+		unsigned long timeout_){
+
+	task_state = STATE_STOPPED;
+	task_id = task_id_to_set;
+	mapped_input_type = input_type;
+	mapped_input_id = input_id;
+	output_message_id_on_sensor_active = output_message_id_on_sensor_active_;
+	output_message_id_on_sensor_inactive = output_message_id_on_sensor_inactive_;
+	timeout = timeout_;
+	sensor_input_id = sensor_input_id_parm;
+}
+void MessageMoveToSensorTaskpart::testStartConditions(EventData* inp) {
+//	Serial.print("Test Start TSK: ");
+//	Serial.print(task_id);
+//	Serial.print(" Expected INP_ID: ");
+//	Serial.print(mapped_input_id);
+//	Serial.print(" got INP_ID: ");
+//	Serial.println(inp->input_id);
+
+
+	if (inp->input_type == mapped_input_type
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == ACTIVE){
+//		Serial.print("Starting TSK: ");
+//		Serial.println(task_id);
+
+		tm->startTask(task_id);
+	}
+}
+void MessageMoveToSensorTaskpart::start() {
+	Task::start();
+//	Serial.print("Starting Simple TSK: ");
+//	Serial.println(task_id);
+	start_time = millis();
+
+	if(tm->inp->getInputState(sensor_input_id) == ACTIVE){
+		tm->addMessage(output_message_id_on_sensor_active, ACTIVE);
+	} else {
+		tm->addMessage(output_message_id_on_sensor_inactive, ACTIVE);
+	}
+}
+
+void MessageMoveToSensorTaskpart::update(EventData* inp) {
+	if (inp->input_type == mapped_input_type
+			&& (inp->input_id == mapped_input_id)
+			&& inp->input_value == INACTIVE){
+		tm->stopTask(task_id);
+
+	} else if (inp->input_type == TYPE_SENSOR
+			&& (inp->input_id == sensor_input_id)){
+
+		//send message to activater task that parttask is ready
 		tm->addMessage(mapped_input_id, INACTIVE);
+		tm->stopTask(task_id);
+
+	}
+}
+
+void MessageMoveToSensorTaskpart::exit() {
+	Task::exit();
+//	Serial.print("Stopping Simple TSK: ");
+//	Serial.println(task_id);
+	//stop possibly running subtasks
+	tm->addMessage(output_message_id_on_sensor_active, INACTIVE);
+	tm->addMessage(output_message_id_on_sensor_inactive, INACTIVE);
+
+}
+
+void MessageMoveToSensorTaskpart::timer() {
+	if(start_time + timeout < millis()){
+		//send message to activator task that timeout occured.
+		tm->addTimeout(mapped_input_id);
+
+		//TODO testing only to continue after timeout----------------------------------------
+		//tm->addMessage(mapped_input_id, INACTIVE);
 
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
 		tm->stopTask(task_id);
@@ -1111,7 +1202,7 @@ void AutoWorkTask::testStartConditions(EventData* inp) {
 			&& inp->input_id == MSG_AUTO_WORK_DELAYED
 			&& inp->input_value == ACTIVE){
 
-		//if another button is pressed dont start auto low task
+		//if another button is pressed dont start auto work task
 		if(!tm->inp->getInputState(IN_AUTO_TRANSPORT)
 				&& !tm->inp->getInputState(IN_AUTO_LOW)
 				&& !tm->inp->getInputState(IN_MOD_LR_STEER)
@@ -1142,20 +1233,147 @@ void AutoWorkTask::start() {
 	Task::start();
 	tm->outp->setLed(LED_AUTO_WORK, ACTIVE);
 
-	//1st step -> hinten schwimmstellung -> beide kreisel auf 1/3 stellung fahren (wenn schon drüber, dann bis oben stellung)
+	//1st step: if weeltele left and right are allready out
+	// -> continue with step 2: frameup and rear spinner next to ground
+	// ELSE -> make them slide out
 	step = 1;
 	left_done = false;
 	right_done = false;
 
-	tm->outp->setCylinder(OUT_SPINNER_REAR_UP, OUT_SPINNER_REAR_FLOAT, CYLINDER_FUNCTION_2);
+	if(tm->inp->getInputState(SENS_WEEL_TELE_LEFT_OUT) == ACTIVE &&
+			tm->inp->getInputState(SENS_WEEL_TELE_RIGHT_OUT) == ACTIVE){
+
+		step = 2;
+
+		//start step 2: frameup and rear spinner next to ground
+		tm->addMessage(MSG_TSKPART_FRAME_TO_UP, ACTIVE);
+
+	} else {
+		//frame down to ground, needed to get the weelteles out
+		tm->addMessage(MSG_TSKPART_FRAME_DOWN_TO_GROUND, ACTIVE);
+
+	}
+
+	/*tm->outp->setCylinder(OUT_SPINNER_REAR_UP, OUT_SPINNER_REAR_FLOAT, CYLINDER_FUNCTION_2);
 	tm->addMessage(MSG_TSKPART_SPINNER_LEFT_UP_TWO_SENS, ACTIVE);
-	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_UP_TWO_SENS, ACTIVE);
+	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_UP_TWO_SENS, ACTIVE);*/
 }
 
 void AutoWorkTask::update(EventData* inp) {
-	//TODO soll bei Timeouts wirklick weitergemacht werden ?
 	//Step 1 endbedingungen -> hochfahren links und rechts erledigt
-	if(step == 1){
+    if(step == 1){
+    	//frame is on ground -> get weelteles out
+    	if(inp->input_type == TYPE_MESSAGE
+    			&& inp->input_id == MSG_TSKPART_FRAME_DOWN_TO_GROUND
+				&& inp->input_value == INACTIVE){
+        	tm->addMessage(MSG_TSKPART_WEEL_TELE_RIGHT_TO_OUT, ACTIVE);
+    		tm->addMessage(MSG_TSKPART_WEEL_TELE_LEFT_TO_OUT, ACTIVE);
+
+
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_WEEL_TELE_RIGHT_TO_OUT
+				&& inp->input_value == INACTIVE){
+
+			right_done = true;
+
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_WEEL_TELE_LEFT_TO_OUT
+				&& inp->input_value == INACTIVE){
+
+			left_done = true;
+
+		}
+
+		if(left_done && right_done){
+			step = 2;
+			left_done = false;
+			right_done = false;
+
+			//step 2: frameup and rear spinner next to ground
+			tm->addMessage(MSG_TSKPART_FRAME_TO_UP, ACTIVE);
+		}
+    }else if(step == 2){
+    	//frame is in "up" position
+    	if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_FRAME_TO_UP
+				&& inp->input_value == INACTIVE){
+    		//start rear spinner down (time intervall defined by setting)
+    		tm->addMessage(MSG_TSKPART_SPINNER_REAR_FLOAT_LONG, ACTIVE);
+
+    	//spinner down is ready
+    	} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_REAR_FLOAT_LONG
+				&& inp->input_value == INACTIVE){
+    		//start short spinner up
+    		tm->addMessage(MSG_TSKPART_SPINNER_REAR_UP_SHORT, ACTIVE);
+
+    	//short spinner up is ready
+    	}else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_REAR_UP_SHORT
+				&& inp->input_value == INACTIVE){
+
+    		//check if spinners are in "up" position, if not bring them to the "third" position
+    		if(tm->inp->getInputState(SENS_SPINNER_LEFT_UP)){
+    			left_done = true;
+    		} else {
+    			tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_THIRD, ACTIVE);
+    		}
+
+    		if(tm->inp->getInputState(SENS_SPINNER_RIGHT_UP)){
+				right_done = true;
+			} else {
+				tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_THIRD, ACTIVE);
+			}
+
+
+    	} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_RIGHT_TO_THIRD
+				&& inp->input_value == INACTIVE){
+
+			right_done = true;
+
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_TO_THIRD
+				&& inp->input_value == INACTIVE){
+
+			left_done = true;
+
+		}
+
+    	if(left_done && right_done){
+			step = 3;
+			left_done = false;
+			right_done = false;
+
+			//step 3: get spinner teles out
+			tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT, ACTIVE);
+			tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT, ACTIVE);
+		}
+    }else if(step == 3){
+    	if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT
+				&& inp->input_value == INACTIVE){
+
+			left_done = true;
+
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT
+				&& inp->input_value == INACTIVE){
+
+			right_done = true;
+
+		}
+
+    	if(left_done && right_done){
+			step = 99;
+			left_done = false;
+			right_done = false;
+
+			//READY
+			tm->stopTask(TSK_AUTO_WORK);
+		}
+
+    }else if(step == 78){
 		if(inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_UP_TWO_SENS
 				&& inp->input_value == INACTIVE){
@@ -1178,7 +1396,7 @@ void AutoWorkTask::update(EventData* inp) {
 			tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_IN, ACTIVE);
 
 		}
-	} else if(step == 2){
+	} else if(step == 244){
 		if(inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_LEFT_IN
 				&& inp->input_value == INACTIVE){
@@ -1203,7 +1421,7 @@ void AutoWorkTask::update(EventData* inp) {
 
 		}
 
-	} else if(step == 3){
+	} else if(step == 344){
 		if(inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_UP
 				&& inp->input_value == INACTIVE){

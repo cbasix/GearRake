@@ -31,7 +31,7 @@ class TaskManager;
 
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define INPUT_ID_COUNT 40
+#define INPUT_ID_COUNT 40 /// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
 
 //Left Joystick
 #define IN_SPINNER_LEFT_UP 0
