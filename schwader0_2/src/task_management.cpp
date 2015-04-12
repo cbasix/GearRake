@@ -68,7 +68,35 @@ void TaskManager::beginn() {
 	task_list[TSK_SPINNER_RIGHT_FLOAT_PERM] = new SpinnerRightFloatPermTask();
 	task_list[TSK_SPINNER_LEFT_FLOAT_PERM] = new SpinnerLeftFloatPermTask();
 	task_list[TSK_SPINNER_REAR_FLOAT_PERM] = new SpinnerRearFloatPermTask();
-	/*task_list[TSKPART_SPINNER_LEFT_UP] = new SimpleCylinderTask(
+
+	task_list[TSK_SPINNER_LEFT_AUTO_THIRD] = new AutoMessageTask(
+			TSK_SPINNER_LEFT_AUTO_THIRD,
+			TYPE_MANUAL,
+			IN_SPINNER_LEFT_AUTO_THIRD,
+			TYPE_MANUAL,
+			IN_SPINNER_LEFT_UP,
+			TYPE_MANUAL,
+			IN_SPINNER_LEFT_FLOAT,
+			MSG_TSKPART_SPINNER_LEFT_TO_THIRD);
+	task_list[TSK_SPINNER_RIGHT_AUTO_THIRD] = new AutoMessageTask(
+			TSK_SPINNER_RIGHT_AUTO_THIRD,
+			TYPE_MANUAL,
+			IN_SPINNER_RIGHT_AUTO_THIRD,
+			TYPE_MANUAL,
+			IN_SPINNER_RIGHT_UP,
+			TYPE_MANUAL,
+			IN_SPINNER_RIGHT_FLOAT,
+			MSG_TSKPART_SPINNER_RIGHT_TO_THIRD);
+	task_list[TSK_SPINNER_REAR_AUTO_THIRD] = new AutoMessageTask(
+			TSK_SPINNER_REAR_AUTO_THIRD,
+			TYPE_MESSAGE,
+			MSG_IN_SPINNER_REAR_AUTO_THIRD,
+			TYPE_MESSAGE,
+			MSG_IN_SPINNER_REAR_UP,
+			TYPE_MANUAL,
+			MSG_IN_SPINNER_REAR_FLOAT,
+			MSG_TSKPART_SPINNER_LEFT_TO_THIRD);
+	task_list[TSKPART_SPINNER_LEFT_UP] = new SimpleCylinderTask(
 			TSKPART_SPINNER_LEFT_UP,
 			TYPE_MESSAGE,
 			MSG_TSKPART_SPINNER_LEFT_UP,
@@ -81,7 +109,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_SPINNER_LEFT_FLOAT,
 			OUT_SPINNER_LEFT_UP,
 			OUT_SPINNER_LEFT_FLOAT,
-			CYLINDER_FUNCTION_2);*/
+			CYLINDER_FUNCTION_2);
 	task_list[TSKPART_SPINNER_LEFT_TO_UP] = new CylinderSensorTaskpart(
 			TSKPART_SPINNER_LEFT_TO_UP,
 			TYPE_MESSAGE,
@@ -91,16 +119,15 @@ void TaskManager::beginn() {
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_LEFT_UP,
 			5000);
-	task_list[TSKPART_SPINNER_LEFT_TO_THIRD] = new CylinderSensorTaskpart(
+	task_list[TSKPART_SPINNER_LEFT_TO_THIRD] = new MessageMoveToSensorTaskpart(
 			TSKPART_SPINNER_LEFT_TO_THIRD,
 			TYPE_MESSAGE,
 			MSG_TSKPART_SPINNER_LEFT_TO_THIRD,
-			OUT_SPINNER_LEFT_UP,
-			OUT_SPINNER_LEFT_FLOAT,
-			CYLINDER_FUNCTION_1,
-			SENS_SPINNER_LEFT_UP,
+			MSG_TSKPART_SPINNER_LEFT_FLOAT,
+			MSG_TSKPART_SPINNER_LEFT_UP,
+			SENS_SPINNER_LEFT_THIRD,
 			5000);
-	/*task_list[TSKPART_SPINNER_RIGHT_UP] = new SimpleCylinderTask(
+	task_list[TSKPART_SPINNER_RIGHT_UP] = new SimpleCylinderTask(
 			TSKPART_SPINNER_RIGHT_UP,
 			TYPE_MESSAGE,
 			MSG_TSKPART_SPINNER_RIGHT_UP,
@@ -113,7 +140,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_SPINNER_RIGHT_FLOAT,
 			OUT_SPINNER_RIGHT_UP,
 			OUT_SPINNER_RIGHT_FLOAT,
-			CYLINDER_FUNCTION_2);*/
+			CYLINDER_FUNCTION_2);
 	task_list[TSKPART_SPINNER_RIGHT_TO_UP] = new CylinderSensorTaskpart(
 			TSKPART_SPINNER_RIGHT_TO_UP,
 			TYPE_MESSAGE,
@@ -123,14 +150,13 @@ void TaskManager::beginn() {
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_RIGHT_UP,
 			5000);
-	task_list[TSKPART_SPINNER_RIGHT_TO_THIRD] = new CylinderSensorTaskpart(
+	task_list[TSKPART_SPINNER_RIGHT_TO_THIRD] = new MessageMoveToSensorTaskpart(
 			TSKPART_SPINNER_RIGHT_TO_THIRD,
 			TYPE_MESSAGE,
 			MSG_TSKPART_SPINNER_RIGHT_TO_THIRD,
-			OUT_SPINNER_RIGHT_UP,
-			OUT_SPINNER_RIGHT_FLOAT,
-			CYLINDER_FUNCTION_1,
-			SENS_SPINNER_RIGHT_UP,
+			MSG_TSKPART_SPINNER_RIGHT_FLOAT,
+			MSG_TSKPART_SPINNER_RIGHT_UP,
+			SENS_SPINNER_RIGHT_THIRD,
 			5000);
 	task_list[TSKPART_SPINNER_REAR_FLOAT_LONG] = new CylinderTimerTaskpart(
 			TSKPART_SPINNER_REAR_FLOAT_LONG,
@@ -333,16 +359,16 @@ void TaskManager::beginn() {
 			TSKPART_FRAME_TO_LOW,
 			TYPE_MESSAGE,
 			MSG_TSKPART_FRAME_TO_LOW,
-			MSG_TSKPART_FRAME_DOWN,
 			MSG_TSKPART_FRAME_UP,
+			MSG_TSKPART_FRAME_DOWN,
 			SENS_FRAME_LOW,
 			5000);
 	task_list[TSKPART_FRAME_TO_MIDDLE] = new MessageMoveToSensorTaskpart(
 			TSKPART_FRAME_TO_MIDDLE,
 			TYPE_MESSAGE,
 			MSG_TSKPART_FRAME_TO_MIDDLE,
-			MSG_TSKPART_FRAME_DOWN,
 			MSG_TSKPART_FRAME_UP,
+			MSG_TSKPART_FRAME_DOWN,
 			SENS_FRAME_MIDDLE,
 			5000);
 	task_list[TSKPART_FRAME_TO_UP] = new MessageSensorTaskpart(
@@ -447,12 +473,12 @@ void TaskManager::addEvent(EventData* inp) {
 
 }
 
-void TaskManager::addMessage(int message_id, bool message_value){
+void TaskManager::addMessage(int message_id, bool message_value, int sender){
 	EventData e;
 	e.input_id = message_id;
 	e.input_type = TYPE_MESSAGE;
 	e.input_value = message_value;
-	e.additional_info = -1;
+	e.additional_info = sender;
 
 	addEvent(&e);
 }

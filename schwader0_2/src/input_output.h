@@ -31,7 +31,7 @@ class TaskManager;
 
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define INPUT_ID_COUNT 40 /// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
+#define INPUT_ID_COUNT 45 /// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
 
 //Left Joystick
 #define IN_SPINNER_LEFT_UP 0
@@ -40,67 +40,77 @@ class TaskManager;
 #define IN_SPINNER_LEFT_TELE_OUT 2
 #define IN_SPINNER_LEFT_TELE_IN 3
 
-//Right Joystick
-#define IN_SPINNER_RIGHT_UP 4
-#define IN_SPINNER_RIGHT_FLOAT 5
+#define IN_SPINNER_LEFT_AUTO_THIRD 4
 
-#define IN_SPINNER_RIGHT_TELE_OUT 6
-#define IN_SPINNER_RIGHT_TELE_IN 7
+//Right Joystick
+#define IN_SPINNER_RIGHT_UP 5
+#define IN_SPINNER_RIGHT_FLOAT 6
+
+#define IN_SPINNER_RIGHT_TELE_OUT 7
+#define IN_SPINNER_RIGHT_TELE_IN 8
+
+#define IN_SPINNER_RIGHT_AUTO_THIRD 9
 
 //Middle Joystick  UP is pulling the joystick!!!
-#define IN_MULTI_UP 8
-#define IN_MULTI_DOWN 9
+#define IN_MULTI_UP 10
+#define IN_MULTI_DOWN 11
 
-#define IN_MULTI_RIGHT 10
-#define IN_MULTI_LEFT 11
+#define IN_MULTI_RIGHT 12
+#define IN_MULTI_LEFT 13
+
+#define IN_MULTI_PRESS 14
 
 //Top Buttons
-#define IN_AUTO_TRANSPORT 12
-#define IN_AUTO_LOW 13
-#define IN_AUTO_WORK 14
+#define IN_AUTO_TRANSPORT 15
+#define IN_AUTO_LOW 16
+#define IN_AUTO_WORK 17
 
 //Modifier Buttons Links Rechts
-#define IN_MOD_LR_STEER 15
+#define IN_MOD_LR_STEER 18
 //#define IN_MOD_LR_UNUSED1
 //#define IN_MOD_LR_UNUSED2
-#define IN_MOD_LR_WEEL_RIGHT_TELE 16
-#define IN_MOD_LR_WEEL_LEFT_TELE 17
+#define IN_MOD_LR_WEEL_RIGHT_TELE 19
+#define IN_MOD_LR_WEEL_LEFT_TELE 20
 
 //Modifier Buttons Oben Unten
-#define IN_MOD_OU_SPINNER_BACK 18
-#define IN_MOD_OU_FRAME 19
+#define IN_MOD_OU_SPINNER_BACK 21
+#define IN_MOD_OU_FRAME 22
 //#define IN_MOD_OU_UNUSED
 
+//spinner rear buttons on the back side
+#define IN_SPINNER_REAR_UP 23
+#define IN_SPINNER_REAR_DOWN 24
+
 //Sensors
-#define SENS_SPINNER_LEFT_THIRD 20
-#define SENS_SPINNER_RIGHT_THIRD 21
+#define SENS_SPINNER_LEFT_THIRD 25
+#define SENS_SPINNER_RIGHT_THIRD 26
 
-#define SENS_SPINNER_LEFT_UP 22
-#define SENS_SPINNER_RIGHT_UP 23
+#define SENS_SPINNER_LEFT_UP 27
+#define SENS_SPINNER_RIGHT_UP 28
 
-#define SENS_SPINNER_REAR_UP 24
+#define SENS_SPINNER_REAR_UP 29
 
-#define SENS_SPINNER_LEFT_TELE_OUT 25
-#define SENS_SPINNER_LEFT_TELE_IN 26
+#define SENS_SPINNER_LEFT_TELE_OUT 30
+#define SENS_SPINNER_LEFT_TELE_IN 31
 
-#define SENS_SPINNER_RIGHT_TELE_OUT 27
-#define SENS_SPINNER_RIGHT_TELE_IN 28
+#define SENS_SPINNER_RIGHT_TELE_OUT 32
+#define SENS_SPINNER_RIGHT_TELE_IN 33
 
-#define SENS_FRAME_UP 29
-#define SENS_FRAME_MIDDLE 30
-#define SENS_FRAME_LOW 31
-#define SENS_FRAME_GROUND 32
+#define SENS_FRAME_UP 34
+#define SENS_FRAME_MIDDLE 35
+#define SENS_FRAME_LOW 36
+#define SENS_FRAME_GROUND 37
 
-#define SENS_FRAME_LOCK_OPEN 33
-#define SENS_FRAME_LOCK_CLOSED 34
+#define SENS_FRAME_LOCK_OPEN 38
+#define SENS_FRAME_LOCK_CLOSED 39
 
-#define SENS_WEEL_TELE_RIGHT_OUT 35
-#define SENS_WEEL_TELE_RIGHT_IN 36
+#define SENS_WEEL_TELE_RIGHT_OUT 40
+#define SENS_WEEL_TELE_RIGHT_IN 41
 
-#define SENS_WEEL_TELE_LEFT_OUT 37
-#define SENS_WEEL_TELE_LEFT_IN 38
+#define SENS_WEEL_TELE_LEFT_OUT 42
+#define SENS_WEEL_TELE_LEFT_IN 43
 
-#define SENS_WEEL_TRACK_MIDDLE 39
+#define SENS_WEEL_TRACK_MIDDLE 44
 
 
 // ids for output must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

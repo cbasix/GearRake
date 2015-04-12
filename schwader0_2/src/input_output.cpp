@@ -99,6 +99,9 @@ InputObject::InputObject(TaskManager* task_monitor) {
 	input_data[IN_SPINNER_LEFT_TELE_IN].input_type = TYPE_MANUAL;
 	//input_data[IN_SPINNER_LEFT_TELE_IN].active = false;
 
+	input_data[IN_SPINNER_LEFT_AUTO_THIRD].input_pin = PIN_ARDUINO_START + 51;
+	input_data[IN_SPINNER_LEFT_AUTO_THIRD].input_type = TYPE_MANUAL;
+
 
 
 	//Right Joystick
@@ -118,6 +121,9 @@ InputObject::InputObject(TaskManager* task_monitor) {
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_pin = PIN_ARDUINO_ANALOG_POSITIVE_START + 3;
 	input_data[IN_SPINNER_RIGHT_TELE_IN].input_type = TYPE_MANUAL;
 	//input_data[IN_SPINNER_RIGHT_TELE_IN].active = false;
+
+	input_data[IN_SPINNER_RIGHT_AUTO_THIRD].input_pin = PIN_ARDUINO_START + 52;
+	input_data[IN_SPINNER_RIGHT_AUTO_THIRD].input_type = TYPE_MANUAL;
 
 
 	//Middle Joystick
@@ -140,6 +146,8 @@ InputObject::InputObject(TaskManager* task_monitor) {
 	input_data[IN_MULTI_LEFT].input_type = TYPE_MANUAL;
 	//input_data[IN_MULTI_LEFT].active = false;
 
+	input_data[IN_MULTI_PRESS].input_pin = PIN_ARDUINO_START + 53;
+	input_data[IN_MULTI_PRESS].input_type = TYPE_MANUAL;
 
 	//Top Buttons
 	input_data[IN_AUTO_TRANSPORT].input_pin = PIN_ARDUINO_START + 2;
@@ -178,7 +186,13 @@ InputObject::InputObject(TaskManager* task_monitor) {
 
 	//input_data[IN_MOD_OU_UNUSED].input_pin = PIN_ARDUINO_START + 12;
 	//input_data[IN_MOD_OU_UNUSED].input_type = TYPE_MANUAL;
+	//spinner rear buttons on the back side
 
+	input_data[IN_SPINNER_REAR_UP].input_pin = PIN_ARDUINO_START + 10;
+	input_data[IN_SPINNER_REAR_UP].input_type = TYPE_MANUAL;
+
+	input_data[IN_SPINNER_REAR_DOWN].input_pin = PIN_ARDUINO_START + 11;
+	input_data[IN_SPINNER_REAR_DOWN].input_type = TYPE_MANUAL;
 
 	//Sensors
 	input_data[SENS_SPINNER_LEFT_THIRD].input_pin = PIN_ARDUINO_START + 22;

@@ -69,7 +69,7 @@ class TaskManager{
 		void beginn();
 
 		void addEvent(EventData *inp);
-		void addMessage(int message_id, bool message_state);
+		void addMessage(int message_id, bool message_state, int sender);
 		void addError(int error_id, int error_param);
 		void addTimeout(int sensor_id);
 		void addDebug(int debug_id, int debug_data, int test);

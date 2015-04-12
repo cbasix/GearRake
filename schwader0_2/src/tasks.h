@@ -1,5 +1,5 @@
 // ids for tasks must be continous! (stored in array with id as index)
-#define TSK_LIST_LENGTH 51
+#define TSK_LIST_LENGTH 58
 
 #define TSK_SPINNER_BOTH_UP 0
 #define TSK_SPINNER_RIGHT_UP 1
@@ -8,67 +8,72 @@
 #define TSK_SPINNER_RIGHT_FLOAT_PERM 4
 #define TSK_SPINNER_LEFT_FLOAT_PERM 5
 #define TSK_SPINNER_REAR_FLOAT_PERM 6
-//#define TSKPART_SPINNER_LEFT_UP 27
-//#define TSKPART_SPINNER_LEFT_FLOAT 27
-#define TSKPART_SPINNER_LEFT_TO_UP 7
-#define TSKPART_SPINNER_LEFT_TO_THIRD 8
-//#define TSKPART_SPINNER_RIGHT_UP 28
-//#define TSKPART_SPINNER_RIGHT_FLOAT 28
-#define TSKPART_SPINNER_RIGHT_TO_UP 9
-#define TSKPART_SPINNER_RIGHT_TO_THIRD 10
-#define TSKPART_SPINNER_REAR_FLOAT_LONG 11
-#define TSKPART_SPINNER_REAR_UP_SHORT 12
 
-#define TSK_SPINNER_TELE_RIGHT_OUT 13
-#define TSK_SPINNER_TELE_RIGHT_IN 14
-#define TSK_SPINNER_TELE_LEFT_OUT 15
-#define TSK_SPINNER_TELE_LEFT_IN 16
-#define TSKPART_SPINNER_TELE_LEFT_TO_IN 17
-#define TSKPART_SPINNER_TELE_LEFT_TO_OUT 18
-#define TSKPART_SPINNER_TELE_RIGHT_TO_IN 19
-#define TSKPART_SPINNER_TELE_RIGHT_TO_OUT 20
+#define TSK_SPINNER_LEFT_AUTO_THIRD 7
+#define TSK_SPINNER_RIGHT_AUTO_THIRD 8
+#define TSK_SPINNER_REAR_AUTO_THIRD 9
 
-#define TSK_STEER_LEFT 21
-#define TSK_STEER_RIGHT 22
+#define TSKPART_SPINNER_LEFT_UP 10
+#define TSKPART_SPINNER_LEFT_FLOAT 11
+#define TSKPART_SPINNER_LEFT_TO_UP 12
+#define TSKPART_SPINNER_LEFT_TO_THIRD 13
+#define TSKPART_SPINNER_RIGHT_UP 14
+#define TSKPART_SPINNER_RIGHT_FLOAT 15
+#define TSKPART_SPINNER_RIGHT_TO_UP 16
+#define TSKPART_SPINNER_RIGHT_TO_THIRD 17
+#define TSKPART_SPINNER_REAR_FLOAT_LONG 18
+#define TSKPART_SPINNER_REAR_UP_SHORT 19
 
-#define TSK_WEEL_RIGHT_TELE_OUT 23
-#define TSK_WEEL_RIGHT_TELE_IN 24
-#define TSK_WEEL_LEFT_TELE_OUT 25
-#define TSK_WEEL_LEFT_TELE_IN 26
-#define TSKPART_WEEL_TELE_RIGHT_TO_IN 27
-#define TSKPART_WEEL_TELE_RIGHT_TO_OUT 28
-#define TSKPART_WEEL_TELE_LEFT_TO_IN 29
-#define TSKPART_WEEL_TELE_LEFT_TO_OUT 30
+#define TSK_SPINNER_TELE_RIGHT_OUT 20
+#define TSK_SPINNER_TELE_RIGHT_IN 21
+#define TSK_SPINNER_TELE_LEFT_OUT 22
+#define TSK_SPINNER_TELE_LEFT_IN 23
+#define TSKPART_SPINNER_TELE_LEFT_TO_IN 24
+#define TSKPART_SPINNER_TELE_LEFT_TO_OUT 25
+#define TSKPART_SPINNER_TELE_RIGHT_TO_IN 26
+#define TSKPART_SPINNER_TELE_RIGHT_TO_OUT 27
 
-#define TSK_FRAME_UP 31
-#define TSKPART_FRAME_UP 32
-#define TSK_FRAME_DOWN 33
+#define TSK_STEER_LEFT 28
+#define TSK_STEER_RIGHT 29
+
+#define TSK_WEEL_RIGHT_TELE_OUT 30
+#define TSK_WEEL_RIGHT_TELE_IN 31
+#define TSK_WEEL_LEFT_TELE_OUT 32
+#define TSK_WEEL_LEFT_TELE_IN 33
+#define TSKPART_WEEL_TELE_RIGHT_TO_IN 34
+#define TSKPART_WEEL_TELE_RIGHT_TO_OUT 35
+#define TSKPART_WEEL_TELE_LEFT_TO_IN 36
+#define TSKPART_WEEL_TELE_LEFT_TO_OUT 37
+
+#define TSK_FRAME_UP 38
+#define TSKPART_FRAME_UP 39
+#define TSK_FRAME_DOWN 40
 //#define TSKPART_FRAME_DOWN_DIRECT 26
-#define TSKPART_FRAME_TO_GROUND 34
-#define TSKPART_FRAME_TO_LOW 35
-#define TSKPART_FRAME_TO_MIDDLE 36
-#define TSKPART_FRAME_TO_UP 37
-#define TSKPART_FRAME_UP_SHORT 38
+#define TSKPART_FRAME_TO_GROUND 41
+#define TSKPART_FRAME_TO_LOW 42
+#define TSKPART_FRAME_TO_MIDDLE 43
+#define TSKPART_FRAME_TO_UP 44
+#define TSKPART_FRAME_UP_SHORT 45
 
-#define TSKPART_FRAME_LOCK_TO_UP 39
-#define TSKPART_FRAME_LOCK_TO_DOWN 40
+#define TSKPART_FRAME_LOCK_TO_UP 46
+#define TSKPART_FRAME_LOCK_TO_DOWN 47
 
-#define TSKPART_AUTO_LOW_DELAY 41
-#define TSK_AUTO_LOW 42
+#define TSKPART_AUTO_LOW_DELAY 48
+#define TSK_AUTO_LOW 49
 
-#define TSKPART_AUTO_WORK_DELAY 43
-#define TSK_AUTO_WORK 44
+#define TSKPART_AUTO_WORK_DELAY 50
+#define TSK_AUTO_WORK 51
 
-#define TSKPART_AUTO_TRANSPORT_DELAY 45
-#define TSK_AUTO_TRANSPORT 46
+#define TSKPART_AUTO_TRANSPORT_DELAY 52
+#define TSK_AUTO_TRANSPORT 53
 
-#define TSK_MODE 47
+#define TSK_MODE 54
 //#define TSKPART_START_DIAG_DELAY 26
 
 //Diese Tasks müssen am ende der Tasklist stehen, sodass die isOutputChanging() Funktion genutzt werden kann.
-#define TSK_LED 48
-#define TSK_PRESSURE 49
-#define TSK_DIAGNOSE 50
+#define TSK_LED 55
+#define TSK_PRESSURE 56
+#define TSK_DIAGNOSE 57
 
 
 //messages
@@ -85,6 +90,7 @@
 
 #define MSG_IN_SPINNER_REAR_UP 12070
 #define MSG_IN_SPINNER_REAR_FLOAT 12080
+#define MSG_IN_SPINNER_REAR_AUTO_THIRD 12085
 
 
 #define MSG_IN_FRAME_UP 12090
@@ -101,6 +107,10 @@
 #define MSG_TSKPART_FRAME_LOCK_TO_UP 12180
 #define MSG_TSKPART_FRAME_LOCK_TO_DOWN 12190
 
+#define MSG_TSKPART_SPINNER_LEFT_UP 12195
+#define MSG_TSKPART_SPINNER_RIGHT_UP 12196
+#define MSG_TSKPART_SPINNER_LEFT_FLOAT 12197
+#define MSG_TSKPART_SPINNER_RIGHT_FLOAT 12198
 #define MSG_TSKPART_SPINNER_LEFT_TO_UP 12200
 #define MSG_TSKPART_SPINNER_RIGHT_TO_UP 12210
 #define MSG_TSKPART_SPINNER_LEFT_TO_THIRD 12220
@@ -254,7 +264,7 @@ class CylinderSensorTaskpart : public Task {
 		unsigned long timeout;
 };
 
-class CylinderTwoSensorTaskpart : public Task {
+/*class CylinderTwoSensorTaskpart : public Task {
 	public:
 		CylinderTwoSensorTaskpart(int task_id_to_set,
 				int input_type,
@@ -282,7 +292,7 @@ class CylinderTwoSensorTaskpart : public Task {
 		int sensor_1_input_id;
 		int sensor_2_input_id;
 		unsigned long timeout;
-};
+};*/
 
 //sends a message MSG_* = ACTIVE. And the corresponding MSG_* = INACTIVE when a specified sensor input or timeout occours
 //with this one can reuse other taskparts which are listening to the corresponding messages.
@@ -336,6 +346,33 @@ class MessageMoveToSensorTaskpart : public Task {
 		unsigned long start_time;
 		int sensor_input_id;
 		unsigned long timeout;
+};
+
+class AutoMessageTask : public Task {
+	public:
+	AutoMessageTask(int task_id_to_set,
+				int input_type,
+				int input_id,
+				int stop_input_1_type,
+				int stop_input_id_1,
+				int stop_input_2_type,
+				int stop_input_id_2,
+				int output_message_id);
+
+		void start();
+		void update(EventData *inp);
+		void exit();
+		void timer();
+		void testStartConditions(EventData* inp);
+
+	private:
+		int mapped_input_type;
+		int mapped_input_id;
+		int mapped_stop_input_1_type;
+		int mapped_stop_input_id_1;
+		int mapped_stop_input_2_type;
+		int mapped_stop_input_id_2;
+		int mapped_output_message_id;
 };
 
 class DelayedStartTaskpart : public Task {
