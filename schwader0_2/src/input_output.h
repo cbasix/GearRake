@@ -78,8 +78,8 @@ class TaskManager;
 //#define IN_MOD_OU_UNUSED
 
 //spinner rear buttons on the back side
-#define IN_SPINNER_REAR_UP 23
-#define IN_SPINNER_REAR_DOWN 24
+#define IN_REAR_SPINNER_REAR_UP 23
+#define IN_REAR_SPINNER_REAR_DOWN 24
 
 //Sensors
 #define SENS_SPINNER_LEFT_THIRD 25

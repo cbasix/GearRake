@@ -62,7 +62,9 @@ void SimpleCylinderTask::exit() {
 	tm->outp->setCylinder(mapped_cylinder_function_1_output_id, mapped_cylinder_function_2_output_id, CYLINDER_HOLD);
 
 	//notify others that this task is ready
-	tm->addMessage(mapped_input_id, INACTIVE, task_id);
+	if(mapped_input_type == TYPE_MESSAGE){ //TODO <- type test Everywhere
+		tm->addMessage(mapped_input_id, INACTIVE, task_id);
+	}
 }
 
 void SimpleCylinderTask::timer() {
@@ -512,13 +514,10 @@ void MessageMoveToSensorTaskpart::timer() {
 	if(start_time + timeout < millis()){
 		//send message to activator task that timeout occured.
 		tm->addTimeout(mapped_input_id);
-
-		//TODO testing only to continue after timeout----------------------------------------
-		//tm->addMessage(mapped_input_id, INACTIVE);
-
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
+		tm->addMessage(output_message_id_on_sensor_active, INACTIVE, task_id);
+		tm->addMessage(output_message_id_on_sensor_inactive, INACTIVE, task_id);
 		tm->stopTask(task_id);
-
 	}
 }
 
@@ -771,7 +770,7 @@ void ModeTask::update(EventData* inp) {
 
 			}else if(inp->input_id == IN_MULTI_PRESS ){
 
-				tm->addMessage(MSG_IN_SPINNER_REAR_AUTO_THIRD, inp->input_value, task_id);
+				tm->addMessage(MSG_IN_SPINNER_REAR_AUTO_UP, inp->input_value, task_id);
 			}
 		}
 
@@ -826,7 +825,7 @@ void ModeTask::setActiveMode(int new_active_mode){
 			tm->outp->setLed(LED_MOD_OU_SPINNER_BACK, INACTIVE);
 			tm->addMessage(MSG_IN_SPINNER_REAR_UP, INACTIVE, task_id);
 			tm->addMessage(MSG_IN_SPINNER_REAR_FLOAT, INACTIVE, task_id);
-			tm->addMessage(MSG_IN_SPINNER_REAR_AUTO_THIRD, INACTIVE, task_id);
+			tm->addMessage(MSG_IN_SPINNER_REAR_AUTO_UP, INACTIVE, task_id);
 
 		}
 
@@ -1244,7 +1243,7 @@ void AutoLowTask::testStartConditions(EventData* inp) {
 	if(inp->input_type == TYPE_MESSAGE
 			&& inp->input_id == MSG_AUTO_LOW_DELAYED
 			&& inp->input_value == ACTIVE){
-
+		//TODO FRAGE WAS darf nochmal nicht getan werden, wenn die kreisel ganz oben sind (irgendwas hinten an den zinken steht an???)
 		//if another button is pressed dont start auto low task
 		if(!tm->inp->getInputState(IN_AUTO_TRANSPORT)
 				&& !tm->inp->getInputState(IN_AUTO_WORK)
@@ -1292,15 +1291,21 @@ void AutoLowTask::update(EventData* inp) {
 		tm->stopTask(task_id);
 	}
 
+	//stop on timeout
+	if(inp->input_type == TYPE_TIMEOUT){
+		tm->stopTask(task_id);
+	}
+
 }
 
 void AutoLowTask::exit() {
 	Task::exit();
 
-	tm->outp->setLed(LED_AUTO_LOW, INACTIVE);
+
 
 	//close framelock on exit!
-	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);
+	tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE, task_id);
+	tm->outp->setLed(LED_AUTO_LOW, INACTIVE);
 	//todo other exit values for cylinders
 }
 
@@ -1460,10 +1465,10 @@ void AutoWorkTask::update(EventData* inp) {
 		}
 
     	if(left_done && right_done){
+    		//both spinners are at "third" or on "up" position
 			step = 3;
 			left_done = false;
 			right_done = false;
-
 			//step 3: get spinner teles out
 			if(!tm->inp->getInputState(SENS_SPINNER_LEFT_UP)){
 				tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT, ACTIVE, task_id);
@@ -1520,8 +1525,13 @@ void AutoWorkTask::update(EventData* inp) {
 			&& inp->input_value == ACTIVE ){
 		tm->stopTask(task_id);
 	}
-}
 
+	//stop on timeout
+	if(inp->input_type == TYPE_TIMEOUT){
+		tm->stopTask(task_id);
+	}
+}
+//todo rahmen hoch abbrechen wenn rahmen schon ganz oben!!!!!!!
 void AutoWorkTask::exit() {
 	Task::exit();
 
@@ -1593,6 +1603,10 @@ void AutoTransportTask::update(EventData* inp) {
 			&& inp->input_value == ACTIVE ){*/
 	tm->stopTask(task_id);
 
+	//stop on timeout
+	if(inp->input_type == TYPE_TIMEOUT){
+		tm->stopTask(task_id);
+	}
 
 }
 

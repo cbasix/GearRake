@@ -188,11 +188,11 @@ InputObject::InputObject(TaskManager* task_monitor) {
 	//input_data[IN_MOD_OU_UNUSED].input_type = TYPE_MANUAL;
 	//spinner rear buttons on the back side
 
-	input_data[IN_SPINNER_REAR_UP].input_pin = PIN_ARDUINO_START + 10;
-	input_data[IN_SPINNER_REAR_UP].input_type = TYPE_MANUAL;
+	input_data[IN_REAR_SPINNER_REAR_UP].input_pin = PIN_ARDUINO_START + 10;
+	input_data[IN_REAR_SPINNER_REAR_UP].input_type = TYPE_MANUAL;
 
-	input_data[IN_SPINNER_REAR_DOWN].input_pin = PIN_ARDUINO_START + 11;
-	input_data[IN_SPINNER_REAR_DOWN].input_type = TYPE_MANUAL;
+	input_data[IN_REAR_SPINNER_REAR_DOWN].input_pin = PIN_ARDUINO_START + 11;
+	input_data[IN_REAR_SPINNER_REAR_DOWN].input_type = TYPE_MANUAL;
 
 	//Sensors
 	input_data[SENS_SPINNER_LEFT_THIRD].input_pin = PIN_ARDUINO_START + 22;

@@ -51,9 +51,6 @@ void TaskManager::beginn() {
 	inp = new InputObject(this);
 	evt_queue = new FifoQueue;
 
-	// todo prüfen
-	//BothSpinnerUpTask both_spinner_up_task;
-
 	//spinner ----------------------------------------------------------------
 	task_list[TSK_SPINNER_BOTH_UP] = new BothSpinnerUpTask();
 	task_list[TSK_SPINNER_RIGHT_UP] = new SpinnerRightUpTask();
@@ -87,15 +84,15 @@ void TaskManager::beginn() {
 			TYPE_MANUAL,
 			IN_SPINNER_RIGHT_FLOAT,
 			MSG_TSKPART_SPINNER_RIGHT_TO_THIRD);
-	task_list[TSK_SPINNER_REAR_AUTO_THIRD] = new AutoMessageTask(
-			TSK_SPINNER_REAR_AUTO_THIRD,
+	task_list[TSK_SPINNER_REAR_AUTO_UP] = new AutoMessageTask(
+			TSK_SPINNER_REAR_AUTO_UP,
 			TYPE_MESSAGE,
-			MSG_IN_SPINNER_REAR_AUTO_THIRD,
+			MSG_IN_SPINNER_REAR_AUTO_UP,
 			TYPE_MESSAGE,
 			MSG_IN_SPINNER_REAR_UP,
 			TYPE_MANUAL,
 			MSG_IN_SPINNER_REAR_FLOAT,
-			MSG_TSKPART_SPINNER_LEFT_TO_THIRD);
+			MSG_TSKPART_SPINNER_REAR_TO_UP);
 	task_list[TSKPART_SPINNER_LEFT_UP] = new SimpleCylinderTask(
 			TSKPART_SPINNER_LEFT_UP,
 			TYPE_MESSAGE,
@@ -118,7 +115,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_LEFT_FLOAT,
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_LEFT_UP,
-			5000);
+			20000);
 	task_list[TSKPART_SPINNER_LEFT_TO_THIRD] = new MessageMoveToSensorTaskpart(
 			TSKPART_SPINNER_LEFT_TO_THIRD,
 			TYPE_MESSAGE,
@@ -126,7 +123,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_SPINNER_LEFT_FLOAT,
 			MSG_TSKPART_SPINNER_LEFT_UP,
 			SENS_SPINNER_LEFT_THIRD,
-			5000);
+			15000);
 	task_list[TSKPART_SPINNER_RIGHT_UP] = new SimpleCylinderTask(
 			TSKPART_SPINNER_RIGHT_UP,
 			TYPE_MESSAGE,
@@ -149,7 +146,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_RIGHT_FLOAT,
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_RIGHT_UP,
-			5000);
+			20000);
 	task_list[TSKPART_SPINNER_RIGHT_TO_THIRD] = new MessageMoveToSensorTaskpart(
 			TSKPART_SPINNER_RIGHT_TO_THIRD,
 			TYPE_MESSAGE,
@@ -157,7 +154,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_SPINNER_RIGHT_FLOAT,
 			MSG_TSKPART_SPINNER_RIGHT_UP,
 			SENS_SPINNER_RIGHT_THIRD,
-			5000);
+			15000);
 	task_list[TSKPART_SPINNER_REAR_FLOAT_LONG] = new CylinderTimerTaskpart(
 			TSKPART_SPINNER_REAR_FLOAT_LONG,
 			TYPE_MESSAGE,
@@ -174,6 +171,29 @@ void TaskManager::beginn() {
 			OUT_SPINNER_REAR_FLOAT,
 			CYLINDER_FUNCTION_1,
 			1000);
+	task_list[TSKPART_SPINNER_REAR_TO_UP] = new CylinderSensorTaskpart(
+			TSKPART_SPINNER_REAR_TO_UP,
+			TYPE_MESSAGE,
+			MSG_TSKPART_SPINNER_REAR_TO_UP,
+			OUT_SPINNER_REAR_UP,
+			OUT_SPINNER_REAR_FLOAT,
+			CYLINDER_FUNCTION_1,
+			SENS_SPINNER_REAR_UP,
+			15000);
+	task_list[TSK_SPINNER_REAR_UP_IN_REAR] = new SimpleCylinderTask(
+			TSK_SPINNER_REAR_UP_IN_REAR,
+			TYPE_MANUAL,
+			IN_REAR_SPINNER_REAR_UP,
+			OUT_SPINNER_REAR_UP,
+			OUT_SPINNER_REAR_FLOAT,
+			CYLINDER_FUNCTION_1);
+	task_list[TSKPART_SPINNER_REAR_DOWN_IN_REAR] = new SimpleCylinderTask(
+			TSKPART_SPINNER_REAR_DOWN_IN_REAR,
+			TYPE_MANUAL,
+			IN_REAR_SPINNER_REAR_DOWN,
+			OUT_SPINNER_REAR_UP,
+			OUT_SPINNER_REAR_FLOAT,
+			CYLINDER_FUNCTION_2);
 	//spinner tele ---------------------------------------------------
 	task_list[TSK_SPINNER_TELE_RIGHT_OUT] = new SimpleCylinderTask(
 			TSK_SPINNER_TELE_RIGHT_OUT,
@@ -211,7 +231,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_LEFT_TELE_OUT,
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_LEFT_TELE_IN,
-			5000);
+			15000);
 	task_list[TSKPART_SPINNER_TELE_LEFT_TO_OUT] = new CylinderSensorTaskpart(
 			TSKPART_SPINNER_TELE_LEFT_TO_OUT,
 			TYPE_MESSAGE,
@@ -220,7 +240,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_LEFT_TELE_OUT,
 			CYLINDER_FUNCTION_2,
 			SENS_SPINNER_LEFT_TELE_OUT,
-			5000);
+			15000);
 	task_list[TSKPART_SPINNER_TELE_RIGHT_TO_IN] = new CylinderSensorTaskpart(
 			TSKPART_SPINNER_TELE_RIGHT_TO_IN,
 			TYPE_MESSAGE,
@@ -229,7 +249,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_RIGHT_TELE_OUT,
 			CYLINDER_FUNCTION_1,
 			SENS_SPINNER_RIGHT_TELE_IN,
-			5000);
+			15000);
 	task_list[TSKPART_SPINNER_TELE_RIGHT_TO_OUT] = new CylinderSensorTaskpart(
 			TSKPART_SPINNER_TELE_RIGHT_TO_OUT,
 			TYPE_MESSAGE,
@@ -238,7 +258,7 @@ void TaskManager::beginn() {
 			OUT_SPINNER_RIGHT_TELE_OUT,
 			CYLINDER_FUNCTION_2,
 			SENS_SPINNER_RIGHT_TELE_OUT,
-			5000);
+			15000);
 
 	//steer left and right -------------------------------------------------------
 	task_list[TSK_STEER_LEFT] = new SimpleCylinderTask(
@@ -293,7 +313,7 @@ void TaskManager::beginn() {
 			OUT_WEEL_TELE_LEFT_OUT,
 			CYLINDER_FUNCTION_1,
 			SENS_WEEL_TELE_LEFT_IN,
-			5000);
+			25000);
 	task_list[TSKPART_WEEL_TELE_RIGHT_TO_IN] = new CylinderSensorTaskpart(
 			TSKPART_WEEL_TELE_RIGHT_TO_IN,
 			TYPE_MESSAGE,
@@ -302,7 +322,7 @@ void TaskManager::beginn() {
 			OUT_WEEL_TELE_RIGHT_OUT,
 			CYLINDER_FUNCTION_1,
 			SENS_WEEL_TELE_RIGHT_IN,
-			5000);
+			25000);
 	task_list[TSKPART_WEEL_TELE_LEFT_TO_OUT] = new CylinderSensorTaskpart(
 			TSKPART_WEEL_TELE_LEFT_TO_OUT,
 			TYPE_MESSAGE,
@@ -311,7 +331,7 @@ void TaskManager::beginn() {
 			OUT_WEEL_TELE_LEFT_OUT,
 			CYLINDER_FUNCTION_2,
 			SENS_WEEL_TELE_LEFT_OUT,
-			5000);
+			25000);
 	task_list[TSKPART_WEEL_TELE_RIGHT_TO_OUT] = new CylinderSensorTaskpart(
 			TSKPART_WEEL_TELE_RIGHT_TO_OUT,
 			TYPE_MESSAGE,
@@ -320,7 +340,7 @@ void TaskManager::beginn() {
 			OUT_WEEL_TELE_RIGHT_OUT,
 			CYLINDER_FUNCTION_2,
 			SENS_WEEL_TELE_RIGHT_OUT,
-			5000);
+			25000);
 
 	//Frame----------------------------------------------------------------------
 	task_list[TSK_FRAME_UP] = new SimpleCylinderTask(
@@ -354,7 +374,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_FRAME_TO_GROUND,
 			MSG_TSKPART_FRAME_DOWN,
 			SENS_FRAME_GROUND,
-			5000);
+			15000);
 	task_list[TSKPART_FRAME_TO_LOW] = new MessageMoveToSensorTaskpart(
 			TSKPART_FRAME_TO_LOW,
 			TYPE_MESSAGE,
@@ -362,7 +382,7 @@ void TaskManager::beginn() {
 			MSG_TSKPART_FRAME_UP,
 			MSG_TSKPART_FRAME_DOWN,
 			SENS_FRAME_LOW,
-			5000);
+			10000);
 	task_list[TSKPART_FRAME_TO_MIDDLE] = new MessageMoveToSensorTaskpart(
 			TSKPART_FRAME_TO_MIDDLE,
 			TYPE_MESSAGE,
@@ -370,14 +390,14 @@ void TaskManager::beginn() {
 			MSG_TSKPART_FRAME_UP,
 			MSG_TSKPART_FRAME_DOWN,
 			SENS_FRAME_MIDDLE,
-			5000);
+			8000);
 	task_list[TSKPART_FRAME_TO_UP] = new MessageSensorTaskpart(
 			TSKPART_FRAME_TO_UP,
 			TYPE_MESSAGE,
 			MSG_TSKPART_FRAME_TO_UP,
 			MSG_TSKPART_FRAME_UP,
 			SENS_FRAME_UP,
-			5000);
+			15000);
 	task_list[TSKPART_FRAME_UP_SHORT] = new CylinderTimerTaskpart(
 			TSKPART_FRAME_UP_SHORT,
 			TYPE_MESSAGE,
@@ -385,7 +405,7 @@ void TaskManager::beginn() {
 			OUT_FRAME_UP,
 			OUT_FRAME_DOWN,
 			CYLINDER_FUNCTION_1,
-			2000);
+			1000);
 
 	// framelock --------------------------------------------------------------
 	task_list[TSKPART_FRAME_LOCK_TO_UP] = new CylinderSensorTaskpart(
@@ -396,7 +416,7 @@ void TaskManager::beginn() {
 			OUT_FRAME_LOCK_DOWN,
 			CYLINDER_FUNCTION_1,
 			SENS_FRAME_LOCK_OPEN,
-			5000);
+			1000);
 	task_list[TSKPART_FRAME_LOCK_TO_DOWN] = new CylinderSensorTaskpart(
 			TSKPART_FRAME_LOCK_TO_DOWN,
 			TYPE_MESSAGE,
@@ -405,7 +425,7 @@ void TaskManager::beginn() {
 			OUT_FRAME_LOCK_DOWN,
 			CYLINDER_FUNCTION_2,
 			SENS_FRAME_LOCK_CLOSED,
-			5000);
+			1000);
 
 	//auto functions ------------------------------------------------------------
 	task_list[TSKPART_AUTO_LOW_DELAY] = new DelayedStartTaskpart(
