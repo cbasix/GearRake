@@ -225,9 +225,6 @@ void CylinderSensorTaskpart::timer() {
 		//send message to activator task that timeout occured.
 		tm->addTimeout(mapped_input_id);
 
-		//TODO testing only to continue after timeout----------------------------------------
-		tm->addMessage(mapped_input_id, INACTIVE, task_id);
-
 		tm->addError(ERR_SENSOR_TIMEOUT, sensor_input_id);
 		tm->stopTask(task_id);
 
@@ -385,6 +382,10 @@ void MessageMoveToSensorTaskpart::update(EventData* inp) {
 	if (inp->input_type == mapped_input_type
 			&& (inp->input_id == mapped_input_id)
 			&& inp->input_value == INACTIVE){
+
+		tm->addMessage(output_message_id_on_sensor_active, INACTIVE, task_id);
+		tm->addMessage(output_message_id_on_sensor_inactive, INACTIVE, task_id);
+
 		tm->stopTask(task_id);
 
 	} else if (inp->input_type == TYPE_SENSOR
@@ -1447,8 +1448,8 @@ void AutoWorkTask::exit() {
 
 	tm->outp->setLed(LED_AUTO_WORK, INACTIVE);
 
-	//close framelock on exit!
-	tm->addMessage(MSG_TSKPART_FRAME_LOCK_TO_DOWN, ACTIVE, task_id);
+	//stop subtasks on exit
+	//tm->addMessage(MSG_TSKPART_FRAME_LOCK_TO_DOWN, ACTIVE, task_id);
 	//todo other exit values for cylinders
 }
 
@@ -1656,6 +1657,8 @@ void AutoTransportTask::exit() {
 	Task::exit();
 
 	tm->outp->setLed(LED_AUTO_TRANSPORT, INACTIVE);
+
+	//TODO stop all subtasks on exit !
 
 	//close framelock on exit!
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);
