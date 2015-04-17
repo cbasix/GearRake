@@ -234,100 +234,6 @@ void CylinderSensorTaskpart::timer() {
 	}
 }
 
-
-/*CylinderTwoSensorTaskpart::CylinderTwoSensorTaskpart(int task_id_to_set,
-		int input_type,
-		int input_id,
-		int output_id_move_out,
-		int output_id_move_in_or_float,
-		int cylinder_state,
-		int sensor_1_input_id_parm,
-		int sensor_2_input_id_parm,
-		unsigned long timeout_parm){
-
-	task_state = STATE_STOPPED;
-	task_id = task_id_to_set;
-	mapped_input_type = input_type;
-	mapped_input_id = input_id;
-	mapped_cylinder_function_1_output_id = output_id_move_out;
-	mapped_cylinder_function_2_output_id = output_id_move_in_or_float;
-	mapped_cylinder_state = cylinder_state;
-	timeout = timeout_parm;
-	sensor_1_input_id = sensor_1_input_id_parm;
-	sensor_2_input_id = sensor_2_input_id_parm;
-}
-void CylinderTwoSensorTaskpart::testStartConditions(EventData* inp) {
-//	Serial.print("Test Start TSK: ");
-//	Serial.print(task_id);
-//	Serial.print(" Expected INP_ID: ");
-//	Serial.print(mapped_input_id);
-//	Serial.print(" got INP_ID: ");
-//	Serial.println(inp->input_id);
-
-
-	if (inp->input_type == mapped_input_type
-			&& (inp->input_id == mapped_input_id)
-			&& inp->input_value == ACTIVE){
-//		Serial.print("Starting TSK: ");
-//		Serial.println(task_id);
-
-		tm->startTask(task_id);
-	}
-}
-void CylinderTwoSensorTaskpart::start() {
-	Task::start();
-//	Serial.print("Starting Simple TSK: ");
-//	Serial.println(task_id);
-	start_time = millis();
-	tm->outp->setCylinder(mapped_cylinder_function_1_output_id, mapped_cylinder_function_2_output_id, mapped_cylinder_state);
-}
-
-void CylinderTwoSensorTaskpart::update(EventData* inp) {
-	if (inp->input_type == mapped_input_type
-			&& (inp->input_id == mapped_input_id)
-			&& inp->input_value == INACTIVE){
-		tm->stopTask(task_id);
-
-	} else if (inp->input_type == TYPE_SENSOR
-			&& (inp->input_id == sensor_1_input_id)
-			&& inp->input_value == ACTIVE){
-
-		//send message to activater task that parttask is ready
-		tm->addMessage(mapped_input_id, INACTIVE, task_id);
-		tm->stopTask(task_id);
-
-	} else if (inp->input_type == TYPE_SENSOR
-			&& (inp->input_id == sensor_2_input_id)
-			&& inp->input_value == ACTIVE){
-
-		//send message to activater task that parttask is ready
-		tm->addMessage(mapped_input_id, INACTIVE, task_id);
-		tm->stopTask(task_id);
-	}
-}
-
-void CylinderTwoSensorTaskpart::exit() {
-	Task::exit();
-//	Serial.print("Stopping Simple TSK: ");
-//	Serial.println(task_id);
-
-	tm->outp->setCylinder(mapped_cylinder_function_1_output_id, mapped_cylinder_function_2_output_id, CYLINDER_HOLD);
-}
-
-void CylinderTwoSensorTaskpart::timer() {
-	if(start_time + timeout < millis()){
-		//send message to activator task -> timeout occured.
-		tm->addTimeout(mapped_input_id);
-
-		//TODO testing only to continue after timeout----------------------------------------
-		tm->addMessage(mapped_input_id, INACTIVE, task_id);
-
-		tm->addError(ERR_SENSOR_TIMEOUT, sensor_1_input_id);
-		tm->addError(ERR_SENSOR_TIMEOUT, sensor_2_input_id);
-		tm->stopTask(task_id);
-	}
-}*/
-
 /**--------------
  *
  */
@@ -386,11 +292,15 @@ void MessageSensorTaskpart::update(EventData* inp) {
 	} else if (inp->input_type == TYPE_SENSOR
 			&& (inp->input_id == sensor_input_id)
 			&& inp->input_value == ACTIVE){
+	// sensor reached -> stop subtasks
+ 	 	tm->addMessage(mapped_output_message_id, INACTIVE, task_id);
 
-		//send message to activater task that parttask is ready
-		tm->addMessage(mapped_input_id, INACTIVE, task_id);
+	//wait for the subtask to terminate
+	} else if (inp->input_type == TYPE_MESSAGE
+			&& inp->input_value == INACTIVE
+			&& inp->additional_info != task_id //message is not from this task
+			&& (inp->input_id == mapped_output_message_id)){
 		tm->stopTask(task_id);
-
 	}
 }
 
@@ -399,7 +309,7 @@ void MessageSensorTaskpart::exit() {
 //	Serial.print("Stopping Simple TSK: ");
 //	Serial.println(task_id);
 
-	tm->addMessage(mapped_output_message_id, INACTIVE, task_id);
+
 	//TODO TIMEOUTS MUST BE CATCHED EVERYWHERE!
 	//send message to activater task that parttask is ready
 	tm->addMessage(mapped_input_id, INACTIVE, task_id);
@@ -1588,20 +1498,152 @@ void AutoTransportTask::start() {
 	tm->outp->setLed(LED_AUTO_TRANSPORT, ACTIVE);
 
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, ACTIVE);
+	step = 1;
+	left_done = false;
+	right_done = false;
+
+	tm->addMessage(MSG_IN_SPINNER_REAR_FLOAT, ACTIVE, task_id);
+
+	//step 1: get spinner to third (if they are not "up")
+	if(!tm->inp->getInputState(SENS_SPINNER_LEFT_UP)){
+		tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_THIRD, ACTIVE, task_id);
+	} else {
+		//set left done for true for step 1
+		left_done = true;
+	}
+	if(!tm->inp->getInputState(SENS_SPINNER_RIGHT_UP)){
+		tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_THIRD, ACTIVE, task_id);
+	} else {
+		//set left done for true for step 1
+		right_done = true;
+	}
+	//if the things for step 1 are already done -> go directly to step 2
+	if(left_done && right_done){
+		step = 2;
+		left_done = false;
+		right_done = false;
+
+		tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, ACTIVE, task_id);
+		tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, ACTIVE, task_id);
+
+	}
+
+
 }
 
 void AutoTransportTask::update(EventData* inp) {
+	if(step == 1){
+		//step 1 spinner to "third"(1/3) position
+		if(inp->input_type == TYPE_MESSAGE
+					&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_TO_THIRD
+					&& inp->input_value == INACTIVE){
+			left_done = true;
 
-	/*if(inp->input_type == TYPE_MESSAGE
-			&& inp->input_id == MSG_TSKPART_FRAME_TO_LOW
-			&& inp->input_value == INACTIVE){
-		//step 1: FRAME_TO_LOW is done -> READY ;)
-		tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, ACTIVE);
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_RIGHT_TO_THIRD
+				&& inp->input_value == INACTIVE){
+			right_done = true;
+
+		}
+
+		if(left_done && right_done){
+			step = 2;
+			left_done = false;
+			right_done = false;
+
+			tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, ACTIVE, task_id);
+			tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, ACTIVE, task_id);
+
+		}
+
+
+	} else if(step == 2){
+		//step 2: spinnerteles in
+		if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN
+				&& inp->input_value == INACTIVE){
+			//SpinnerLeftTeleIn is done
+			left_done = true;
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN
+				&& inp->input_value == INACTIVE){
+			//step 3: FRAME_TO_LOW is done -> READY ;)
+			right_done = true;
+		}
+
+		if(left_done && right_done){
+			step = 3;
+						left_done = false;
+						right_done = false;
+
+			//weelteles are allready in -> Frame to "middle" position ;)
+			if(tm->inp->getInputState(SENS_WEEL_TELE_LEFT_IN) && tm->inp->getInputState(SENS_WEEL_TELE_RIGHT_IN)){
+				//start step 5: frame to middle position
+				step = 5;
+				left_done = false;
+				right_done = false;
+
+				tm->addMessage(MSG_TSKPART_FRAME_TO_MIDDLE, ACTIVE, task_id);
+			} else {
+				//start step 3: frame down
+				step = 3;
+				left_done = false;
+				right_done = false;
+
+				tm->addMessage(MSG_TSKPART_FRAME_TO_GROUND, ACTIVE, task_id);
+			}
+
+		}
+	} else if(step == 3){
+		if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_FRAME_TO_GROUND
+				&& inp->input_value == INACTIVE){
+			step = 4;
+			left_done = false;
+			right_done = false;
+
+			//Frame is down -> now get weelteles in
+			tm->addMessage(MSG_TSKPART_WEEL_TELE_LEFT_TO_IN, ACTIVE, task_id);
+			tm->addMessage(MSG_TSKPART_WEEL_TELE_RIGHT_TO_IN, ACTIVE, task_id);
+
+
+		}
+	} else if(step == 4){
+		if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_WEEL_TELE_LEFT_TO_IN
+				&& inp->input_value == INACTIVE){
+			//SpinnerLeftTeleIn is done
+			left_done = true;
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_WEEL_TELE_RIGHT_TO_IN
+				&& inp->input_value == INACTIVE){
+			//step 3: FRAME_TO_LOW is done -> READY ;)
+			right_done = true;
+		}
+
+		if(left_done && right_done){
+			step = 5;
+			left_done = false;
+			right_done = false;
+
+			//weelteles are in -> frame to "middle" position
+			tm->addMessage(MSG_TSKPART_FRAME_TO_MIDDLE, ACTIVE, task_id);
+			// tm->stopTask(task_id);
+		}
+	} else if(step == 5){
+		if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_FRAME_TO_MIDDLE
+				&& inp->input_value == INACTIVE){
+			//Frame to middle is done
+			tm->stopTask(task_id);
+		}
+
 	}
 
 	if(inp->input_type == TYPE_MANUAL
-			&& inp->input_value == ACTIVE ){*/
-	tm->stopTask(task_id);
+			&& inp->input_value == ACTIVE ){
+		tm->stopTask(task_id);
+	}
 
 	//stop on timeout
 	if(inp->input_type == TYPE_TIMEOUT){

@@ -552,6 +552,11 @@ class AutoTransportTask : public Task {
 		void exit();
 		void timer();
 		void testStartConditions(EventData* inp);
+
+	private:
+		int step;
+		bool left_done;
+		bool right_done;
 };
 
 /*class AutoWorkTask : public Task {
