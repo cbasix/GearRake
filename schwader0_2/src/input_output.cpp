@@ -541,6 +541,13 @@ void OutputObject::setRawOutput(int output_id, bool output_value){
 	//std::cout << "Set output: " << output_id << " to value:"<< output_value  << std::endl;
 }
 
+void OutputObject::resetOutputs(){
+	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
+		setRawOutput(i, false);
+	}
+}
+
+
 void OutputObject::setCylinder(int output_id_function_1, int output_id_function_2, int cylinder_state){
 	//output id 1 ist für ausfahren outputid 2 ist für einfahren oder schwimmstellung, je nach zylindertyp
 	if(cylinder_state == CYLINDER_HOLD){

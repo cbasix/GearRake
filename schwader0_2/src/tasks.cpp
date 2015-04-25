@@ -276,6 +276,7 @@ void MessageSensorTaskpart::start() {
 	tm->addMessage(mapped_output_message_id, ACTIVE, task_id);
 
 	if(tm->inp->getInputState(sensor_input_id) == ACTIVE){
+		tm->addMessage(mapped_output_message_id, INACTIVE, task_id);
 		tm->stopTask(task_id);
 	}
 }
@@ -487,14 +488,14 @@ void AutoMessageTask::update(EventData* inp) {
 		tm->stopTask(task_id);
 
 	// if one of the stop inputs -> stop this task
-	} else if (inp->input_type == mapped_stop_input_id_1
-			&& (inp->input_id == mapped_stop_input_1_type)
-			&& inp->input_value == INACTIVE){
+	} else if (inp->input_id == mapped_stop_input_id_1
+			&& (inp->input_type == mapped_stop_input_1_type)
+			&& inp->input_value == ACTIVE){
 		tm->stopTask(task_id);
 
-	} else if (inp->input_type == mapped_stop_input_id_2
-			&& (inp->input_id == mapped_stop_input_2_type)
-			&& inp->input_value == INACTIVE){
+	} else if (inp->input_id == mapped_stop_input_id_2
+			&& (inp->input_type == mapped_stop_input_2_type)
+			&& inp->input_value == ACTIVE){
 		tm->stopTask(task_id);
 
 	}
@@ -1275,6 +1276,9 @@ void AutoWorkTask::start() {
 	left_done = false;
 	right_done = false;
 
+	//first start rear spinner float (new definition 24.04.2015 Wolfgang )
+	tm->outp->setCylinder(OUT_SPINNER_REAR_UP, OUT_SPINNER_REAR_FLOAT, CYLINDER_FUNCTION_2);
+
 	if(tm->inp->getInputState(SENS_WEEL_TELE_LEFT_OUT) == ACTIVE &&
 			tm->inp->getInputState(SENS_WEEL_TELE_RIGHT_OUT) == ACTIVE){
 
@@ -1332,20 +1336,6 @@ void AutoWorkTask::update(EventData* inp) {
     	if(inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_FRAME_TO_UP
 				&& inp->input_value == INACTIVE){
-    		//start rear spinner down (time intervall defined by setting)
-    		tm->addMessage(MSG_TSKPART_SPINNER_REAR_FLOAT_LONG, ACTIVE, task_id);
-
-    	//spinner down is ready
-    	} else if(inp->input_type == TYPE_MESSAGE
-				&& inp->input_id == MSG_TSKPART_SPINNER_REAR_FLOAT_LONG
-				&& inp->input_value == INACTIVE){
-    		//start short spinner up
-    		tm->addMessage(MSG_TSKPART_SPINNER_REAR_UP_SHORT, ACTIVE, task_id);
-
-    	//short spinner up is ready
-    	}else if(inp->input_type == TYPE_MESSAGE
-				&& inp->input_id == MSG_TSKPART_SPINNER_REAR_UP_SHORT
-				&& inp->input_value == INACTIVE){
 
     		//check if spinners are in "up" position, if not bring them to the "third" position
     		if(tm->inp->getInputState(SENS_SPINNER_LEFT_UP)){
@@ -1390,7 +1380,7 @@ void AutoWorkTask::update(EventData* inp) {
 			if(!tm->inp->getInputState(SENS_SPINNER_RIGHT_UP)){
 				tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT, ACTIVE, task_id);
 			} else {
-				//set left done for true for step 3
+				//set right done for true for step 3
 				right_done = true;
 			}
 			//if the things for step 3 are already done -> exit
@@ -1411,7 +1401,9 @@ void AutoWorkTask::update(EventData* inp) {
 
 			left_done = true;
 
-		} else if((inp->input_type == TYPE_MESSAGE
+		}
+
+    	if((inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT
 				&& inp->input_value == INACTIVE)
 			|| tm->inp->getInputState(SENS_SPINNER_RIGHT_UP)){
@@ -1440,16 +1432,26 @@ void AutoWorkTask::update(EventData* inp) {
 	//stop on timeout
 	if(inp->input_type == TYPE_TIMEOUT){
 		tm->stopTask(task_id);
+		//tm->resetTasks();
 	}
 }
-//todo rahmen hoch abbrechen wenn rahmen schon ganz oben!!!!!!!
+
 void AutoWorkTask::exit() {
 	Task::exit();
 
 	tm->outp->setLed(LED_AUTO_WORK, INACTIVE);
 
 	//stop subtasks on exit
-	//tm->addMessage(MSG_TSKPART_FRAME_LOCK_TO_DOWN, ACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_WEEL_TELE_RIGHT_TO_OUT, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_WEEL_TELE_LEFT_TO_OUT, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_FRAME_TO_GROUND, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_FRAME_TO_UP, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_THIRD, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_THIRD, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT, INACTIVE, task_id);
+
+
 	//todo other exit values for cylinders
 }
 
@@ -1568,14 +1570,34 @@ void AutoTransportTask::update(EventData* inp) {
 		} else if(inp->input_type == TYPE_MESSAGE
 				&& inp->input_id == MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN
 				&& inp->input_value == INACTIVE){
-			//step 3: FRAME_TO_LOW is done -> READY ;)
+			//right is done;)
+			right_done = true;
+		}
+		if(left_done && right_done){
+			step = 21;
+			left_done = false;
+			right_done = false;
+
+			tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_UP, ACTIVE, task_id);
+			tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_UP, ACTIVE, task_id);
+		}
+	} else if(step == 21){
+		if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_TO_UP
+				&& inp->input_value == INACTIVE){
+			//SpinnerLeftTeleIn is done
+			left_done = true;
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_RIGHT_TO_UP
+				&& inp->input_value == INACTIVE){
+			//right is done;)
 			right_done = true;
 		}
 
 		if(left_done && right_done){
 			step = 3;
-						left_done = false;
-						right_done = false;
+			left_done = false;
+			right_done = false;
 
 			//weelteles are allready in -> Frame to "middle" position ;)
 			if(tm->inp->getInputState(SENS_WEEL_TELE_LEFT_IN) && tm->inp->getInputState(SENS_WEEL_TELE_RIGHT_IN)){
@@ -1659,6 +1681,17 @@ void AutoTransportTask::exit() {
 	tm->outp->setLed(LED_AUTO_TRANSPORT, INACTIVE);
 
 	//TODO stop all subtasks on exit !
+	//stop subtasks on exit
+	tm->addMessage(MSG_TSKPART_WEEL_TELE_RIGHT_TO_IN, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_WEEL_TELE_LEFT_TO_IN, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_FRAME_TO_GROUND, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_FRAME_TO_MIDDLE, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_THIRD, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_THIRD, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_LEFT_TO_UP, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_UP, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, INACTIVE, task_id);
 
 	//close framelock on exit!
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);

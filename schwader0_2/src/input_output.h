@@ -274,6 +274,7 @@ class OutputObject{
 		void writeOutput();
 		void setSimulationMode(bool enabled);
 		bool getSimulationMode();
+		void resetOutputs();
 
 	private:
 		bool simulate_output_mode;

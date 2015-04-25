@@ -81,6 +81,7 @@ class TaskManager{
 
 		void startTask(int task_id);
 		void stopTask(int task_id);
+		void resetTasks();
 
 		int getTaskStatus(int task_id);
 
