@@ -1501,7 +1501,7 @@ void AutoTransportTask::start() {
 	tm->outp->setLed(LED_AUTO_TRANSPORT, ACTIVE);
 
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, ACTIVE);
-	step = 1;
+	step = 0;
 	left_done = false;
 	right_done = false;
 
@@ -1520,7 +1520,7 @@ void AutoTransportTask::start() {
 		//set left done for true for step 1
 		right_done = true;
 	}
-	//if the things for step 1 are already done -> go directly to step 2
+	//if the things for step 1 are done -> go directly to step 2
 	if(left_done && right_done){
 		step = 2;
 		left_done = false;
@@ -1535,8 +1535,8 @@ void AutoTransportTask::start() {
 }
 
 void AutoTransportTask::update(EventData* inp) {
-	if(step == 1){
-		//step 1 spinner to "third"(1/3) position
+	if(step == 0){
+		//step 0 spinner to "third"(1/3) position
 		if(inp->input_type == TYPE_MESSAGE
 					&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_TO_THIRD
 					&& inp->input_value == INACTIVE){
@@ -1550,9 +1550,30 @@ void AutoTransportTask::update(EventData* inp) {
 		}
 
 		if(left_done && right_done){
-			step = 2;
+			step = 1;
 			left_done = false;
 			right_done = false;
+
+			//left up short
+			tm->addMessage(MSG_TSKPART_SPINNER_LEFT_UP_SHORT, ACTIVE, task_id);
+
+
+		}
+
+	} else if(step == 1){
+		//step 1 short up both after each other
+		if(inp->input_type == TYPE_MESSAGE
+					&& inp->input_id == MSG_TSKPART_SPINNER_LEFT_UP_SHORT
+					&& inp->input_value == INACTIVE){
+
+			//afterwards right up short
+			tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_UP_SHORT, ACTIVE, task_id);
+
+		} else if(inp->input_type == TYPE_MESSAGE
+				&& inp->input_id == MSG_TSKPART_SPINNER_RIGHT_UP_SHORT
+				&& inp->input_value == INACTIVE){
+
+			step = 2;
 
 			tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, ACTIVE, task_id);
 			tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, ACTIVE, task_id);
@@ -1692,6 +1713,8 @@ void AutoTransportTask::exit() {
 	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_TO_UP, INACTIVE, task_id);
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, INACTIVE, task_id);
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_LEFT_UP_SHORT, INACTIVE, task_id);
+	tm->addMessage(MSG_TSKPART_SPINNER_RIGHT_UP_SHORT, INACTIVE, task_id);
 
 	//close framelock on exit!
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);

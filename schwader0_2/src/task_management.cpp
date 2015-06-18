@@ -259,6 +259,23 @@ void TaskManager::beginn() {
 			CYLINDER_FUNCTION_2,
 			SENS_SPINNER_RIGHT_TELE_OUT,
 			15000);
+	task_list[TSKPART_SPINNER_LEFT_UP_SHORT] = new CylinderTimerTaskpart(
+			TSKPART_SPINNER_LEFT_UP_SHORT,
+			TYPE_MESSAGE,
+			MSG_TSKPART_SPINNER_LEFT_UP_SHORT,
+			OUT_SPINNER_LEFT_UP,
+			OUT_SPINNER_LEFT_FLOAT,
+			CYLINDER_FUNCTION_1,
+			2000);
+	task_list[TSKPART_SPINNER_RIGHT_UP_SHORT] = new CylinderTimerTaskpart(
+			TSKPART_SPINNER_RIGHT_UP_SHORT,
+			TYPE_MESSAGE,
+			MSG_TSKPART_SPINNER_RIGHT_UP_SHORT,
+			OUT_SPINNER_RIGHT_UP,
+			OUT_SPINNER_RIGHT_FLOAT,
+			CYLINDER_FUNCTION_1,
+			2000);
+
 
 	//steer left and right -------------------------------------------------------
 	task_list[TSK_STEER_LEFT] = new SimpleCylinderTask(
