@@ -1,3 +1,5 @@
+#include "util.h"
+
 // ids for tasks must be continous! (stored in array with id as index)
 #define TSK_LIST_LENGTH 63
 
@@ -169,12 +171,15 @@
 #define DIAG_SET_IN_LISTENER 60
 #define DIAG_SET_OUT_LISTENER 61
 
-#define DIAG_SIMULATE_INPUT_MODE 71
+#define DIAG_SIMULATE_MANUAL_INPUT_MODE 71
 #define DIAG_SIMULATE_OUTPUT_MODE 72
+#define DIAG_SIMULATE_SENSOR_INPUT_MODE 73
 
 //ERROR values
 #define ERR_SIMULATION_MODE_NOT_ACTIVE 2
 #define ERR_UNKNOWN_COMMAND_OR_OUT_OF_SYNC 1
+#define ERR_PROTOCOL_VIOLATION 3
+#define ERR_UNEXPECTED_END 4
 
 
 //GENERAL Abstact Tasks
@@ -623,6 +628,8 @@ class DiagnoseTask : public Task {
 		bool out_listener;
 		unsigned long last_run;
 		void sendCommand(int command, int arg1, int arg2, int arg3, int arg4);
+		//void sendAck();
+		CircularQueue<char> serial_buff;
 };
 
 

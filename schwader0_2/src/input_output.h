@@ -242,11 +242,14 @@ class InputObject{
 		void readInput();
 		bool hasInputChanged(int input_id);
 		InputData input_data[INPUT_ID_COUNT];
-		void setSimulationMode(bool enabled);
-		bool getSimulationMode();
+		void setManualSimulationMode(bool enabled);
+		bool getManualSimulationMode();
+		void setSensorSimulationMode(bool enabled);
+		bool getSensorSimulationMode();
 	private:
 		TaskManager *tm;
-		bool simulate_input_mode;
+		bool simulate_manual_input_mode;
+		bool simulate_sensor_input_mode;
 };
 
 

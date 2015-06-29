@@ -2,6 +2,7 @@
 #include "task_management.h"
 #include "tasks.h"
 #include "input_output.h"
+#include "util.h"
 
 
 //General Abstact Tasks
@@ -1520,14 +1521,13 @@ void AutoTransportTask::start() {
 		//set left done for true for step 1
 		right_done = true;
 	}
-	//if the things for step 1 are done -> go directly to step 2
+	//if the things for step 0 are done -> go directly to step 1 short up left
 	if(left_done && right_done){
-		step = 2;
+		step = 1;
 		left_done = false;
 		right_done = false;
 
-		tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, ACTIVE, task_id);
-		tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, ACTIVE, task_id);
+		tm->addMessage(MSG_TSKPART_SPINNER_LEFT_UP_SHORT, ACTIVE, task_id);
 
 	}
 
@@ -1934,12 +1934,13 @@ void PressureTask::exit() {
 }
 
 
-DiagnoseTask::DiagnoseTask() {
+DiagnoseTask::DiagnoseTask() : serial_buff(200){
 	task_state = STATE_STOPPED;
 	task_id = TSK_DIAGNOSE;
 	log_listener = false;
 	in_listener = false;
 	out_listener = false;
+	last_run = 0;
 }
 
 void DiagnoseTask::testStartConditions(EventData* inp) {
@@ -2007,101 +2008,158 @@ void DiagnoseTask::exit() {
 
 void DiagnoseTask::timer() {
 
-	// protocol is "CCaaaa...", two bytes of command, two bytes per arg
-	if( Serial.available() >= 10 ) {  // command length is 10 bytes
-		char buf[10];
-		for(int i = 0; i < 10; i++){
-		 buf[i] = Serial.read();
-		}
-
-		//least significant byte first
-		int command = buf[0] << 8 | buf[1];
-		int arg1 = buf[2] << 8 | buf[3];
-		int arg2 = buf[4] << 8 | buf[5];
-		int arg3 = buf[6] << 8 | buf[7];
-		int arg4 = buf[8] << 8 | buf[9];
-
-
-		/*if(command == DIAG_GET_ALL_SETTINGS){
-		 getAllSettings();
-
-		} else if(command == DIAG_GET_SETTING){
-
-		 getSetting(setting_id);
-		} else if(command == DIAG_SET_SETTING){
-
-		 setSetting(setting_id, value);*/
-		if(command == DIAG_SIMULATE_INPUT){
-			/**/
-			if(tm->inp->getSimulationMode()){
-				tm->inp->input_data[arg2].temp_state = arg3;
-			}else{
-				//simulation mode not active
-				sendCommand(DIAG_ERROR, ERR_SIMULATION_MODE_NOT_ACTIVE, 0, 0, 0);
-			}
-
-		} else if(command == DIAG_SIMULATE_MSG){
-			EventData evt;
-			evt.input_type = arg1;
-			evt.input_id = arg2;
-			evt.input_value = arg3;
-			evt.additional_info = arg4;
-
-			tm->addEvent(&evt);
-
-		} else if(command == DIAG_SET_IN_LISTENER){
-			bool activate_in_listener= arg1;
-			in_listener = activate_in_listener;
-
-		} else if(command == DIAG_SET_OUT_LISTENER){
-			bool activate_out_listener= arg1;
-			out_listener = activate_out_listener;
-
-		} else if(command == DIAG_SET_LOG_LISTENER){
-			bool activate_log = arg1;
-			log_listener = activate_log;
-
-		} else if(command == DIAG_GET_ALL_IN_VALUES){
-			//sendCommand(DIAG_ERROR, 13, 0, 0, 0);
-			for (int i = 0; i < INPUT_ID_COUNT; i++){
-				bool state = tm->inp->getInputState(i);
-				sendCommand(DIAG_GET_ALL_IN_VALUES, i, state, 0, 0);
-
-			}
-		}else if(command == DIAG_GET_ALL_OUT_VALUES){
-			//sendCommand(DIAG_ERROR, 14, 0, 0, 0);
-			for (int i = 0; i < OUTPUT_ID_COUNT; i++){
-				bool state = tm->outp->getOutputState(i);
-				sendCommand(DIAG_GET_ALL_OUT_VALUES, i, state, 0, 0);
-
-			}
-		}else if(command == DIAG_SIMULATE_INPUT_MODE){
-			if(arg1 == 1){
-				//activate simulate input mode
-				tm->inp->setSimulationMode(true);
-				//sendCommand(DIAG_ERROR, 125, 0, 0, 0);
-			} else {
-				//deactivate simulate input mode
-				tm->inp->setSimulationMode(false);
-			}
-		}else if(command == DIAG_SIMULATE_OUTPUT_MODE){
-			if(arg1 == 1){
-				//activate simulate output mode
-				tm->outp->setSimulationMode(true);
-			} else {
-				//deactivate simulate output mode
-				tm->outp->setSimulationMode(false);
-			}
-		}else{
-			sendCommand(DIAG_ERROR, ERR_UNKNOWN_COMMAND_OR_OUT_OF_SYNC, command, arg1, arg2);
-		}
-
+	// protocol is "CCaaaa...", two bytes of command, two bytes per arg // command length is minimum 12 bytes, max 22 bytes
+	while ( Serial.available()) {
+		serial_buff.add(Serial.read());
 	}
+
+
+	bool frame_complete = false;
+	bool escaped = false;
+	int i = 0;
+	char buf[10];
+	int buf_len;
+
+	while (!frame_complete){
+		if(i >= serial_buff.size()){
+			return;
+		}
+
+		int got = serial_buff.look_ahead(i);
+		if (got == 0x1b && !escaped){
+			escaped = true;
+		} else if (got == 0x02 && !escaped){
+			buf_len = 0;
+		} else if (got == 0x03 && !escaped){
+			frame_complete = true;
+			//sendAck();
+		} else {
+			buf[buf_len] = got;
+			buf_len++;
+			escaped = false;
+		}
+
+		if (buf_len >= 11){
+			sendCommand(DIAG_ERROR, ERR_PROTOCOL_VIOLATION, buf_len, got, 0);
+			serial_buff.remove(i);
+			return;
+		}
+		i++;
+	}
+
+	serial_buff.remove(i);
+
+	if(buf_len != 10){
+		sendCommand(DIAG_ERROR, ERR_PROTOCOL_VIOLATION, buf_len, 0, 0);
+		return;
+	}
+
+	//least significant byte first
+	int command = buf[0] << 8 | buf[1];
+	int arg1 = buf[2] << 8 | buf[3];
+	int arg2 = buf[4] << 8 | buf[5];
+	int arg3 = buf[6] << 8 | buf[7];
+	int arg4 = buf[8] << 8 | buf[9];
+
+	//sendCommand(DIAG_ERROR, 50, command, arg1, arg2);
+
+	/*if(command == DIAG_GET_ALL_SETTINGS){
+	 getAllSettings();
+
+	} else if(command == DIAG_GET_SETTING){
+
+	 getSetting(setting_id);
+	} else if(command == DIAG_SET_SETTING){
+
+	 setSetting(setting_id, value);*/
+	if(command == DIAG_SIMULATE_INPUT){
+		/**/
+		if(tm->inp->input_data[arg2].input_type == TYPE_MANUAL){
+			if(tm->inp->getManualSimulationMode()){
+				tm->inp->input_data[arg2].temp_state = arg3;
+			} else {
+				//simulation mode not active
+				sendCommand(DIAG_ERROR, ERR_SIMULATION_MODE_NOT_ACTIVE, TYPE_MANUAL, tm->inp->getManualSimulationMode(), 0);
+			}
+		} else if(tm->inp->input_data[arg2].input_type == TYPE_SENSOR){
+			if(tm->inp->getSensorSimulationMode()){
+				tm->inp->input_data[arg2].temp_state = arg3;
+			} else {
+				//simulation mode not active
+				sendCommand(DIAG_ERROR, ERR_SIMULATION_MODE_NOT_ACTIVE, TYPE_SENSOR, tm->inp->getSensorSimulationMode(), 0);
+			}
+		}
+	} else if(command == DIAG_SIMULATE_MSG){
+		EventData evt;
+		evt.input_type = arg1;
+		evt.input_id = arg2;
+		evt.input_value = arg3;
+		evt.additional_info = arg4;
+
+		tm->addEvent(&evt);
+
+	} else if(command == DIAG_SET_IN_LISTENER){
+		bool activate_in_listener= arg1;
+		in_listener = activate_in_listener;
+
+	} else if(command == DIAG_SET_OUT_LISTENER){
+		bool activate_out_listener= arg1;
+		out_listener = activate_out_listener;
+
+	} else if(command == DIAG_SET_LOG_LISTENER){
+		bool activate_log = arg1;
+		log_listener = activate_log;
+
+	} else if(command == DIAG_GET_ALL_IN_VALUES){
+		//sendCommand(DIAG_ERROR, 13, 0, 0, 0);
+		for (int i = 0; i < INPUT_ID_COUNT; i++){
+			bool state = tm->inp->getInputState(i);
+			sendCommand(DIAG_GET_ALL_IN_VALUES, i, state, 0, 0);
+
+		}
+	}else if(command == DIAG_GET_ALL_OUT_VALUES){
+		//sendCommand(DIAG_ERROR, 14, 0, 0, 0);
+		for (int i = 0; i < OUTPUT_ID_COUNT; i++){
+			bool state = tm->outp->getOutputState(i);
+			sendCommand(DIAG_GET_ALL_OUT_VALUES, i, state, 0, 0);
+
+		}
+	}else if(command == DIAG_SIMULATE_MANUAL_INPUT_MODE){
+		if(arg1 == 1){
+			//activate simulate input mode
+			tm->inp->setManualSimulationMode(true);
+			//sendCommand(DIAG_ERROR, 125, 0, 0, 0);
+		} else {
+			//deactivate simulate input mode
+			tm->inp->setManualSimulationMode(false);
+		}
+	}else if(command == DIAG_SIMULATE_SENSOR_INPUT_MODE){
+		if(arg1 == 1){
+			//activate simulate input mode
+			tm->inp->setSensorSimulationMode(true);
+			//sendCommand(DIAG_ERROR, 125, 0, 0, 0);
+		} else {
+			//deactivate simulate input mode
+			tm->inp->setSensorSimulationMode(false);
+		}
+	}else if(command == DIAG_SIMULATE_OUTPUT_MODE){
+		if(arg1 == 1){
+			//activate simulate output mode
+			tm->outp->setSimulationMode(true);
+		} else {
+			//deactivate simulate output mode
+			tm->outp->setSimulationMode(false);
+		}
+	}else{
+		sendCommand(DIAG_ERROR, ERR_UNKNOWN_COMMAND_OR_OUT_OF_SYNC, command, arg1, arg2);
+	}
+
 
 }
 
 void DiagnoseTask::sendCommand(int command, int arg1, int arg2, int arg3, int arg4){
 	char buf[10];
+	char escaped_buf[20];
 	//most significant byte first
 	buf[1] = command;
 	buf[0] = command >> 8;
@@ -2118,10 +2176,20 @@ void DiagnoseTask::sendCommand(int command, int arg1, int arg2, int arg3, int ar
 	buf[9] = arg4;
 	buf[8] = arg4 >> 8;
 
+	Serial.write(0x02);
 	for(int i = 0; i < 10; i++){
+		if(buf[i] == 0x02 || buf[i] == 0x03 || buf[i] == 0x1b){ //escape STX/ETX/ESC (ASCII Style commands used by protocol)
+			Serial.write(0x1b);
+		}
 		Serial.write(buf[i]);
 	}
+	Serial.write(0x03);
 }
+
+/*void DiagnoseTask::sendAck(){
+	//Send ASCII Style ACK(=0x06)
+	Serial.write(0x06);
+}*/
 
 
 

@@ -63,7 +63,8 @@ int FifoQueue::size() {
 
 
 InputObject::InputObject(TaskManager* task_monitor) {
-	simulate_input_mode = false;
+	simulate_manual_input_mode = false;
+	simulate_sensor_input_mode = false;
 	tm = task_monitor;
 
 	//Initialize input array -> Pin mapping definition
@@ -310,7 +311,10 @@ void InputObject::readInput(){
 		bool readed;
 
 		//get simulated input in simulate input mode else read input from the given pins
-		if(simulate_input_mode){
+		if(simulate_manual_input_mode && input_data[i].input_type == TYPE_MANUAL){
+			readed = input_data[i].temp_state;
+
+		} else if(simulate_sensor_input_mode && input_data[i].input_type == TYPE_SENSOR){
 			readed = input_data[i].temp_state;
 
 		} else if(input_data[i].input_pin >= PIN_ARDUINO_START
@@ -386,16 +390,30 @@ void InputObject::readInput(){
 bool InputObject::hasInputChanged(int input_id){
 	return input_data[input_id].state_changed;
 }
-void InputObject::setSimulationMode(bool enabled) {
-	simulate_input_mode = enabled;
+void InputObject::setManualSimulationMode(bool enabled) {
+	simulate_manual_input_mode = enabled;
 	//set all inputs to false when entering or leaving simulation mode
 	for(int i = 0; i < INPUT_ID_COUNT; i++){
-		input_data[i].temp_state = 0;
+		if(input_data[i].input_type == TYPE_MANUAL){
+			input_data[i].temp_state = 0;
+		}
+	}
+}
+void InputObject::setSensorSimulationMode(bool enabled) {
+	simulate_sensor_input_mode = enabled;
+	//set all inputs to false when entering or leaving simulation mode
+	for(int i = 0; i < INPUT_ID_COUNT; i++){
+		if(input_data[i].input_type == TYPE_SENSOR){
+			input_data[i].temp_state = 0;
+		}
 	}
 }
 
-bool InputObject::getSimulationMode() {
-	return simulate_input_mode;
+bool InputObject::getManualSimulationMode() {
+	return simulate_manual_input_mode;
+}
+bool InputObject::getSensorSimulationMode() {
+	return simulate_sensor_input_mode;
 }
 
 
