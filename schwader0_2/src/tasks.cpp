@@ -1521,13 +1521,14 @@ void AutoTransportTask::start() {
 		//set left done for true for step 1
 		right_done = true;
 	}
-	//if the things for step 0 are done -> go directly to step 1 short up left
+	//if the things for step 1 are done -> go directly to step 2
 	if(left_done && right_done){
-		step = 1;
+		step = 2;
 		left_done = false;
 		right_done = false;
 
-		tm->addMessage(MSG_TSKPART_SPINNER_LEFT_UP_SHORT, ACTIVE, task_id);
+		tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_IN, ACTIVE, task_id);
+		tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_IN, ACTIVE, task_id);
 
 	}
 
