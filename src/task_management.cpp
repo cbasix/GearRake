@@ -46,10 +46,10 @@ TaskManager::TaskManager() {
 
 }
 
-void TaskManager::beginn() {
+void TaskManager::begin() {
 	outp = new OutputObject(this);
 	inp = new InputObject(this);
-	evt_queue = new FifoQueue;
+	evt_queue = new CircularQueue<EventData>(EVENT_QUEUE_SIZE);
 
 	//spinner ----------------------------------------------------------------
 	task_list[TSK_SPINNER_BOTH_UP] = new BothSpinnerUpTask();
@@ -586,17 +586,17 @@ void TaskManager::resetTasks(){
 void TaskManager::processInputQueue() {
 	//TODO get InputEvent from queue
 	if(evt_queue->size() > 0){
-		EventData* inp = evt_queue->get();
+		EventData inp = evt_queue->get();
 		for(int i = 0; i < TSK_LIST_LENGTH; i++){
 			if(task_list[i]->getState() == STATE_RUNNING){
-				task_list[i]->update(inp);
+				task_list[i]->update(&inp);
 
 //				Serial.print(">> Event toTask <<  Id: ");
 //				Serial.print(inp->input_id);
 //				Serial.print(" Send to active task: ");
 //				Serial.println(i);
 			} else if (task_list[i]->getState() == STATE_STOPPED) {
-				task_list[i]->testStartConditions(inp);
+				task_list[i]->testStartConditions(&inp);
 			}
 		}
 	}
@@ -637,3 +637,6 @@ int TaskManager::getTaskStatus(int task_id) {
 
 
 
+unsigned long TaskManager::getTimerRunIntervall() {
+	return timer_run_intervall;
+}

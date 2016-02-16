@@ -18,6 +18,7 @@ class OutputObject;
 #include "Arduino.h"
 #include "input_output.h"
 #include "logging.h"
+#include "util.h"
 
 /*class Task
   public:
@@ -66,7 +67,7 @@ class TaskManager{
 	public:
 		TaskManager();
 
-		void beginn();
+		void begin();
 
 		void addEvent(EventData *inp);
 		void addMessage(int message_id, bool message_state, int sender);
@@ -78,24 +79,27 @@ class TaskManager{
 		void processInputQueue();
 		void processTimers();
 
-
+        void getRunningTasks();
 		void startTask(int task_id);
 		void stopTask(int task_id);
 		void resetTasks();
 
 		int getTaskStatus(int task_id);
+        unsigned long getTimerRunIntervall();
+        void setTimerRunIntervall(unsigned long intervall);
 
 		InputObject* inp;
 		OutputObject* outp;
 
-		MyDisplay dsp;
+		//MyDisplay dsp;
 
-		unsigned long timer_run_intervall;
+
 
 	private:
+        unsigned long timer_run_intervall;
 		//Task* taskList[];
 		//ist ehere eine Event queue als eine input queue
-		FifoQueue* evt_queue;
+		CircularQueue<EventData>* evt_queue;
 
 		Task* task_list[100];
 		//int task_list_length;

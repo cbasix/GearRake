@@ -2,64 +2,7 @@
 #include "input_output.h"
 #include "Arduino.h"
 #include "Adafruit_MCP23017.h"
-
-
-FifoQueue::FifoQueue() {
-	next_in = 0;
-	next_out = 0;
-}
-
-
-void FifoQueue::add(EventData evt) {
-
-	//if queue is full the oldest input gets overwritten
-	if(size() >= EVENT_QUEUE_SIZE - 1){
-		next_out++;
-		if(next_out >= EVENT_QUEUE_SIZE){
-			next_out = 0;
-		}
-	}
-
-	event_data[next_in] = evt;
-
-	next_in++;
-	if(next_in >= EVENT_QUEUE_SIZE){
-		next_in = 0;
-	}
-
-
-
-}
-
-EventData* FifoQueue::get() {
-
-	if(size() > 0){
-
-
-		EventData* temp =  &event_data[next_out];
-
-		next_out++;
-		if(next_out >= EVENT_QUEUE_SIZE){
-			next_out = 0;
-		}
-
-		return temp;
-	}
-
-	//TODO Bullshit
-	return 0;
-}
-
-int FifoQueue::size() {
-	if(next_in > next_out){
-		return next_in - next_out;
-
-	} else if (next_in < next_out){
-		return (EVENT_QUEUE_SIZE - next_out) + next_in;
-	}
-
-	return 0;
-}
+#include "util.h"
 
 
 InputObject::InputObject(TaskManager* task_monitor) {
@@ -601,10 +544,7 @@ void OutputObject::writeOutput() {
 	//std::cout << "Write output." << std::endl;
 	for(int i = 0; i < OUTPUT_ID_COUNT; i++){
 		if(output_data[i].state_changed){
-			tm->addOutput(i, output_data[i].state);
-
-
-			//ALL OUTPUTS ARE INVERTED! They are active when they are connected to ground. -> invert output with !
+						//ALL OUTPUTS ARE INVERTED! They are active when they are connected to ground. -> invert output with !
 
 			//Serial.print("              <<| PIN: ");
 			//Serial.print(output_data[i].output_pin);
@@ -622,7 +562,7 @@ void OutputObject::writeOutput() {
 
 				//Serial.print(" Arduino pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_ARDUINO_START);
-				//Serial.print(" State: ");
+				//Serial.print(" FrameDown: ");
 				//Serial.print(output_data[i].state);
 
 			} else if(output_data[i].output_pin >= PIN_EXP1_START &&
@@ -632,7 +572,7 @@ void OutputObject::writeOutput() {
 
 				//Serial.print(" exp1 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP1_START);
-				//Serial.print(" State: ");
+				//Serial.print(" FrameDown: ");
 				//Serial.print(output_data[i].state);
 
 			} else if(output_data[i].output_pin >= PIN_EXP2_START &&
@@ -642,7 +582,7 @@ void OutputObject::writeOutput() {
 
 				//Serial.print(" exp2 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP2_START);
-				//Serial.print(" State: ");
+				//Serial.print(" FrameDown: ");
 				//Serial.print(output_data[i].state);
 
 			} else if(output_data[i].output_pin >= PIN_EXP3_START &&
@@ -652,7 +592,7 @@ void OutputObject::writeOutput() {
 
 				//Serial.print(" exp3 pin: ");
 				//Serial.print(output_data[i].output_pin - PIN_EXP3_START);
-				//Serial.print(" State: ");
+				//Serial.print(" FrameDown: ");
 				//Serial.print(output_data[i].state);
 
 			}

@@ -1,0 +1,275 @@
+//
+// Created by cyberxix on 05.02.16.
+//
+#include "util.h"
+
+#ifndef GEARRAKE_GEARRAKE_H
+#define GEARRAKE_GEARRAKE_H
+
+
+static class Controller : Broker{
+private:
+static Timer timer;
+static LinkedList<Consumer> activeActions;
+public:
+static registerConsumer(Consumer c);
+static removeConsumer(Consumer c);
+static registerProducer(Producer p);
+static removeProducer(Producer p);
+
+// wenn mehrere messages im durchlauf notwendig ...
+//addMessage(Message m);
+}
+
+class Consumer(){
+// wenn mehrere messages im Durchlauf notwendig ...
+// virtual void onMessage(Controller contr, Message m) = 0;
+
+virtual Message onMessage(Message m) = 0;
+}
+
+class Spawner(){
+// Erstellt neue Actions auf anfrage
+}
+
+
+//Für jedes interessante Event gibt es Producer
+class Producer(){
+protected:
+Controller c;
+public:
+virtual void produce() = 0;
+}
+class SensorProducer() : public Producer{
+
+}
+
+class Timer() : public Consumer, Producer{
+private:
+LinkedList<TimeoutRequest>
+
+}
+
+class Output() : public Consumer{
+
+}
+
+class Action : public Consumer{
+    //notwendig??
+}
+
+class StateDefinedAction() : public Action{
+protected:
+int state;
+
+public:
+typedef enum main_states { STATE_STARTUP=0, STATE_STOPPING=1};
+getStateDescription(int State);
+getState();
+}
+
+class AtomicAction() : public Action{
+public:
+//in unterklassen: name = ...
+// atomic sind alle abläufe die nur 1 zylinder betreffen
+
+}
+
+class MoveToPoint(){
+
+
+//Messages werden nach Zustellung immer gelöscht
+class Message(){
+protected:
+public:
+Action caller;
+int id; //für jede Nachricht eindeutig
+virtual char* getName();
+}
+
+class TimeoutRequest() : public Message{
+name = "TimeoutRequest";
+public:
+long timeout;
+Consumer caller;
+}
+
+class TimeoutNotification : public Message{
+    Consumer caller;
+    long overtime;
+}
+
+class MoveRequest() : public Message{
+public:
+Cylinder cy;
+Position pos;
+Time t;
+}
+
+class PositionRequest() : public Message{
+
+}
+
+class PositionNotification() : public Message{
+
+}
+
+class ActionNotification() : public Message{
+
+}
+
+class StateMachine(){
+
+}
+
+class FrameDown() : StateDefinedAction{
+typedef enum local states { STATE_SHORT_FRAME_UP=10, STATE_OPEN_LOCK, STATE_FRAME_DOWN, STATE_CLOSE_LOCK};
+FrameDown(){
+    state = STATE_STARTUP;
+}
+
+checkStartup(){
+
+}
+
+onMessage(){
+    case (state){
+        STATE_STARTUP:
+        if(type(ActionNotification)
+           && msg.type == START
+           && msg.action == this){
+            state = STATE_LOCK_OPEN
+            return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN);
+        }
+        break;
+
+        STATE_LOCK_OPEN: //wait for lock open
+        if(type(PositionNotification)){
+            if(pos.cylinder == Cylinder.getFrameLock()){
+                state = STATE_FRAME_DOWN;
+                return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
+            }
+        } if(type(TimeoutNotification)){
+            Controller.throwError(this, msg, "Timeout beim Warten auf Öffnen des Rahmenschlosses");
+            state = STATE_LOCK_CLOSE;
+            return new MoveRequest(this, Cylinder.getFrameLock(), Cylinder.CLOSE);
+        } else {
+            //ignore all other messages
+            return new EmptyResponse();
+        }
+        break;
+
+        STATE_FRAME_DOWN: //wait for end signal to
+        if(type(PositionNotification)){
+            if(pos.cylinder == Cylinder.getFrameLock()){
+                state = STATE_FRAME_DOWN;
+                return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
+            }
+        } if(type(TimeoutNotification)){
+            state = STATE_LOCK_CLOSE;
+            Controller.throwError(this, msg, "Timeout beim Warten auf Öffnen des Rahmenschlosses");
+            return new MoveRequest(this, Cylinder.getFrameLock(), Cylinder.CLOSE);
+        } else {
+            //ignore all other messages
+            return new EmptyResponse();
+        }
+        break;
+
+        STATE_LOCK_CLOSE: //wait for lock close
+        if(type(PositionNotification)){
+            if(pos.cylinder == Cylinder.getFrameLock()){
+                state = STATE_FRAME_DOWN;
+                return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
+            }
+        } if(type(TimeoutNotification)){
+            state = STATE_LOCK_CLOSE;
+            return new Error(this, msg, "Timeout beim Warten auf Öffnen des Rahmenschlosses");
+        } else {
+            //ignore all other messages
+            return new EmptyResponse();
+        }
+        break;
+
+        1:
+        if(type(ActionDoneNotification)){
+
+        } else {
+
+        }
+        break;
+    }
+}
+
+}
+
+class AutoWork() : StateDefinedAction{
+FrameDown(){
+    state = STATE_STARTUP
+}
+onMessage(){
+    case state{
+            STATE_STARTUP: //startzustand
+
+            //starte positionsabfrage
+            return Controller.createPositionRequest(Cylinder.getSpinnerRight());
+            break;
+
+            STATE_POSITION: //warte auf positionsdaten
+            if(type(PositionNotification)){
+                if(pos.cylinder == Cylinder.getSpinnerRight()){
+                    //
+                    state = STATE_LOCK_OPEN;
+                    return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
+                }
+            } if(type(TimeoutNotification)){
+                state = STATE_LOCK_CLOSE;
+                return new Error(this, msg, "Timeout beim Warten auf Positionsdaten.");
+            } else {
+                //ignore all other messages
+                return new EmptyResponse();
+            }
+            break;
+
+            STATE_LOCK_OPEN: //warte auf positionsdaten
+            if(type(PositionNotification)){
+                if(pos.cylinder == Cylinder.getFrameLock()
+                   && pos.){
+                    //
+                    state = 2;
+                }
+            } if(type(TimeoutNotification)){
+                return new Error(this, msg, "Timeout beim Warten auf Positionsdaten.");
+            } else {
+
+            }
+            break;
+    }
+}
+
+}
+
+class Cylinder {
+    sensorSet
+
+}
+
+
+class CylinderSet {
+    Cylinder spinnerRight;
+    Cylinder spinnerLeft;
+
+    CylinderSet(){
+        spinnerRight.
+    }
+}
+
+
+
+
+
+
+
+
+
+
+#endif //GEARRAKE_GEARRAKE_H

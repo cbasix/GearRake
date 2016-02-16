@@ -1,5 +1,5 @@
 //============================================================================
-// Name        : schwader0_2.cpp
+// Name        : drafts.cpp
 // Author      : Sebastian Fassmann
 // Version     :
 // Copyright   : Copyright Familie Fassmann 2014
@@ -15,7 +15,7 @@ using namespace std;
 
 #define ENVIRONMENT 100
 
-int main() {
+int mainDEACTIVE() {
 	//cout << "Hello Schwader" << endl; // prints Hello Schwader
 
 	/*
@@ -139,7 +139,7 @@ int main() {
 	*/
 
 	TaskManager tm;
-	tm.beginn();
+	tm.begin();
 
 	tm.addEvent(inp_frame_u);
 	tm.addEvent(inp_frame_d);
@@ -154,7 +154,5 @@ int main() {
 		tm.processTimers();
 		tm.outp->writeOutput();
 	}
-
-	return 0;
 }
 

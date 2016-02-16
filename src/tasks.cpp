@@ -568,7 +568,7 @@ void DelayedStartTaskpart::timer() {
 
 //MINIMAL TASK
 /*MinimalTask::MinimalTask() {
-	task_state = STATE_STOPPED;
+	task_state = ACTION_STATE_STOPPED_OK;
 	task_id = TSK_...;
 }
 
@@ -597,7 +597,7 @@ ModeTask::ModeTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_MODE;
 
-	active_mode = NULL;
+	active_mode = 0;
 }
 
 void ModeTask::testStartConditions(EventData* inp){
@@ -1957,7 +1957,7 @@ void DiagnoseTask::testStartConditions(EventData* inp) {
 
 void DiagnoseTask::start() {
 	Task::start();
-	tm->timer_run_intervall = DIAGNOSE_TIMER_RUN;
+	tm->setTimerRunIntervall(DIAGNOSE_TIMER_RUN);
 
 	last_run = millis();
 	Serial.begin(9600);
@@ -2003,7 +2003,7 @@ void DiagnoseTask::update(EventData* inp) {
 
 void DiagnoseTask::exit() {
 	Task::exit();
-	tm->timer_run_intervall = DEFAULT_TIMER_RUN;
+	tm->setTimerRunIntervall(DEFAULT_TIMER_RUN);
 	Serial.end();
 }
 

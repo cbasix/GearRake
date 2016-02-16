@@ -31,149 +31,146 @@ class TaskManager;
 
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define INPUT_ID_COUNT 45 /// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
-
+/// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
+enum inputs {
 //Left Joystick
-#define IN_SPINNER_LEFT_UP 0
-#define IN_SPINNER_LEFT_FLOAT 1
+            IN_SPINNER_LEFT_UP = 0,
+    IN_SPINNER_LEFT_FLOAT  = 1,
 
-#define IN_SPINNER_LEFT_TELE_OUT 2
-#define IN_SPINNER_LEFT_TELE_IN 3
+    IN_SPINNER_LEFT_TELE_OUT = 2,
+    IN_SPINNER_LEFT_TELE_IN = 3,
 
-#define IN_SPINNER_LEFT_AUTO_THIRD 4
+    IN_SPINNER_LEFT_AUTO_THIRD = 4,
 
 //Right Joystick
-#define IN_SPINNER_RIGHT_UP 5
-#define IN_SPINNER_RIGHT_FLOAT 6
+    IN_SPINNER_RIGHT_UP = 5,
+    IN_SPINNER_RIGHT_FLOAT = 6,
 
-#define IN_SPINNER_RIGHT_TELE_OUT 7
-#define IN_SPINNER_RIGHT_TELE_IN 8
+    IN_SPINNER_RIGHT_TELE_OUT = 7,
+    IN_SPINNER_RIGHT_TELE_IN = 8,
 
-#define IN_SPINNER_RIGHT_AUTO_THIRD 9
+    IN_SPINNER_RIGHT_AUTO_THIRD = 9,
 
 //Middle Joystick  UP is pulling the joystick!!!
-#define IN_MULTI_UP 10
-#define IN_MULTI_DOWN 11
+    IN_MULTI_UP = 10,
+    IN_MULTI_DOWN = 11,
 
-#define IN_MULTI_RIGHT 12
-#define IN_MULTI_LEFT 13
+    IN_MULTI_RIGHT = 12,
+    IN_MULTI_LEFT = 13,
 
-#define IN_MULTI_PRESS 14
+    IN_MULTI_PRESS = 14,
 
 //Top Buttons
-#define IN_AUTO_TRANSPORT 15
-#define IN_AUTO_LOW 16
-#define IN_AUTO_WORK 17
+            IN_AUTO_TRANSPORT = 15,
+    IN_AUTO_LOW = 16,
+    IN_AUTO_WORK = 17,
 
 //Modifier Buttons Links Rechts
-#define IN_MOD_LR_STEER 18
-//#define IN_MOD_LR_UNUSED1
-//#define IN_MOD_LR_UNUSED2
-#define IN_MOD_LR_WEEL_RIGHT_TELE 19
-#define IN_MOD_LR_WEEL_LEFT_TELE 20
+    IN_MOD_LR_STEER = 18,
+    IN_MOD_LR_WEEL_RIGHT_TELE = 19,
+    IN_MOD_LR_WEEL_LEFT_TELE = 20,
 
 //Modifier Buttons Oben Unten
-#define IN_MOD_OU_SPINNER_BACK 21
-#define IN_MOD_OU_FRAME 22
-//#define IN_MOD_OU_UNUSED
+    IN_MOD_OU_SPINNER_BACK = 21,
+    IN_MOD_OU_FRAME = 22,
+// IN_MOD_OU_UNUSED
 
 //spinner rear buttons on the back side
-#define IN_REAR_SPINNER_REAR_UP 23
-#define IN_REAR_SPINNER_REAR_DOWN 24
+    IN_REAR_SPINNER_REAR_UP = 23,
+    IN_REAR_SPINNER_REAR_DOWN = 24,
 
 //Sensors
-#define SENS_SPINNER_LEFT_THIRD 25
-#define SENS_SPINNER_RIGHT_THIRD 26
+    SENS_SPINNER_LEFT_THIRD = 25,
+    SENS_SPINNER_RIGHT_THIRD = 26,
 
-#define SENS_SPINNER_LEFT_UP 27
-#define SENS_SPINNER_RIGHT_UP 28
+    SENS_SPINNER_LEFT_UP = 27,
+    SENS_SPINNER_RIGHT_UP = 28,
 
-#define SENS_SPINNER_REAR_UP 29
+    SENS_SPINNER_REAR_UP = 29,
 
-#define SENS_SPINNER_LEFT_TELE_OUT 30
-#define SENS_SPINNER_LEFT_TELE_IN 31
+    SENS_SPINNER_LEFT_TELE_OUT = 30,
+    SENS_SPINNER_LEFT_TELE_IN = 31,
 
-#define SENS_SPINNER_RIGHT_TELE_OUT 32
-#define SENS_SPINNER_RIGHT_TELE_IN 33
+    SENS_SPINNER_RIGHT_TELE_OUT = 32,
+    SENS_SPINNER_RIGHT_TELE_IN = 33,
 
-#define SENS_FRAME_UP 34
-#define SENS_FRAME_MIDDLE 35
-#define SENS_FRAME_LOW 36
-#define SENS_FRAME_GROUND 37
+    SENS_FRAME_UP = 34,
+    SENS_FRAME_MIDDLE = 35,
+    SENS_FRAME_LOW = 36,
+    SENS_FRAME_GROUND = 37,
 
-#define SENS_FRAME_LOCK_OPEN 38
-#define SENS_FRAME_LOCK_CLOSED 39
+    SENS_FRAME_LOCK_OPEN = 38,
+    SENS_FRAME_LOCK_CLOSED = 39,
 
-#define SENS_WEEL_TELE_RIGHT_OUT 40
-#define SENS_WEEL_TELE_RIGHT_IN 41
+    SENS_WEEL_TELE_RIGHT_OUT = 40,
+    SENS_WEEL_TELE_RIGHT_IN = 41,
 
-#define SENS_WEEL_TELE_LEFT_OUT 42
-#define SENS_WEEL_TELE_LEFT_IN 43
+    SENS_WEEL_TELE_LEFT_OUT = 42,
+    SENS_WEEL_TELE_LEFT_IN = 43,
 
-#define SENS_WEEL_TRACK_MIDDLE 44
+    SENS_WEEL_TRACK_MIDDLE = 44,
+    INPUT_ID_COUNT
+};
 
 
 // ids for output must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define OUTPUT_ID_COUNT 34
+enum outputs {
+    OUT_SPINNER_RIGHT_UP = 0,
+    OUT_SPINNER_LEFT_UP = 1,
+    OUT_SPINNER_REAR_UP = 2,
 
-#define OUT_SPINNER_RIGHT_UP 0
-#define OUT_SPINNER_LEFT_UP 1
-#define OUT_SPINNER_REAR_UP 2
+    OUT_SPINNER_RIGHT_FLOAT = 3,
+    OUT_SPINNER_LEFT_FLOAT = 4,
+    OUT_SPINNER_REAR_FLOAT = 5,
 
-#define OUT_SPINNER_RIGHT_FLOAT 3
-#define OUT_SPINNER_LEFT_FLOAT 4
-#define OUT_SPINNER_REAR_FLOAT 5
+    OUT_SPINNER_RIGHT_TELE_OUT = 6,
+    OUT_SPINNER_LEFT_TELE_OUT = 7,
 
-#define OUT_SPINNER_RIGHT_TELE_OUT 6
-#define OUT_SPINNER_LEFT_TELE_OUT 7
+    OUT_SPINNER_RIGHT_TELE_IN = 8,
+    OUT_SPINNER_LEFT_TELE_IN = 9,
 
-#define OUT_SPINNER_RIGHT_TELE_IN 8
-#define OUT_SPINNER_LEFT_TELE_IN 9
+    OUT_FRAME_UP = 10,
+    OUT_FRAME_DOWN = 11,
 
-#define OUT_FRAME_UP 10
-#define OUT_FRAME_DOWN 11
+    OUT_STEER_LEFT = 12,
+    OUT_STEER_RIGHT = 13,
 
-#define OUT_STEER_LEFT 12
-#define OUT_STEER_RIGHT 13
+    OUT_WEEL_TELE_LEFT_IN = 14,
+    OUT_WEEL_TELE_RIGHT_IN = 15,
 
-#define OUT_WEEL_TELE_LEFT_IN 14
-#define OUT_WEEL_TELE_RIGHT_IN 15
+    OUT_WEEL_TELE_LEFT_OUT = 16,
+    OUT_WEEL_TELE_RIGHT_OUT = 17,
 
-#define OUT_WEEL_TELE_LEFT_OUT 16
-#define OUT_WEEL_TELE_RIGHT_OUT 17
+    OUT_FRAME_LOCK_UP = 18,
+    OUT_FRAME_LOCK_DOWN = 19,
 
-#define OUT_FRAME_LOCK_UP 18
-#define OUT_FRAME_LOCK_DOWN 19
-
-#define OUT_PRESSURE 20
+    OUT_PRESSURE = 20,
 
 //Leds
-#define LED_WEEL_TRACK_MIDDLE 21
-#define LED_FRAME_LOCK 22
+    LED_WEEL_TRACK_MIDDLE = 21,
+    LED_FRAME_LOCK = 22,
 
 //Top Buttons
-#define LED_AUTO_TRANSPORT 23
-#define LED_AUTO_LOW 24
-#define LED_AUTO_WORK 25
+    LED_AUTO_TRANSPORT = 23,
+    LED_AUTO_LOW = 24,
+    LED_AUTO_WORK = 25,
 
 //Float Leds
-#define LED_SPINNER_RIGHT_FLOAT 26
-#define LED_SPINNER_LEFT_FLOAT 27
-#define LED_SPINNER_REAR_FLOAT 28
+            LED_SPINNER_RIGHT_FLOAT = 26,
+    LED_SPINNER_LEFT_FLOAT = 27,
+    LED_SPINNER_REAR_FLOAT = 28,
 
 //Modifier Leds Links Rechts
-#define LED_MOD_LR_STEER 29
+    LED_MOD_LR_STEER = 29,
 
-#define LED_MOD_LR_WEEL_TELE_R 30
-#define LED_MOD_LR_WEEL_TELE_L 31
+    LED_MOD_LR_WEEL_TELE_R = 30,
+    LED_MOD_LR_WEEL_TELE_L = 31,
 
 //Modifier Leds Links Rechts
-#define LED_MOD_OU_SPINNER_BACK 32
-#define LED_MOD_OU_FRAME 33
-
-//#define LED_MOD_LR_UNUSED1 30
-//#define LED_MOD_LR_UNUSED2 31
-//#define LED_MOD_OU_UNUSED 36
+    LED_MOD_OU_SPINNER_BACK = 32,
+    LED_MOD_OU_FRAME = 33,
+    OUTPUT_ID_COUNT
+};
 
 
 //pin ranges on different devices--------------------------------------------------------
@@ -252,19 +249,6 @@ class InputObject{
 		bool simulate_sensor_input_mode;
 };
 
-
-class FifoQueue{
-	public:
-		FifoQueue();
-		void add(EventData evt);
-		EventData* get();
-		int size();
-	private:
-		int next_in;
-		int next_out;
-		EventData event_data[EVENT_QUEUE_SIZE];
-};
-
 class OutputObject{
 	public:
 		OutputObject(TaskManager* task_monitor);
@@ -288,11 +272,6 @@ class OutputObject{
 		Adafruit_MCP23017* exp3;
 		void setOutput(int output_id, bool output_value);
 };
-
-
-
-
-
 
 
 #endif /* INPUT_OUTPUT_H */

@@ -20,14 +20,14 @@ MyDisplay::MyDisplay() {
 	//stringToLCD("SwStatusMonitor online. ");
 
 }
-
+/*
 void MyDisplay::setBacklight(bool active) {
 	if(active){
 		//my_lcd->setBacklight(1);
 	} else {
 		//my_lcd->setBacklight(0);
 	}
-}
+}*/
 
 //void Display::writeError(Error* ptr) {}
 /*
