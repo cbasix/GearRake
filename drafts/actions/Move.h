@@ -9,13 +9,12 @@
 
 class Move : public Consumer{
 public:
-    Move() { }
+    Move(Controller c, Cylinder cylinder, CylinderPosition position, CylinderDirection direction, int parent_communication_id, int stop_after_timer);
 
     //inherited:
     virtual ActionType getType();
     virtual void onMessage(Controller c, Message m);
 private:
-    Move(Controller c, Cylinder cylinder, CylinderPosition position, CylinderDirection direction,  int parent_communication_id, int stop_after_timer);
     CylinderDirection direction;
     CylinderPosition position;
     Cylinder cylinder;

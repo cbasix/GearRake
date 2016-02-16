@@ -14,16 +14,16 @@ ActionType Move::getType() {
 
 void Move::onMessage(Controller c, Message m) {
     if(m.getType() == MESSAGE_POSITION_CHANGED // stop when given position is reached
-            && position = m.getValue(MVALUE_POSITION)){
-        Message::createCylinderRequest(c, getType(), cylinder, DIRECTION_STOP, POSITION_NONE);
+            && position == m.getValue(MESSAGE_POSITION_CHANGED__POSITION)){
+        Message::createCylinderRequest(c, getType(), cylinder, DIRECTION_STOP);
 
         if(parent_communication_id != 0){
             Message::createActionState(c, getType(), parent_communication_id, ACTION_STATE_STOPPED_OK);
         }
 
-    } else if(m.getType() == MESSAGE_VALUE_CHANGED_MANUAL //stop when in mixed or manual mode the input button is released
+    } else if(m.getType() == MESSAGE_MANUAL_CHANGED //stop when in mixed or manual mode the input button is released
             && direction != DIRECTION_NONE
-            && ACTIVE = m.getValue(MVALUE_STATE)){
+            && ACTIVE == m.getValue(MESSAGE_MANUAL_CHANGED__STATE)){
         Message::createCylinderRequest(c, getType(), cylinder, DIRECTION_STOP);
 
         if(parent_communication_id != 0) {

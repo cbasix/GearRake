@@ -202,7 +202,8 @@ enum ActionType {
     ACTION_MOVE,
     ACTION_INPUT,
     ACTION_LED,
-    ACTION_COMPLEX_MOVE
+    ACTION_COMPLEX_MOVE,
+    ACTION_FRAME_DOWN
 };
 
 enum Cylinder {
