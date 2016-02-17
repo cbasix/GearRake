@@ -3,18 +3,22 @@
 //
 
 #include "Message.h"
+#include "constants.h"
 #include "constants_message.h"
 
-MessageTypes Message::getType() {
+
+MessageType Message::getType() {
     return type;
 }
 
-int Message::getValue(MessageFields field) {
-    return data[field];
+int Message::next_generated_communication_id = 1;
+
+int Message::getValue(MessageField field) {
+    return data[static_cast<int>(field)];
 }
 
-void Message::setValue(MessageFields field, int value) {
-    data[field] = value;
+void Message::setValue(MessageField field, int value) {
+    data[static_cast<int>(field)] = value;
 }
 
 int Message::getCommunicationId() {
@@ -26,146 +30,211 @@ int Message::generateCommunicationId() {
     return com_id;
 }
 
-int Message::createTimeoutRequest(Controller c, ActionType type, int timeout) {
+int Message::createTimeoutRequest(Controller* c, ActionType type, int timeout) {
     int com_id = generateCommunicationId();
     createTimeoutRequest(c, type, com_id, timeout);
     return com_id;
 }
 
-void Message::createTimeoutRequest(Controller c, ActionType type, int communication_id, int timeout) {
+void Message::createTimeoutRequest(Controller* c, ActionType type, int communication_id, int timeout) {
     Message m;
-    m.type = MESSAGE_TIMOUT_REQUEST;
+    m.type = MessageType::TIMEOUT_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_TIMEOUT_REQUEST__TIMEOUT, timeout);
-    c.queueMessage(m);
+    m.setValue(MessageField::TIMEOUT_REQUEST__TIMEOUT, timeout);
+    c->queueMessage(m);
 }
 
-int Message::createTimerRequest(Controller c, ActionType type, int stop_after) {
+int Message::createTimerRequest(Controller* c, ActionType type, int stop_after) {
     int com_id = generateCommunicationId();
     createTimerRequest(c, type, com_id, stop_after);
     return com_id;
 }
 
-void Message::createTimerRequest(Controller c, ActionType type, int communication_id, int stop_after) {
+void Message::createTimerRequest(Controller* c, ActionType type, int communication_id, int stop_after) {
     Message m;
-    m.type = MESSAGE_TIMER_REQUEST;
+    m.type = MessageType::TIMER_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_TIMER_REQUEST__STOP_AFTER, stop_after);
-    c.queueMessage(m);
+    m.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, stop_after);
+    c->queueMessage(m);
 }
 
-int Message::createCylinderRequest(Controller c, ActionType type, Cylinder cylinder, CylinderDirection direction) {
+int Message::createCylinderRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction) {
     int com_id = generateCommunicationId();
     createCylinderRequest(c, type, com_id, cylinder, direction);
     return com_id;
 }
 
-void Message::createCylinderRequest(Controller c, ActionType type, int communication_id, Cylinder cylinder,
+void Message::createCylinderRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder,
                                     CylinderDirection direction) {
     Message m;
-    m.type = MESSAGE_CYLINDER_REQUEST;
+    m.type = MessageType::CYLINDER_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_CYLINDER_REQUEST__CYLINDER, cylinder);
-    m.setValue(MESSAGE_CYLINDER_REQUEST__DIRECTION, direction);
-    c.queueMessage(m);
+    m.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, static_cast<int>(direction));
+    c->queueMessage(m);
 }
 
-int Message::createMoveTimeRequest(Controller c, ActionType type, Cylinder cylinder, CylinderDirection direction,
+int Message::createMoveTimeRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction,
                                    int timer) {
     int com_id = generateCommunicationId();
     createMoveTimeRequest(c, type, com_id, cylinder, direction, timer);
     return com_id;
 }
 
-void Message::createMoveTimeRequest(Controller c, ActionType type, int communication_id, Cylinder cylinder,
+void Message::createMoveTimeRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder,
                                     CylinderDirection direction, int timer) {
     Message m;
-    m.type = MESSAGE_MOVE_TIME_REQUEST;
+    m.type = MessageType::MOVE_TIME_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_MOVE_TIME_REQUEST__CYLINDER, cylinder);
-    m.setValue(MESSAGE_MOVE_TIME_REQUEST__DIRECTION, direction);
-    m.setValue(MESSAGE_MOVE_TIME_REQUEST__TIMER, timer);
-    c.queueMessage(m);
+    m.setValue(MessageField::MOVE_TIME_REQUEST__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::MOVE_TIME_REQUEST__DIRECTION, static_cast<int>(direction));
+    m.setValue(MessageField::MOVE_TIME_REQUEST__TIMER, timer);
+    c->queueMessage(m);
 }
 
-int Message::createMovePositionRequest(Controller c, ActionType type, Cylinder cylinder, CylinderPosition position) {
+int Message::createMovePositionRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderPosition position) {
     int com_id = generateCommunicationId();
     createMovePositionRequest(c, type, com_id, cylinder, position);
     return com_id;
 }
 
-void Message::createMovePositionRequest(Controller c, ActionType type, int communication_id, Cylinder cylinder,
+void Message::createMovePositionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder,
                                        CylinderPosition position) {
     Message m;
-    m.type = MESSAGE_MOVE_POSITION_REQUEST;
+    m.type = MessageType::MOVE_POSITION_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_MOVE_POSITION_REQUEST__CYLINDER, cylinder);
-    m.setValue(MESSAGE_MOVE_POSITION_REQUEST__POSITION, position);
-    c.queueMessage(m);
+    m.setValue(MessageField::MOVE_POSITION_REQUEST__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::MOVE_POSITION_REQUEST__POSITION, static_cast<int>(position));
+    c->queueMessage(m);
 }
 
-int Message::createMoveDirectionRequest(Controller c, ActionType type, Cylinder cylinder, CylinderDirection direction) {
+int Message::createMoveDirectionRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction) {
     int com_id = generateCommunicationId();
     createMoveDirectionRequest(c, type, com_id, cylinder, direction);
     return com_id;
 }
 
-void Message::createMoveDirectionRequest(Controller c, ActionType type, int communication_id, Cylinder cylinder,
+void Message::createMoveDirectionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder,
                                          CylinderDirection direction) {
     Message m;
-    m.type = MESSAGE_MOVE_DIRECTION_REQUEST;
+    m.type = MessageType::MOVE_DIRECTION_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_MOVE_DIRECTION_REQUEST__CYLINDER, cylinder);
-    m.setValue(MESSAGE_MOVE_DIRECTION_REQUEST__DIRECTION, direction);
-    c.queueMessage(m);
+    m.setValue(MessageField::MOVE_DIRECTION_REQUEST__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::MOVE_DIRECTION_REQUEST__DIRECTION, static_cast<int>(direction));
+    c->queueMessage(m);
 }
 
-void Message::createActionState(Controller c, ActionType type, int parent_communication_id, ActionState state) {
+int Message::createPositionRequest(Controller *c, ActionType type, Cylinder cylinder) {
+    int com_id = generateCommunicationId();
+    createPositionRequest(c, type, com_id, cylinder);
+    return com_id;
+}
+
+void Message::createPositionRequest(Controller *c, ActionType type, int communication_id, Cylinder cylinder) {
     Message m;
-    m.type = MESSAGE_ACTION_STATE;
+    m.type = MessageType::POSITION_REQUEST;
+    m.communication_id = communication_id;
+    m.sender_action_type = type;
+    m.setValue(MessageField::POSITION_REQUEST__CYLINDER, static_cast<int>(cylinder));
+    c->queueMessage(m);
+}
+
+void Message::createActionState(Controller* c, ActionType type, int parent_communication_id, ActionState state) {
+    Message m;
+    m.type = MessageType::ACTION_STATE;
     m.communication_id = parent_communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_ACTION_STATE__STATE, state);
-    c.queueMessage(m);
+    m.setValue(MessageField::ACTION_STATE__STATE, static_cast<int>(state));
+    c->queueMessage(m);
 }
 
-void Message::createTimeout(Controller c, ActionType type, int parent_communication_id) {
+void Message::createTimeout(Controller* c, ActionType type, int parent_communication_id) {
     Message m;
-    m.type = MESSAGE_TIMEOUT;
+    m.type = MessageType::TIMEOUT;
     m.communication_id = parent_communication_id;
     m.sender_action_type = type;
-    c.queueMessage(m);
+    c->queueMessage(m);
 }
 
-void Message::createTimerState(Controller c, ActionType type, int parent_communication_id) {
+void Message::createTimerState(Controller* c, ActionType type, int parent_communication_id) {
     Message m;
-    m.type = MESSAGE_TIMER_STATE;
+    m.type = MessageType::TIMER_STATE;
     m.communication_id = parent_communication_id;
     m.sender_action_type = type;
-    c.queueMessage(m);
+    c->queueMessage(m);
 }
 
-void Message::createPositionState(Controller c, ActionType type, Cylinder cylinder, CylinderPosition position) {
+void Message::createPositionState(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder, CylinderPosition position) {
     Message m;
-    m.type = MESSAGE_POSITION_STATE;
-    m.communication_id = 0;
+    m.type = MessageType::POSITION_STATE;
+    m.communication_id = parent_communication_id;
     m.sender_action_type = type;
-    m.setValue(MESSAGE_POSITION_STATE__CYLINDER, cylinder);
-    m.setValue(MESSAGE_POSITION_STATE__POSITION, position);
-    c.queueMessage(m);
+    m.setValue(MessageField::POSITION_STATE__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::POSITION_STATE__POSITION, static_cast<int>(position));
+    c->queueMessage(m);
+}
+
+void Message::createPositionChange(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder,
+                                   CylinderPosition position) {
+    Message m;
+    m.type = MessageType::POSITION_CHANGE;
+    m.communication_id = parent_communication_id;
+    m.sender_action_type = type;
+    m.setValue(MessageField::POSITION_CHANGE__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::POSITION_CHANGE__POSITION, static_cast<int>(position));
+    c->queueMessage(m);
+}
+
+void Message::createInputChange(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder,
+                                CylinderPosition position) {
+    Message m;
+    m.type = MessageType::INPUT_CHANGE;
+    m.communication_id = parent_communication_id;
+    m.sender_action_type = type;
+    m.setValue(MessageField::INPUT_CHANGE__CYLINDER, static_cast<int>(cylinder));
+    m.setValue(MessageField::INPUT_CHANGE__POSITION, static_cast<int>(position));
+    c->queueMessage(m);
 }
 
 Message::Message() {
-    type = MESSAGE_NONE;
+    type = MessageType::NONE;
     communication_id = 0;
     for(int i = 0; i < CONF_MESSAGE_LEN; i++){
         data[i] = 0;
     }
 
+}
+
+ActionType Message::getSenderActionType() {
+    return sender_action_type;
+}
+
+
+Message::Message(MessageType type, ActionType sender_action_type, int communication_id) {
+    this->type = type;
+    this->sender_action_type = sender_action_type;
+    this->communication_id = communication_id;
+}
+
+bool Message::operator==(const Message& rhs)
+{
+    if(this->type == rhs.type
+           && this->communication_id == rhs.communication_id
+           && this->sender_action_type == rhs.sender_action_type){
+
+        for(int i = 0; i < CONF_MESSAGE_LEN; i++){
+            if(this->data[i] != rhs.data[i]){
+                return false;
+            }
+            return true;
+        }
+    } else {
+        return false;
+    }
 }

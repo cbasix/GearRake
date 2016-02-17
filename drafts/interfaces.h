@@ -7,6 +7,10 @@
 
 #include "Message.h"
 #include "constants.h"
+class Controller;
+class Message;
+class Consumer;
+class Producer;
 
 class Action{
 public:
@@ -15,22 +19,24 @@ public:
 
 class Consumer : public Action{
 public:
-    virtual void onMessage(Controller c, Message m) = 0;
+    virtual void onMessage(Controller* c, Message* m) = 0;
 };
 
 class Producer : public Action {
 public:
-    virtual void produce(Controller c) = 0;
+    virtual void produce(Controller* c) = 0;
 };
 
-static class Controller{
+class Controller{
 public:
-    virtual void registerConsumer(Consumer c) = 0;
-    virtual void removeConsumer(Consumer c) = 0;
-    virtual void registerProducer(Producer p) = 0;
-    virtual void removeProducer(Producer p) = 0;
+    virtual void registerConsumer(Consumer* c) = 0;
+    virtual void removeConsumer(Consumer* c) = 0;
+    virtual void registerProducer(Producer* p) = 0;
+    virtual void removeProducer(Producer* p) = 0;
 
     virtual void queueMessage(Message m) = 0;
 };
+
+
 
 #endif //GEARRAKE_INTERFACES_H

@@ -11,16 +11,13 @@
 class FrameDown : public Consumer{
 public:
     virtual ActionType getType();
-
-    virtual void onMessage(Controller c, Message m);
-
     FrameDown(int parrent_communication_id);
-    virtual void onMessage(Controller c, Message m);
-    FrameDown(Controller c);
+    virtual void onMessage(Controller* c, Message* m);
+    FrameDown(Controller* c);
 
 private:
-    typedef enum LocalState { STATE_STARTUP, STATE_SHORT_FRAME_UP, STATE_OPEN_LOCK, STATE_FRAME_DOWN, STATE_CLOSE_LOCK};
-    LocalState state = STATE_STARTUP;
+    enum class LocalState : int { STARTUP, SHORT_FRAME_UP, OPEN_LOCK, FRAME_DOWN, CLOSE_LOCK};
+    LocalState state = LocalState::STARTUP;
     int communication_id = 0;
     int parrent_communication_id = 0;
 };

@@ -24,7 +24,7 @@
 
 // ids for input must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /// THESE ARE NOT THE PIN NUMBERS. PIN NUMBERS ARE DEFINED IN THE .cpp FILE
-enum inputs {
+enum class inputs {
     //Left Joystick
     IN_SPINNER_LEFT_UP = 0,
     IN_SPINNER_LEFT_FLOAT  = 1,
@@ -106,7 +106,7 @@ enum inputs {
 
 
 // ids for output must be continous! (stored in array with id as index)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-enum outputs {
+enum class outputs {
     OUT_SPINNER_RIGHT_UP = 0,
     OUT_SPINNER_LEFT_UP = 1,
     OUT_SPINNER_REAR_UP = 2,
@@ -198,50 +198,58 @@ enum outputs {
 //#define INPUT_DATA_SIZE 1
 
 // NEW ##################################################
-enum ActionType {
-    ACTION_MOVE,
-    ACTION_INPUT,
-    ACTION_LED,
-    ACTION_COMPLEX_MOVE,
-    ACTION_FRAME_DOWN
+#define INPUT_ID_COUNT 50
+
+enum class ActionType : int {
+    MOVE_POSITION,
+    MOVE_TIME,
+    MOVE_DIRECTION,
+    INPUT,
+    LED,
+    COMPLEX_MOVE,
+    FRAME_DOWN
 };
 
-enum Cylinder {
-    CYLINDER_SPINNER_RIGHT,
-    CYLINDER_SPINNER_LEFT,
-    CYLINDER_SPINNER_TELE_RIGHT,
-    CYLINDER_SPINNER_TELE_LEFT,
-    CYLINDER_FRAME,
-    CYLINDER_FRAME_LOCK,
-    CYLINDER_WEEL_TELE_RIGHT,
-    CYLINDER_WEEL_TELE_LEFT,
-    CYLINDER_WEEL_STEER
+enum class Cylinder : int {
+    SPINNER_RIGHT,
+    SPINNER_LEFT,
+    SPINNER_TELE_RIGHT,
+    SPINNER_TELE_LEFT,
+    FRAME,
+    FRAME_LOCK,
+    WEEL_TELE_RIGHT,
+    WEEL_TELE_LEFT,
+    WEEL_STEER
 };
-enum CylinderDirection {
-    DIRECTION_NONE,
-    DIRECTION_UP,
-    DIRECTION_DOWN,
-    DIRECTION_OUT,
-    DIRECTION_IN,
-    DIRECTION_FLOAT,
-    DIRECTION_STOP,
-    DIRECTION_OPEN,
-    DIRECTION_CLOSE
-};
-enum CylinderPosition {
-    POSITION_NONE,
-    POSITION_GROUND,
-    POSITION_LOW,
-    POSITION_MIDDLE,
-    POSITION_UP,
-    POSITION_OPEN,
-    POSITION_CLOSED
+enum class CylinderDirection : int {
+    NONE = 0,
+    UP = 1,
+    DOWN = 2,
+    STOP = 3,
+    OUT = (int)(UP),
+    IN = (int)(DOWN),
+    FLOAT = (int)(DOWN),
+
+    OPEN = (int)(UP),
+    CLOSE = (int)(DOWN),
 };
 
-enum Timing {
-    TIMING_SHORT,
-    TIMING_MEDIUM,
-    TIMING_LONG
+// From bottom to top
+enum class CylinderPosition : int {
+    NONE,
+    GROUND,
+    CLOSED,
+    LOW,
+    MIDDLE,
+    UP,
+    OPEN
+
+};
+
+enum class Timing : int {
+    SHORT,
+    MEDIUM,
+    LONG
 };
 
 #endif //GEARRAKE_CONSTANTS_H

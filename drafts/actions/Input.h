@@ -24,13 +24,13 @@ struct InputData {
 
 class InputObject{
 public:
-    void onMessage(Controller c, Message m);
-    void produce(Controller c);
+    void onMessage(Controller* c, Message* m);
+    void produce(Controller* c);
 private:
     InputObject();
     bool getInputState(int input_id);
     //void setTaskMonitor(TaskMonitor *tm);
-    void readInput(Controller c);
+    void readInput(Controller* c);
     //bool hasInputChanged(int input_id);
     InputData input_data[INPUT_ID_COUNT];
 };
