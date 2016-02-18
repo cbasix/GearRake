@@ -5,6 +5,8 @@
 #ifndef GEARRAKE_MESSAGE_H
 #define GEARRAKE_MESSAGE_H
 
+
+#include <iostream>
 #include "interfaces.h"
 #include "constants.h"
 #include "constants_message.h"
@@ -15,12 +17,16 @@ private:
     ActionType sender_action_type;
     MessageType type;
     int communication_id;
-    int data[CONF_MESSAGE_LEN];
+    int data[(int)MessageField::ENUM_COUNT];
     static int next_generated_communication_id;
 public:
+#ifdef TESTING
+    //std::ostream &operator<<(std::ostream &o);
+    //void PrintTo(::std::ostream* os);
+    friend void PrintTo(const Message &m, ::std::ostream *os);
     bool operator==(const Message& rhs);
-    Message();
-    Message(MessageType type, ActionType sender_action_type, int communication_id);
+#endif
+    Message(MessageType type=MessageType::NONE , ActionType sender_action_type=ActionType::NONE , int communication_id=0);
     MessageType getType();
     ActionType getSenderActionType();
     int getCommunicationId();
@@ -32,8 +38,8 @@ public:
     static int createTimeoutRequest(Controller* c, ActionType type, int timeout);
     static void createTimeoutRequest(Controller* c, ActionType type, int timeout_communication_id, int timeout);
 
-    static int createTimerRequest(Controller* c, ActionType type, int stop_after);
-    static void createTimerRequest(Controller* c, ActionType type, int timeout_communication_id, int stop_after);
+    static int createTimerRequest(Controller* c, ActionType type, Timing timer);
+    static void createTimerRequest(Controller* c, ActionType type, int timeout_communication_id, Timing timer);
 
     static int createCylinderRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction);
     static void createCylinderRequest(Controller* c, ActionType type, int timeout_communication_id, Cylinder cylinder,
@@ -51,10 +57,12 @@ public:
     static int createPositionRequest(Controller* c, ActionType type, Cylinder cylinder);
     static void createPositionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder);
 
+    //static void createActionRequest(Controller c, ActionType type, int communication_id, ActionType recipient, ActionState::);
+
 
     //answers
     static void createActionState(Controller* c, ActionType type, int parent_communication_id, ActionState state);
-    static void createTimeout(Controller* c, ActionType type, int parent_communication_id);
+    static void createTimeout(Controller* c, ActionType type, int parent_communication_id, int status);
     static void createTimerState(Controller* c, ActionType type, int parent_communication_id);
     static void createPositionState(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder, CylinderPosition position);
 
@@ -65,6 +73,6 @@ public:
 
 
 };
-
-
+//std::ostream &operator<<(std::iostream &o, const Message& rhs);
+void PrintTo(const Message& m, ::std::ostream* os);
 #endif //GEARRAKE_MESSAGE_H

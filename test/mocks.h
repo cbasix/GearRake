@@ -20,5 +20,16 @@ public:
     MOCK_METHOD1(queueMessage, void(Message m));
 };
 
+class EmptyController : public Controller{
+public:
+    virtual void registerConsumer(Consumer *c);
+    virtual void removeConsumer(Consumer *c);
+    virtual void registerProducer(Producer *p);
+    virtual void removeProducer(Producer *p);
+    virtual void queueMessage(Message m);
+};
+
 
 #endif //GEARRAKE_MOCKS_H
+
+

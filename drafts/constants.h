@@ -198,18 +198,40 @@ enum class outputs {
 //#define INPUT_DATA_SIZE 1
 
 // NEW ##################################################
+
 #define INPUT_ID_COUNT 50
+#define TESTING
+
+#ifdef TESTING
+    #include <string>
+#endif
 
 enum class ActionType : int {
+    NONE,
     MOVE_POSITION,
     MOVE_TIME,
     MOVE_DIRECTION,
     INPUT,
     LED,
     COMPLEX_MOVE,
-    FRAME_DOWN
-};
+    FRAME_DOWN,
+    TIMER,
 
+    ENUM_COUNT
+};
+#ifdef TESTING
+const std::string ActionTypeStr[] = {
+        "NONE",
+        "MOVE_POSITION",
+        "MOVE_TIME",
+        "MOVE_DIRECTION",
+        "INPUT",
+        "LED",
+        "COMPLEX_MOVE",
+        "FRAME_DOWN",
+        "TIMER"
+};
+#endif
 enum class Cylinder : int {
     SPINNER_RIGHT,
     SPINNER_LEFT,
@@ -221,6 +243,19 @@ enum class Cylinder : int {
     WEEL_TELE_LEFT,
     WEEL_STEER
 };
+#ifdef TESTING
+const std::string CylinderStr[] = {
+        "SPINNER_RIGHT",
+        "SPINNER_LEFT",
+        "SPINNER_TELE_RIGHT",
+        "SPINNER_TELE_LEFT",
+        "FRAME",
+        "FRAME_LOCK",
+        "WEEL_TELE_RIGHT",
+        "WEEL_TELE_LEFT",
+        "WEEL_STEER"
+};
+#endif
 enum class CylinderDirection : int {
     NONE = 0,
     UP = 1,
@@ -233,6 +268,14 @@ enum class CylinderDirection : int {
     OPEN = (int)(UP),
     CLOSE = (int)(DOWN),
 };
+#ifdef TESTING
+const std::string CylinderDirectionStr[] = {
+        "NONE",
+        "UP",
+        "DOWN",
+
+};
+#endif
 
 // From bottom to top
 enum class CylinderPosition : int {
@@ -245,12 +288,32 @@ enum class CylinderPosition : int {
     OPEN
 
 };
+#ifdef TESTING
+const std::string CylinderPositionStr[] = {
+        "NONE",
+        "GROUND",
+        "CLOSED",
+        "LOW",
+        "MIDDLE",
+        "UP",
+        "OPEN"
+
+};
+#endif
 
 enum class Timing : int {
     SHORT,
     MEDIUM,
     LONG
 };
+#ifdef TESTING
+const std::string TimingStr[] = {
+        "SHORT",
+        "MEDIUM",
+        "LONG"
+
+};
+#endif //testing
 
 #endif //GEARRAKE_CONSTANTS_H
 

@@ -7,84 +7,125 @@
 #include "constants_message.h"
 
 
-FrameDown::FrameDown(Controller* c){
+FrameDown::FrameDown(Controller* c, int parent_communication_id){
+    this->parent_communication_id = parent_communication_id;
     state = LocalState::SHORT_FRAME_UP;
     communication_id = Message::createMoveTimeRequest(c, getType(), Cylinder::FRAME, CylinderDirection::UP, ConfigStore::getTimer(Timing::SHORT));
+    timeout_occured = false;
 
 }
 
 void FrameDown::onMessage(Controller* c, Message* m){
     switch (state){
-            case LocalState::SHORT_FRAME_UP: //wait for short frame up to finish
-                if(m->getType() ==MessageType::ACTION_STATE
-                        && m->getCommunicationId() == communication_id) {
-                    state = LocalState::OPEN_LOCK;
-                    Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::OPEN);
-                }
-            break;
-            case LocalState::OPEN_LOCK: //wait for lock open
-                if(m->getType() ==MessageType::ACTION_STATE){
-                    if(m->getValue(MessageField::ACTION_STATE__STATE) == static_cast<int>(ActionState::STOPPED_OK)){
-                        state = LocalState::FRAME_DOWN;
-                        //start frame down
-                        Message::createMoveDirectionRequest(c, getType(), communication_id, Cylinder::FRAME, CylinderDirection::DOWN);
+        case LocalState::SHORT_FRAME_UP: //wait for short frame up to finish
+            if(m->getType() == MessageType::ACTION_STATE
+                    && m->getCommunicationId() == communication_id) {
+                state = LocalState::OPEN_LOCK;
+                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::OPEN);
+            }
+        break;
+        case LocalState::OPEN_LOCK: //wait for lock open
+            if(m->getType() == MessageType::ACTION_STATE // frame lock open subprocess is done, jea ;)
+                    && m->getValue(MessageField::ACTION_STATE__STATE) == (int)(ActionState::STOPPED_OK)
+                    && m->getCommunicationId() == communication_id){
+                state = LocalState::FRAME_DOWN;
+                //start frame down
+                Message::createMoveDirectionRequest(c, getType(), communication_id, Cylinder::FRAME, CylinderDirection::DOWN);
 
+
+            } else if(m->getType() == MessageType::TIMEOUT
+                    && m->getCommunicationId() == communication_id){
+
+                state = LocalState::CLOSE_LOCK;
+                //close the framelock on timeout
+                timeout_occured = true;
+                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+
+            }else if(m->getType() == MessageType::ACTION_STATE //parent action sends stop signal
+                    && m->getCommunicationId() == parent_communication_id
+                     && (int) ActionState::STOPPING ==  m->getValue(MessageField::ACTION_STATE__STATE)){
+                state = LocalState::CLOSE_LOCK;
+                //close the framelock on stop
+                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+
+            }
+        break;
+
+        case LocalState::FRAME_DOWN: //wait for end signal
+            if(m->getType() == MessageType::ACTION_STATE //parent says: stop it ;)
+                    && m->getCommunicationId() == parent_communication_id
+                    && m->getValue(MessageField::ACTION_STATE__STATE) == (int) ActionState::STOPPING){
+
+                state = LocalState::CLOSE_LOCK;
+                //stop frame movement
+                //TODO create cylinder request hier richtig? Oder oben move direction vmtl direction korrekt, da die lowlevel version
+                Message::createCylinderRequest(c, getType(),communication_id, Cylinder::FRAME, CylinderDirection::STOP);
+
+                //start close lock
+                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+
+            } else if(m->getType() == MessageType::TIMEOUT
+                    && m->getCommunicationId() == communication_id){ //got timeout
+                state = LocalState::CLOSE_LOCK;
+
+                //stop frame movement
+                timeout_occured = true;
+                Message::createCylinderRequest(c, getType(),communication_id, Cylinder::FRAME, CylinderDirection::STOP);
+
+                //close the framelock on timeout
+                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+
+            }
+        break;
+
+        case LocalState::CLOSE_LOCK: //wait for lock close
+            if(m->getType() == MessageType::ACTION_STATE // frame open subprocess is done, jea ;)
+               && m->getValue(MessageField::ACTION_STATE__STATE) == (int)(ActionState::STOPPED_OK)) {
+
+                //send okay message or timeout message to parent
+                if (parent_communication_id != 0) {
+                    if (timeout_occured) {
+                        Message::createTimeout(c, getType(), parent_communication_id, (int)state);
+                    } else {
+                        Message::createActionState(c, getType(), parent_communication_id, ActionState::STOPPED_OK);
                     }
-                } else if(m->getType() ==MessageType::TIMEOUT){
-                    state = LocalState::CLOSE_LOCK;
-                    //close the framelock on timeout
-                    Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
-
                 }
-            break;
 
-            case LocalState::FRAME_DOWN: //wait for end signal to
-                /*if(type(PositionNotification)){
-                    if(pos.cylinder == Cylinder.getFrameLock()){
-                        state = LocalState::FRAME_DOWN;
-                        return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
-                    }
-                } if(type(TimeoutNotification)){
-                    state = LocalState::LOCK_CLOSE;
-                    Controller.throwError(this, msg, "Timeout beim Warten auf Öffnen des Rahmenschlosses");
-                    return new MoveRequest(this, Cylinder.getFrameLock(), Cylinder.CLOSE);
-                } else {
-                    //ignore all other messages
-                    return new EmptyResponse();
-                }
-            break;
+                c->removeConsumer(this);
 
-            case LocalState::LOCK_CLOSE: //wait for lock close
-                if(type(PositionNotification)){
-                    if(pos.cylinder == Cylinder.getFrameLock()){
-                        state = LocalState::FRAME_DOWN;
-                        return new MoveToPositionRequest(Cylinder.getFrameLock(), Cylinder.OPEN)
-                    }
-                } if(type(TimeoutNotification)){
-                    state = LocalState::LOCK_CLOSE;
-                    return new Error(this, msg, "Timeout beim Warten auf Öffnen des Rahmenschlosses");
-                } else {
-                    //ignore all other messages
-                    return new EmptyResponse();
-                }
-            break;
+            } else if(m->getType() == MessageType::TIMEOUT
+                      && m->getCommunicationId() == communication_id){
 
-            case 1:
-                if(type(ActionDoneNotification)){
+                //answer to parent with timeout
+                Message::createTimeout(c, getType(), parent_communication_id, (int)state);
+                c->removeConsumer(this);
 
-                } else {
+            }
+        break;
 
-                }*/
-            break;
     }
-}
-
-FrameDown::FrameDown(int parrent_communication_id) {
-    this->parrent_communication_id = parrent_communication_id;
 }
 
 ActionType FrameDown::getType() {
     return ActionType::FRAME_DOWN;
 }
+
+#ifdef TESTING
+void FrameDown::setState(FrameDown::LocalState state){
+    this->state = state;
+}
+
+void FrameDown::setTimeoutOccured(bool occured) {
+    this->timeout_occured = occured;
+}
+
+void FrameDown::setCommunicationId(int communication_id) {
+    this->communication_id = communication_id;
+}
+
+FrameDown::LocalState FrameDown::getState() {
+    return state;
+}
+#endif
 
 

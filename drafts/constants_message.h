@@ -5,7 +5,10 @@
 #ifndef GEARRAKE_CONSTANTS_MESSAGE_H
 #define GEARRAKE_CONSTANTS_MESSAGE_H
 
-#define CONF_MESSAGE_LEN 5
+#include "constants.h"
+#ifdef TESTING
+    #include <string>
+#endif
 
 enum class MessageType : int{
     NONE,
@@ -20,22 +23,39 @@ enum class MessageType : int{
     TIMER_STATE,
     POSITION_STATE,
     MANUAL_CHANGED,
-    POSITION_CHANGED,
     POSITION_REQUEST,
     POSITION_CHANGE,
-    INPUT_CHANGE
+    INPUT_CHANGE,
 
+    ENUM_COUNT
+};
 
-    /*SENSOR_CHANGED,
-    TIMEOUT_OCCURED,
-    TIMER_OVER,
-    ACTION_STATE,
-    OUTPUT,
-    CYLINDER*/
+#ifdef TESTING
+const std::string MessageTypeStr[] = {
+        "NONE",
+        "TIMEOUT_REQUEST",
+        "TIMER_REQUEST",
+        "CYLINDER_REQUEST",
+        "MOVE_TIME_REQUEST",
+        "MOVE_POSITION_REQUEST",
+        "MOVE_DIRECTION_REQUEST",
+        "ACTION_STATE",
+        "TIMEOUT",
+        "TIMER_STATE",
+        "POSITION_STATE",
+        "MANUAL_CHANGED",
+        "POSITION_CHANGED",
+        "POSITION_REQUEST",
+        "POSITION_CHANGE",
+        "INPUT_CHANGE"
 
 };
+#endif //testing
+
 enum class MessageField : int {
     //msgCylinder
+    TIMEOUT__STATE = 0,
+
     TIMEOUT_REQUEST__TIMEOUT = 0,
 
     TIMER_REQUEST__STOP_AFTER = 0,
@@ -58,8 +78,6 @@ enum class MessageField : int {
     POSITION_STATE__CYLINDER = 0,
     POSITION_STATE__POSITION = 1,
 
-    POSITION_CHANGED__POSITION = 0,
-
     MANUAL_CHANGED__STATE = 1,
 
     POSITION_REQUEST__CYLINDER = 0,
@@ -71,7 +89,7 @@ enum class MessageField : int {
     INPUT_CHANGE__CYLINDER = 0,
     INPUT_CHANGE__POSITION = 1,
 
-
+    ENUM_COUNT = 3
 };
 
 enum class ActionState : int {

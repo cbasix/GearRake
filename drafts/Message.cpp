@@ -45,18 +45,18 @@ void Message::createTimeoutRequest(Controller* c, ActionType type, int communica
     c->queueMessage(m);
 }
 
-int Message::createTimerRequest(Controller* c, ActionType type, int stop_after) {
+int Message::createTimerRequest(Controller* c, ActionType type, Timing timer) {
     int com_id = generateCommunicationId();
-    createTimerRequest(c, type, com_id, stop_after);
+    createTimerRequest(c, type, com_id, timer);
     return com_id;
 }
 
-void Message::createTimerRequest(Controller* c, ActionType type, int communication_id, int stop_after) {
+void Message::createTimerRequest(Controller* c, ActionType type, int communication_id, Timing timer) {
     Message m;
     m.type = MessageType::TIMER_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, stop_after);
+    m.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)timer);
     c->queueMessage(m);
 }
 
@@ -154,11 +154,12 @@ void Message::createActionState(Controller* c, ActionType type, int parent_commu
     c->queueMessage(m);
 }
 
-void Message::createTimeout(Controller* c, ActionType type, int parent_communication_id) {
+void Message::createTimeout(Controller* c, ActionType type, int parent_communication_id, int state) {
     Message m;
     m.type = MessageType::TIMEOUT;
     m.communication_id = parent_communication_id;
     m.sender_action_type = type;
+    m.setValue(MessageField::TIMEOUT__STATE, state);
     c->queueMessage(m);
 }
 
@@ -202,39 +203,50 @@ void Message::createInputChange(Controller* c, ActionType type, int parent_commu
     c->queueMessage(m);
 }
 
-Message::Message() {
-    type = MessageType::NONE;
-    communication_id = 0;
-    for(int i = 0; i < CONF_MESSAGE_LEN; i++){
-        data[i] = 0;
-    }
-
-}
-
 ActionType Message::getSenderActionType() {
     return sender_action_type;
 }
 
-
-Message::Message(MessageType type, ActionType sender_action_type, int communication_id) {
+Message::Message(MessageType type, ActionType sender_action_type, int communication_id){
     this->type = type;
     this->sender_action_type = sender_action_type;
     this->communication_id = communication_id;
+
+    for(int i = 0; i < (int)MessageField::ENUM_COUNT ; i++){
+        data[i] = 0;
+    }
 }
 
+#ifdef TESTING
 bool Message::operator==(const Message& rhs)
 {
     if(this->type == rhs.type
            && this->communication_id == rhs.communication_id
            && this->sender_action_type == rhs.sender_action_type){
 
-        for(int i = 0; i < CONF_MESSAGE_LEN; i++){
+        for(int i = 0; i < (int)MessageField::ENUM_COUNT; i++){
             if(this->data[i] != rhs.data[i]){
                 return false;
             }
-            return true;
         }
+        return true;
     } else {
         return false;
     }
 }
+
+void PrintTo(const Message &m, ::std::ostream *os) {
+    *os << "Message <Type:" << MessageTypeStr[(int)m.type]
+    << " SenderActionType:"<< ActionTypeStr[(int)m.sender_action_type]
+    << " CommId:"<< (int)m.communication_id
+    << " Data: ";
+    for(int i = 0; i < (int)MessageField::ENUM_COUNT; i++){
+        *os << m.data[i];
+        if(i != (int)MessageField::ENUM_COUNT-1){
+            *os << ", ";
+        }
+    }
+    *os << ">";
+}
+
+#endif //TESTING
