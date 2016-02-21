@@ -7,6 +7,7 @@
 
 #include "Message.h"
 #include "constants.h"
+
 class Controller;
 class Message;
 class Consumer;
@@ -37,6 +38,6 @@ public:
     virtual void queueMessage(Message m) = 0;
 };
 
-
-
 #endif //GEARRAKE_INTERFACES_H
+
+

@@ -9,6 +9,18 @@
 #ifdef TESTING
     #include <string>
 #endif
+enum class SerialConf : int{
+    BUF_SIZE = 200,
+
+};
+namespace SerialChar {
+    enum SerialChar : char {
+        ESCAPE = 0x1b,
+        START = 0x02,
+        END = 0x03,
+    };
+}
+
 
 enum class MessageType : int{
     NONE,

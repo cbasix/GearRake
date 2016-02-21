@@ -17,6 +17,12 @@ private:
     ActionType sender_action_type;
     MessageType type;
     int communication_id;
+public:
+    void setCommunicationId(int communication_id) ;
+    void setSenderActionType(const ActionType &sender_action_type);
+    void setType(const MessageType &type);
+
+private:
     int data[(int)MessageField::ENUM_COUNT];
     static int next_generated_communication_id;
 public:

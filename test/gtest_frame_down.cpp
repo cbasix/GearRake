@@ -44,7 +44,7 @@ TEST_F(FrameDownTest, Constructor) {
     Message request_short_up(MessageType::MOVE_TIME_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
     request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__CYLINDER, (int)Cylinder::FRAME);
     request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__DIRECTION, (int)CylinderDirection::UP);
-    request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__TIMER, ConfigStore::getTimer(Timing::SHORT));
+    request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__TIMER, ConfigStore::getTimerValue(Timing::SHORT));
 
     EXPECT_CALL(c, queueMessage(request_short_up)).Times(1);
 
@@ -86,12 +86,12 @@ TEST_F(FrameDownTest, OpenLockNormal) {
     fd->setState(FrameDown::LocalState::OPEN_LOCK);
 
     //request move frame down
-    Message request_move_direction(MessageType::MOVE_DIRECTION_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
-    request_move_direction.setValue(MessageField::MOVE_DIRECTION_REQUEST__CYLINDER, (int)Cylinder::FRAME);
-    request_move_direction.setValue(MessageField::MOVE_DIRECTION_REQUEST__DIRECTION, (int)CylinderDirection::DOWN);
+    Message request_move_cylinder(MessageType::CYLINDER_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
+    request_move_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::FRAME);
+    request_move_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::DOWN);
 
     //EXPECT_CALL(c, queueMessage(_)).Times(0);
-    EXPECT_CALL(c, queueMessage(request_move_direction)).Times(1);
+    EXPECT_CALL(c, queueMessage(request_move_cylinder)).Times(1);
 
     //simulate subprocess move framelock open is ready
     Message sub_ready(MessageType::ACTION_STATE, ActionType::MOVE_POSITION, child_comm_id);
@@ -125,9 +125,9 @@ TEST_F(FrameDownTest, OpenLockCancelAndTimeout) {
 
 TEST_F(FrameDownTest, FrameDown) {
     //stop movement of frame
-    Message stop_cylinder(MessageType::MOVE_, ActionType::FRAME_DOWN, child_comm_id);
-    stop_cylinder.setValue(MessageField::MOVE_POSITION_REQUEST__POSITION, (int)CylinderPosition::CLOSED);
-    stop_cylinder.setValue(MessageField::MOVE_POSITION_REQUEST__CYLINDER, (int)Cylinder::FRAME_LOCK);
+    Message stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
+    stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::STOP);
+    stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::FRAME);
 
     //start close lock
     Message move_position(MessageType::MOVE_POSITION_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
@@ -135,6 +135,7 @@ TEST_F(FrameDownTest, FrameDown) {
     move_position.setValue(MessageField::MOVE_POSITION_REQUEST__CYLINDER, (int)Cylinder::FRAME_LOCK);
 
 
+    EXPECT_CALL(c, queueMessage(stop_cylinder)).Times(2);
     EXPECT_CALL(c, queueMessage(move_position)).Times(2);
 
     //simulate timout
@@ -149,6 +150,37 @@ TEST_F(FrameDownTest, FrameDown) {
     stop.setValue(MessageField::ACTION_STATE__STATE, (int)ActionState::STOPPING);
     fd->onMessage(&c, &stop);
     EXPECT_EQ(FrameDown::LocalState::CLOSE_LOCK, fd->getState());
+}
+
+TEST_F(FrameDownTest, CloseLock) {
+    //send timeout to parent
+    Message create_timeout(MessageType::TIMEOUT, ActionType::FRAME_DOWN, parent_comm_id);
+    create_timeout.setValue(MessageField::TIMEOUT__STATE, (int)FrameDown::LocalState::CLOSE_LOCK);
+    //start close lock
+    Message send_ok(MessageType::ACTION_STATE, ActionType::FRAME_DOWN, parent_comm_id);
+    send_ok.setValue(MessageField::ACTION_STATE__STATE, (int)ActionState::STOPPED_OK);
+
+    EXPECT_CALL(c, removeConsumer(_)).Times(3);
+    EXPECT_CALL(c, queueMessage(create_timeout)).Times(2);
+    EXPECT_CALL(c, queueMessage(send_ok)).Times(1);
+
+    //simulate timout
+    fd->setState(FrameDown::LocalState::CLOSE_LOCK);
+    Message timeout(MessageType::TIMEOUT, ActionType::TIMER, child_comm_id);
+    fd->onMessage(&c, &timeout);
+    //EXPECT_EQ(FrameDown::LocalState::CLOSE_LOCK, fd->getState());
+
+    //simulate framelock close okay
+    fd->setState(FrameDown::LocalState::CLOSE_LOCK);
+    Message sub_ok(MessageType::ACTION_STATE, ActionType::MOVE_POSITION, child_comm_id);
+    sub_ok.setValue(MessageField::ACTION_STATE__STATE, (int)ActionState::STOPPED_OK);
+    fd->onMessage(&c, &sub_ok);
+
+    //simulate framelock close okay but with previous timeout - reuse message from above
+    fd->setState(FrameDown::LocalState::CLOSE_LOCK);
+    fd->setTimeoutOccured(true);
+    fd->onMessage(&c, &sub_ok);
+
 }
 
 

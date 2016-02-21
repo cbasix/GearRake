@@ -13,7 +13,7 @@ MovePosition::MovePosition(Controller* c, int parent_communication_id, Cylinder 
     this->position = position;
 
     //save the communication id, when timeout occurs this communication id is send back
-    communication_id = Message::createTimeoutRequest(c, getType(), ConfigStore::getTimeout(position));
+    communication_id = Message::createTimeoutRequest(c, getType(), ConfigStore::getTimeoutValue(position));
 
     //get the direction to move to
     Message::createPositionRequest(c, getType(), communication_id, cylinder);

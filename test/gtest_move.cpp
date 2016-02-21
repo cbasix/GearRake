@@ -5,6 +5,7 @@
 #include "gmock/gmock.h"
 #include "mocks.h"
 #include "Move.h"
+#include "ConfigStore.h"
 
 
 
@@ -157,14 +158,15 @@ TEST(MoveDirectionTest, StopRequest) {
 }
 
 TEST(MovePositionTest, Timeout) {
-    enum testno {TIMEOUT_FIRST, TIMEOUT, PARENT_STOP, TEST_COUNT};
-    for(int testno = 0; testno < TEST_COUNT; testno++) {
+    //enum testno {TIMEOUT_FIRST, TIMEOUT, PARENT_STOP, TEST_COUNT};
+    //for(int testno = 0; testno < TEST_COUNT; testno++) {
         MockController c;
         int parent_comm_id = Message::generateCommunicationId();
         int child_comm_id = parent_comm_id + 1;
 
         Message request_timeout(MessageType::TIMEOUT_REQUEST, ActionType::MOVE_POSITION, child_comm_id);
-        request_timeout.setValue(MessageField::TIMEOUT_REQUEST__TIMEOUT, 20); //timeout is defined in config_store
+        request_timeout.setValue(MessageField::TIMEOUT_REQUEST__TIMEOUT,
+                                 ConfigStore::getTimeoutValue(CylinderPosition::GROUND)); //timeout is defined in config_store
 
         Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_POSITION, child_comm_id);
         request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) Cylinder::FRAME);
@@ -201,7 +203,7 @@ TEST(MovePositionTest, Timeout) {
         Message timeout_orig(MessageType::TIMEOUT, ActionType::TIMER, child_comm_id);
         mt.onMessage(&c, &timeout_orig);
 
-    }
+    //}
 
     /*mt.onMessage(&c, m);
     EXPECT_TRUE(painter.DrawCircle(0, 0, 10));

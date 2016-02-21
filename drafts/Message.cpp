@@ -21,6 +21,18 @@ void Message::setValue(MessageField field, int value) {
     data[static_cast<int>(field)] = value;
 }
 
+void Message::setCommunicationId(int communication_id) {
+    this->communication_id = communication_id;
+}
+
+void Message::setSenderActionType(const ActionType &sender_action_type) {
+    this->sender_action_type = sender_action_type;
+}
+
+void Message::setType(const MessageType &type) {
+    this->type = type;
+}
+
 int Message::getCommunicationId() {
     return communication_id;
 }

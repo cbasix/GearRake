@@ -199,12 +199,20 @@ enum class outputs {
 
 // NEW ##################################################
 
+
 #define INPUT_ID_COUNT 50
 #define TESTING
 
 #ifdef TESTING
     #include <string>
 #endif
+
+enum class EepromConfig{
+    TIMING_ADDRESS = 0,
+    MAX_TIMING = 10,
+    TIMEOUT_ADDRESS = (int)TIMING_ADDRESS + (int)MAX_TIMING,
+    MAX_TIMEOUTS = 20,
+};
 
 enum class ActionType : int {
     NONE,

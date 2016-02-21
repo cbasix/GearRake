@@ -10,7 +10,8 @@
 FrameDown::FrameDown(Controller* c, int parent_communication_id){
     this->parent_communication_id = parent_communication_id;
     state = LocalState::SHORT_FRAME_UP;
-    communication_id = Message::createMoveTimeRequest(c, getType(), Cylinder::FRAME, CylinderDirection::UP, ConfigStore::getTimer(Timing::SHORT));
+    communication_id = Message::createMoveTimeRequest(c, getType(), Cylinder::FRAME, CylinderDirection::UP,
+                                                      ConfigStore::getTimerValue(Timing::SHORT));
     timeout_occured = false;
 
 }
@@ -26,11 +27,12 @@ void FrameDown::onMessage(Controller* c, Message* m){
         break;
         case LocalState::OPEN_LOCK: //wait for lock open
             if(m->getType() == MessageType::ACTION_STATE // frame lock open subprocess is done, jea ;)
-                    && m->getValue(MessageField::ACTION_STATE__STATE) == (int)(ActionState::STOPPED_OK)
+               && m->getSenderActionType() == ActionType::MOVE_POSITION
+               && m->getValue(MessageField::ACTION_STATE__STATE) == (int)(ActionState::STOPPED_OK)
                     && m->getCommunicationId() == communication_id){
                 state = LocalState::FRAME_DOWN;
                 //start frame down
-                Message::createMoveDirectionRequest(c, getType(), communication_id, Cylinder::FRAME, CylinderDirection::DOWN);
+                Message::createCylinderRequest(c, getType(), communication_id, Cylinder::FRAME, CylinderDirection::DOWN);
 
 
             } else if(m->getType() == MessageType::TIMEOUT
@@ -58,7 +60,6 @@ void FrameDown::onMessage(Controller* c, Message* m){
 
                 state = LocalState::CLOSE_LOCK;
                 //stop frame movement
-                //TODO create cylinder request hier richtig? Oder oben move direction vmtl direction korrekt, da die lowlevel version
                 Message::createCylinderRequest(c, getType(),communication_id, Cylinder::FRAME, CylinderDirection::STOP);
 
                 //start close lock
@@ -79,7 +80,9 @@ void FrameDown::onMessage(Controller* c, Message* m){
         break;
 
         case LocalState::CLOSE_LOCK: //wait for lock close
-            if(m->getType() == MessageType::ACTION_STATE // frame open subprocess is done, jea ;)
+            if(m->getType() == MessageType::ACTION_STATE // frame lock close is done, jea ;)
+               && m->getCommunicationId() == communication_id
+               && m->getSenderActionType() == ActionType::MOVE_POSITION
                && m->getValue(MessageField::ACTION_STATE__STATE) == (int)(ActionState::STOPPED_OK)) {
 
                 //send okay message or timeout message to parent
