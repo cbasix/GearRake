@@ -7,6 +7,7 @@
 
 #include "Message.h"
 #include "constants.h"
+#include "util.h"
 
 class Controller;
 class Message;
@@ -35,8 +36,11 @@ public:
     virtual void registerProducer(Producer* p) = 0;
     virtual void removeProducer(Producer* p) = 0;
 
+    virtual ArrayList<Consumer*>* getConsumer() = 0;
+    virtual ArrayList<Producer*>* getProducer() = 0;
+
     virtual void queueMessage(Message m) = 0;
-    virtual void generateActiveMessages() = 0;
+
 };
 
 #endif //GEARRAKE_INTERFACES_H

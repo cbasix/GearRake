@@ -15,9 +15,15 @@ public:
     virtual void removeConsumer(Consumer *c);
     virtual void registerProducer(Producer *p);
     virtual void removeProducer(Producer *p);
+
+    virtual ArrayList<Consumer*>* getConsumer();
+    virtual ArrayList<Producer*>* getProducer();
+
     virtual void queueMessage(Message m);
 
-    virtual void generateActiveMessages();
+    virtual void runProducers();
+    virtual void processMessageQueue();
+
 
     ArrayList<Consumer*>* consumers;
     ArrayList<Producer*>* producers;

@@ -199,3 +199,11 @@ SerialProtocol::~SerialProtocol() {
     delete in_buf;
     delete out_buf;
 }
+
+int SerialProtocol::getOutSize() {
+    return out_buf->size();
+}
+
+char SerialProtocol::getOut() {
+    return out_buf->get();
+}

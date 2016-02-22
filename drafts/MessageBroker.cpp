@@ -30,7 +30,7 @@ void MessageBroker::removeConsumer(Consumer *c) {
 }
 
 void MessageBroker::registerProducer(Producer *p) {
-
+    producers->append(p);
 }
 
 void MessageBroker::removeProducer(Producer *p) {
@@ -57,5 +57,28 @@ void MessageBroker::removeProducer(Producer *p) {
 }
 
 void MessageBroker::queueMessage(Message m) {
+    messages->add(m);
+}
 
+void MessageBroker::runProducers() {
+    for (int i = 0; i < producers->getSize(); ++i) {
+        producers->get(i)->produce(this);
+    }
+
+}
+
+void MessageBroker::processMessageQueue() {
+
+    Message m = messages->get();
+    for (int i = 0; i < consumers->getSize(); ++i) {
+        consumers->get(i)->onMessage(this, &m);
+    }
+}
+
+ArrayList<Consumer*>* MessageBroker::getConsumer() {
+    return consumers;
+}
+
+ArrayList<Producer*>* MessageBroker::getProducer() {
+    return producers;
 }

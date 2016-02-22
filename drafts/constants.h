@@ -209,6 +209,13 @@ enum class outputs {
 
 #define SERIAL_RATE 9600
 
+enum class ActionClass : int {
+    NONE,
+    PRODUCER,
+    CONSUMER,
+
+    ENUM_COUNT
+};
 
 enum class ActionType : int {
     NONE,
@@ -225,6 +232,7 @@ enum class ActionType : int {
 
     ENUM_COUNT
 };
+
 #ifdef TESTING
 const std::string ActionTypeStr[] = {
         "NONE",

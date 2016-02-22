@@ -8,3 +8,6 @@ void EmptyController::removeConsumer(Consumer *c) {}
 void EmptyController::registerProducer(Producer *p) {}
 void EmptyController::removeProducer(Producer *p) {}
 void EmptyController::queueMessage(Message m) {}
+
+ArrayList<Consumer *> *EmptyController::getConsumer() {}
+ArrayList<Producer *> *EmptyController::getProducer() {}

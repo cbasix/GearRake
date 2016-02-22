@@ -23,7 +23,7 @@ ActionType Diagnose::getType() {
 }
 
 void Diagnose::onMessage(Controller *c, Message *m) {
-
+    //TODO Implement
 
 }
 
@@ -42,20 +42,41 @@ void Diagnose::produce(Controller *c) {
         } else if(m.getType() == MessageType::FAILURE_STORAGE_REQUEST){
             failure_storage_update = m.getValue(MessageField::FAILURE_STORAGE_REQUEST__ACTIVE) != 0;
             if(failure_storage_update){
-                //request all from in failure storage
+                //TODO request all from in failure storage
             }
 
         } else if(m.getType() == MessageType::STATUS_UPDATE_REQUEST){
             status_update = m.getValue(MessageField::STATUS_UPDATE_REQUEST__ACTIVE) != 0;
             if(status_update){
-                //send all status
+                //TODO send all status
             }
 
         } else if(m.getType() == MessageType::ACTIVE_UPDATE_REQUEST){
             active_update = m.getValue(MessageField::ACTIVE_UPDATE_REQUEST__ACTIVE) != 0;
             if(active_update){
-                c.getConsumerList()
+                Message m;
+                ArrayList<Consumer*>* cons = c->getConsumer();
+                for (int i = 0; i < cons->getSize(); ++i) {
+                    Consumer* s = cons->get(i);
+                    m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
+                    m.setValue(MessageField::ACTIVE_STATUS__TYPE, (int)s->getType());
+                    m.setValue(MessageField::ACTIVE_STATUS__CLASS, (int)ActionClass::CONSUMER);
+                    m.setValue(MessageField::ACTIVE_STATUS__ACTIVE, true);
+
+                    proto.send(&m);
+                }
+                ArrayList<Producer*>* prods = c->getProducer();
+                for (int i = 0; i < prods->getSize(); ++i) {
+                    Producer* s = prods->get(i);
+                    m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
+                    m.setValue(MessageField::ACTIVE_STATUS__TYPE, (int)s->getType());
+                    m.setValue(MessageField::ACTIVE_STATUS__CLASS, (int)ActionClass::PRODUCER);
+                    m.setValue(MessageField::ACTIVE_STATUS__ACTIVE, true);
+
+                    proto.send(&m);
+                }
             }
+
         } else if(m.getType() == MessageType::SETTING_REQUEST){
             int setting_type = m.getValue(MessageField::SETTING_REQUEST__TYPE);
             int setting_id = m.getValue(MessageField::SETTING_REQUEST__ID);
@@ -95,13 +116,15 @@ void Diagnose::produce(Controller *c) {
         }
     }
 
-    //write outgoing messages
-    while(proto.getOutSize() > 0) {
+    //write outgoing messages - ONLY ONE FRAME PER produce call!
+    char last = 0;
+    while(proto.getOutSize() > 0 && last != SerialChar::END) {
 #ifndef TESTING
-        Serial.write(proto.getOut());
+        last = proto.getOut();
+        Serial.write(char);
 #endif
 #ifdef TESTING
-        proto.getOut();
+        last = proto.getOut();
 #endif
     }
 }
@@ -109,7 +132,7 @@ void Diagnose::produce(Controller *c) {
 void Diagnose::sendTimerSettingState(Message &m, Message &answ, int setting_id) {
     int val = ConfigStore::getTimerValue((Timing) setting_id);
     answ = Message(MessageType::SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
-    answ.setValue(MessageField::SETTING_STATE__TYPE, SettingType::TIMING);
+    answ.setValue(MessageField::SETTING_STATE__TYPE, (int)SettingType::TIMING);
     answ.setValue(MessageField::SETTING_STATE__ID, setting_id);
     answ.setValue(MessageField::SETTING_STATE__VALUE, val);
     proto.send(&answ);
@@ -118,7 +141,7 @@ void Diagnose::sendTimerSettingState(Message &m, Message &answ, int setting_id) 
 void Diagnose::sendTimeoutSettingState(Message &m, Message &answ, int setting_id) {
     int val = ConfigStore::getTimeoutValue((CylinderPosition) setting_id);
     answ = Message(MessageType::SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
-    answ.setValue(MessageField::SETTING_STATE__TYPE, SettingType::TIMEOUT);
+    answ.setValue(MessageField::SETTING_STATE__TYPE, (int)SettingType::TIMEOUT);
     answ.setValue(MessageField::SETTING_STATE__ID, setting_id);
     answ.setValue(MessageField::SETTING_STATE__VALUE, val);
     proto.send(&answ);
