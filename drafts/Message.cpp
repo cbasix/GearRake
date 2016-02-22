@@ -38,7 +38,13 @@ int Message::getCommunicationId() {
 }
 
 int Message::generateCommunicationId() {
+    //zero should not be used as communication id
+    if(next_generated_communication_id == 0) {
+        next_generated_communication_id++;
+    }
+
     int com_id = next_generated_communication_id++; //post increment
+    //overflow is allowed
     return com_id;
 }
 

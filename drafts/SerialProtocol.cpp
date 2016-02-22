@@ -8,9 +8,7 @@
 #include "util.h"
 
 //binary length of
-#define MSG_BIN_LEN ((3 + (int)MessageField::ENUM_COUNT)*2)
-//TODO u_int16_t;
-//TODO u_int8_t;
+
 
 SerialProtocol::SerialProtocol() {
     this->out_buf = new CircularQueue<char>((int)SerialConf::BUF_SIZE);
@@ -25,6 +23,10 @@ void SerialProtocol::send(Message* m) {
 }
 
 bool SerialProtocol::readMessage(Message* m) {
+    if(this->in_buf->size() < MIN_FRAME_LEN){
+        return false;
+    }
+
     char binary_msg[MSG_BIN_LEN];
     if(SerialProtocol::depacketize(this->in_buf, binary_msg, MSG_BIN_LEN)){
         SerialProtocol::deserialize(binary_msg, MSG_BIN_LEN, m);
@@ -33,7 +35,7 @@ bool SerialProtocol::readMessage(Message* m) {
     return false;
 }
 
-void SerialProtocol::add(char c) {
+void SerialProtocol::addIn(char c) {
     in_buf->add(c);
 }
 
@@ -41,21 +43,19 @@ void SerialProtocol::add(char c) {
 void SerialProtocol::serialize(Message* m, char bin_message[], int bin_msg_len) {
     int bin_msg_count = 0;
 
-    bin_message[bin_msg_count++] = (int)m->getType(); //get first half of int into the char
-    bin_message[bin_msg_count++] = (int)m->getType() >> 8; //get second half of int into the char
+    //least significant byte first
+    bin_message[bin_msg_count++] = (int)m->getType() >> 8; //get first half of int into the char
+    bin_message[bin_msg_count++] = (int)m->getType() ; //get second half of int into the char
 
-    bin_message[bin_msg_count++] = (int)m->getType(); //get first half of int into the char
-    bin_message[bin_msg_count++] = (int)m->getType() >> 8; //get second half of int into the char
+    bin_message[bin_msg_count++] = (int)m->getSenderActionType() >> 8; //get first half of int into the char
+    bin_message[bin_msg_count++] = (int)m->getSenderActionType(); //get second half of int into the char
 
-    bin_message[bin_msg_count++] = (int)m->getSenderActionType(); //get first half of int into the char
-    bin_message[bin_msg_count++] = (int)m->getSenderActionType() >> 8; //get second half of int into the char
-
-    bin_message[bin_msg_count++] = (int)m->getCommunicationId(); //get first half of int into the char
-    bin_message[bin_msg_count++] = (int)m->getCommunicationId() >> 8; //get second half of int into the char
+    bin_message[bin_msg_count++] = (int)m->getCommunicationId() >> 8; //get first half of int into the char
+    bin_message[bin_msg_count++] = (int)m->getCommunicationId(); //get second half of int into the char
 
     for (int i = 0; i < (int)MessageField::ENUM_COUNT ; ++i) {
-        bin_message[bin_msg_count++] = (int)m->getValue((MessageField)i); //get first half of int into the char
-        bin_message[bin_msg_count++] = (int)m->getValue((MessageField)i) >> 8; //get second half of int into the char
+        bin_message[bin_msg_count++] = (int)m->getValue((MessageField)i) >> 8; //get first half of int into the char
+        bin_message[bin_msg_count++] = (int)m->getValue((MessageField)i); //get second half of int into the char
     }
 
 
@@ -118,7 +118,7 @@ bool SerialProtocol::depacketize(CircularQueue<char>*from_buf, char *return_msg,
     bool escaped = false;
     bool is_checksum = false;
     int i = 0;
-    char bin_msg[10];
+    char bin_msg[MSG_BIN_LEN];
     int bin_msg_len;
     char checksum;
 
@@ -132,6 +132,7 @@ bool SerialProtocol::depacketize(CircularQueue<char>*from_buf, char *return_msg,
         if(is_checksum){
             //checksum itself is not escaped, and is calculated on the unescaped data
             checksum = got;
+            is_checksum = false;
             escaped = false;
 
             //test for escape character
@@ -156,7 +157,7 @@ bool SerialProtocol::depacketize(CircularQueue<char>*from_buf, char *return_msg,
             escaped = false;
         }
 
-        if (bin_msg_len >= return_bin_msg_len){
+        if (bin_msg_len > return_bin_msg_len){
             from_buf->remove(i);
             return false;
         }

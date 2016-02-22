@@ -10,6 +10,12 @@
 #include "Message.h"
 #include "constants_message.h"
 
+#define MSG_BIN_LEN ((3 + (int)MessageField::ENUM_COUNT)*2)
+#define MIN_FRAME_LEN (MSG_BIN_LEN+3) //minimal message length is message lenth + start_c + checksum_c + end_c
+//TODO u_int16_t;
+//TODO u_int8_t;
+
+//TODO all int to short
 class SerialProtocol {
 public:
 
@@ -19,7 +25,9 @@ public:
 
     void send(Message* m);
     bool readMessage(Message* m);
-    void add(char c);
+    void addIn(char c);
+    int getOutSize();
+    char getOut();
 
     static void serialize(Message* m, char bin_message[], int bin_msg_len);
     static bool deserialize(char binary_msg[], int bin_msg_len, Message* return_m);

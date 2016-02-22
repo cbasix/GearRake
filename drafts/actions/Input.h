@@ -35,5 +35,7 @@ private:
     InputData input_data[INPUT_ID_COUNT];
 };
 
+//todo input task darf nicht starten wenn Bedienteil nicht korrekt verbunden (verbindung unterbrochen).
+
 
 #endif //GEARRAKE_INPUT_H

@@ -207,12 +207,8 @@ enum class outputs {
     #include <string>
 #endif
 
-enum class EepromConfig{
-    TIMING_ADDRESS = 0,
-    MAX_TIMING = 10,
-    TIMEOUT_ADDRESS = (int)TIMING_ADDRESS + (int)MAX_TIMING,
-    MAX_TIMEOUTS = 20,
-};
+#define SERIAL_RATE 9600
+
 
 enum class ActionType : int {
     NONE,
@@ -224,6 +220,8 @@ enum class ActionType : int {
     COMPLEX_MOVE,
     FRAME_DOWN,
     TIMER,
+    DIAGNOSE,
+    COMMAND,
 
     ENUM_COUNT
 };
@@ -241,6 +239,7 @@ const std::string ActionTypeStr[] = {
 };
 #endif
 enum class Cylinder : int {
+    NONE,
     SPINNER_RIGHT,
     SPINNER_LEFT,
     SPINNER_TELE_RIGHT,
@@ -293,7 +292,9 @@ enum class CylinderPosition : int {
     LOW,
     MIDDLE,
     UP,
-    OPEN
+    OPEN,
+
+    ENUM_COUNT
 
 };
 #ifdef TESTING
@@ -310,9 +311,12 @@ const std::string CylinderPositionStr[] = {
 #endif
 
 enum class Timing : int {
+    NONE,
     SHORT,
     MEDIUM,
-    LONG
+    LONG,
+
+    ENUM_COUNT
 };
 #ifdef TESTING
 const std::string TimingStr[] = {
@@ -322,6 +326,21 @@ const std::string TimingStr[] = {
 
 };
 #endif //testing
+
+//TODO on update (new setting) the old settings should be preserved !!!
+enum class EepromConfig{
+    TIMING_ADDRESS = 0,
+    MAX_TIMING = (int)Timing::ENUM_COUNT,
+    TIMEOUT_ADDRESS = (int) TIMING_ADDRESS + (int)MAX_TIMING,
+    MAX_TIMEOUTS = (int)CylinderPosition::ENUM_COUNT
+};
+enum class SettingType{
+    NONE,
+    TIMEOUT,
+    TIMING,
+
+    ENUM_COUNT
+};
 
 #endif //GEARRAKE_CONSTANTS_H
 

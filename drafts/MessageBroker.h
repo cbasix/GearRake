@@ -10,6 +10,15 @@
 
 class MessageBroker : public Controller{
 private:
+public:
+    virtual void registerConsumer(Consumer *c);
+    virtual void removeConsumer(Consumer *c);
+    virtual void registerProducer(Producer *p);
+    virtual void removeProducer(Producer *p);
+    virtual void queueMessage(Message m);
+
+    virtual void generateActiveMessages();
+
     ArrayList<Consumer*>* consumers;
     ArrayList<Producer*>* producers;
     CircularQueue<Message>* messages;

@@ -36,6 +36,7 @@ public:
     virtual void removeProducer(Producer* p) = 0;
 
     virtual void queueMessage(Message m) = 0;
+    virtual void generateActiveMessages() = 0;
 };
 
 #endif //GEARRAKE_INTERFACES_H
