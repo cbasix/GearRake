@@ -62,26 +62,26 @@ TEST_F(TimerTest, Complete){
 
 
     //request timeout
+    ClockWrapper::setReturnValue(1000);
     Timer lt(parent_comm_id, 100, true);
-    lt.setStartTime(1000);
 
     //should not produce anything (timer not over)
-    lt.cw->setReturnValue(1080);
+    ClockWrapper::setReturnValue(1080);
     lt.produce(&c);
 
     //should produce timeout
-    lt.cw->setReturnValue(1120);
+    ClockWrapper::setReturnValue(1120);
     lt.produce(&c);
 
     //request timer
+    ClockWrapper::setReturnValue(1000);
     Timer lt2(parent_comm_id, 100, false);
-    lt2.setStartTime(1000);
 
     //should not produce anything (timer not over)
-    lt2.cw->setReturnValue(1080);
+    ClockWrapper::setReturnValue(1080);
     lt2.produce(&c);
 
     //should produce timer state
-    lt2.cw->setReturnValue(1120);
+    ClockWrapper::setReturnValue(1120);
     lt2.produce(&c);
 }

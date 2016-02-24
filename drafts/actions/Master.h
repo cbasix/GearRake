@@ -6,7 +6,11 @@
 #define GEARRAKE_MASTER_H
 
 
+#include <interfaces.h>
+
 class Master {
+public:
+    Master(Controller* c);
 
 };
 

@@ -34,10 +34,10 @@ enum class MessageType : int{
     TIMEOUT,
     TIMER_STATE,
     POSITION_STATE,
-    MANUAL_CHANGED,
     POSITION_REQUEST,
     POSITION_CHANGE,
-    INPUT_CHANGE,
+    MANUAL_INPUT_CHANGE,
+    SENSOR_INPUT_CHANGE,
     SETTING_STATE,
     SETTING_UPDATE,
     SETTING_REQUEST,
@@ -63,11 +63,11 @@ const std::string MessageTypeStr[] = {
         "TIMEOUT",
         "TIMER_STATE",
         "POSITION_STATE",
-        "MANUAL_CHANGED",
+        "MANUAL_INPUT_CHANGE",
         "POSITION_CHANGED",
         "POSITION_REQUEST",
         "POSITION_CHANGE",
-        "INPUT_CHANGE"
+        "SENSOR_INPUT_CHANGE"
 
 };
 #endif //testing
@@ -98,7 +98,8 @@ enum class MessageField : int {
     POSITION_STATE__CYLINDER = 0,
     POSITION_STATE__POSITION = 1,
 
-    MANUAL_CHANGED__STATE = 1,
+    MANUAL_INPUT_CHANGE__ID = 0,
+    MANUAL_INPUT_CHANGE__VALUE = 1,
 
     POSITION_REQUEST__CYLINDER = 0,
 
@@ -106,8 +107,8 @@ enum class MessageField : int {
     POSITION_CHANGE__POSITION = 1,
 
 
-    INPUT_CHANGE__CYLINDER = 0,
-    INPUT_CHANGE__POSITION = 1,
+    SENSOR_INPUT_CHANGE__ID = 0,
+    SENSOR_INPUT_CHANGE__VALUE = 1,
 
     SETTING_STATE__TYPE = 0,
     SETTING_STATE__ID = 1,

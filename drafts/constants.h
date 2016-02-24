@@ -5,14 +5,6 @@
 #ifndef GEARRAKE_CONSTANTS_H
 #define GEARRAKE_CONSTANTS_H
 
-#define VOLT_HIGH true
-#define VOLT_LOW false
-
-#define ACTIVE true
-#define INACTIVE false
-
-
-
 #define CYLINDER_HOLD 0
 
 #define CYLINDER_FUNCTION_1 1
@@ -169,21 +161,17 @@ enum class outputs {
 #define PIN_ARDUINO_START 0
 #define PIN_ARDUINO_END 99
 
-#define PIN_EXP1_START 100
-#define PIN_EXP1_END 199
 
-#define PIN_EXP2_START 200
-#define PIN_EXP2_END 299
-
-#define PIN_EXP3_START 300
-#define PIN_EXP3_END 399
+#define PIN_EXP_START 100
+#define PIN_EXP_END 499
+#define PIN_EXP_SIZE 100
 
 #define PIN_ARDUINO_ANALOG_NEGATIVE_START 1000
 #define PIN_ARDUINO_ANALOG_NEGATIVE_END 1099
 #define PIN_ARDUINO_ANALOG_POSITIVE_START 1100
 #define PIN_ARDUINO_ANALOG_POSITIVE_END 1199
 
-
+#define EXP_LEN 3
 #define EXP1_ADDR 0
 #define EXP2_ADDR 1
 #define EXP3_ADDR 2
@@ -200,11 +188,14 @@ enum class outputs {
 // NEW ##################################################
 
 
-#define INPUT_ID_COUNT 50
+#define MAX_SENSOR 6
 #define TESTING
 
 #ifdef TESTING
     #include <string>
+#include "util.h"
+#include "constants_io.h"
+
 #endif
 
 #define SERIAL_RATE 9600
@@ -229,6 +220,7 @@ enum class ActionType : int {
     TIMER,
     DIAGNOSE,
     COMMAND,
+    POSITION,
 
     ENUM_COUNT
 };
@@ -246,7 +238,7 @@ const std::string ActionTypeStr[] = {
         "TIMER"
 };
 #endif
-enum class Cylinder : int {
+enum class CylinderId : int {
     NONE,
     SPINNER_RIGHT,
     SPINNER_LEFT,
@@ -256,8 +248,11 @@ enum class Cylinder : int {
     FRAME_LOCK,
     WEEL_TELE_RIGHT,
     WEEL_TELE_LEFT,
-    WEEL_STEER
+    WEEL_STEER,
+    ENUM_COUNT
 };
+
+
 #ifdef TESTING
 const std::string CylinderStr[] = {
         "SPINNER_RIGHT",
@@ -282,6 +277,8 @@ enum class CylinderDirection : int {
 
     OPEN = (int)(UP),
     CLOSE = (int)(DOWN),
+
+    ENUM_COUNT = 4
 };
 #ifdef TESTING
 const std::string CylinderDirectionStr[] = {
@@ -294,15 +291,32 @@ const std::string CylinderDirectionStr[] = {
 
 // From bottom to top
 enum class CylinderPosition : int {
-    NONE,
-    GROUND,
-    CLOSED,
-    LOW,
-    MIDDLE,
-    UP,
-    OPEN,
+    NONE = 0,
+    GROUND = 1,
+    BETWEEN_GROUND_AND_LOW = 2,
+    LOW = 3,
+    BETWEEN_LOW_AND_MIDDLE = 4,
+    MIDDLE = 5,
+    BETWEEN_MIDDLE_AND_UP = 6,
+    UP = 7,
 
-    ENUM_COUNT
+    CLOSED = 1,
+    BETWEEN_OPEN_AND_CLOSE = 4,
+    OPEN = 7,
+
+    UNDER_THIRD = 1,
+    THIRD = 4,
+    BETWEEN_THIRD_AND_UP = 6,
+    //UP = 7,
+
+    IN = 1,
+    BETWEEN_IN_AND_OUT = 4,
+    OUT = 7,
+
+    //MIDDLE = 5,
+    NOT_MIDDLE = 1,
+
+    ENUM_COUNT = 8
 
 };
 #ifdef TESTING
@@ -340,7 +354,7 @@ enum class EepromConfig{
     TIMING_ADDRESS = 0,
     MAX_TIMING = (int)Timing::ENUM_COUNT,
     TIMEOUT_ADDRESS = (int) TIMING_ADDRESS + (int)MAX_TIMING,
-    MAX_TIMEOUTS = (int)CylinderPosition::ENUM_COUNT
+    MAX_TIMEOUTS = (int) CylinderPosition::ENUM_COUNT
 };
 enum class SettingType{
     NONE,
@@ -349,6 +363,9 @@ enum class SettingType{
 
     ENUM_COUNT
 };
+
+
+
 
 #endif //GEARRAKE_CONSTANTS_H
 

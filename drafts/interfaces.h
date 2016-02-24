@@ -43,6 +43,12 @@ public:
 
 };
 
+class Cylinder{
+public:
+    virtual CylinderPosition getPosition() = 0;
+    virtual void update(SensorInputId, IOState value) = 0;
+};
+
 #endif //GEARRAKE_INTERFACES_H
 
 

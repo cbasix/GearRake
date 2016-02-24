@@ -10,7 +10,7 @@
 FrameDown::FrameDown(Controller* c, int parent_communication_id){
     this->parent_communication_id = parent_communication_id;
     state = LocalState::SHORT_FRAME_UP;
-    communication_id = Message::createMoveTimeRequest(c, getType(), Cylinder::FRAME, CylinderDirection::UP,
+    communication_id = Message::createMoveTimeRequest(c, getType(), CylinderId::FRAME, CylinderDirection::UP,
                                                       ConfigStore::getTimerValue(Timing::SHORT));
     timeout_occured = false;
 
@@ -22,7 +22,7 @@ void FrameDown::onMessage(Controller* c, Message* m){
             if(m->getType() == MessageType::ACTION_STATE
                     && m->getCommunicationId() == communication_id) {
                 state = LocalState::OPEN_LOCK;
-                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::OPEN);
+                Message::createMovePositionRequest(c, getType(), communication_id, CylinderId::FRAME_LOCK, CylinderPosition::OPEN);
             }
         break;
         case LocalState::OPEN_LOCK: //wait for lock open
@@ -32,7 +32,7 @@ void FrameDown::onMessage(Controller* c, Message* m){
                     && m->getCommunicationId() == communication_id){
                 state = LocalState::FRAME_DOWN;
                 //start frame down
-                Message::createCylinderRequest(c, getType(), communication_id, Cylinder::FRAME, CylinderDirection::DOWN);
+                Message::createCylinderRequest(c, getType(), communication_id, CylinderId::FRAME, CylinderDirection::DOWN);
 
 
             } else if(m->getType() == MessageType::TIMEOUT
@@ -41,14 +41,14 @@ void FrameDown::onMessage(Controller* c, Message* m){
                 state = LocalState::CLOSE_LOCK;
                 //close the framelock on timeout
                 timeout_occured = true;
-                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+                Message::createMovePositionRequest(c, getType(), communication_id, CylinderId::FRAME_LOCK, CylinderPosition::CLOSED);
 
             }else if(m->getType() == MessageType::ACTION_STATE //parent action sends stop signal
                     && m->getCommunicationId() == parent_communication_id
                      && (int) ActionState::STOPPING ==  m->getValue(MessageField::ACTION_STATE__STATE)){
                 state = LocalState::CLOSE_LOCK;
                 //close the framelock on stop
-                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+                Message::createMovePositionRequest(c, getType(), communication_id, CylinderId::FRAME_LOCK, CylinderPosition::CLOSED);
 
             }
         break;
@@ -60,10 +60,10 @@ void FrameDown::onMessage(Controller* c, Message* m){
 
                 state = LocalState::CLOSE_LOCK;
                 //stop frame movement
-                Message::createCylinderRequest(c, getType(),communication_id, Cylinder::FRAME, CylinderDirection::STOP);
+                Message::createCylinderRequest(c, getType(), communication_id, CylinderId::FRAME, CylinderDirection::STOP);
 
                 //start close lock
-                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+                Message::createMovePositionRequest(c, getType(), communication_id, CylinderId::FRAME_LOCK, CylinderPosition::CLOSED);
 
             } else if(m->getType() == MessageType::TIMEOUT
                     && m->getCommunicationId() == communication_id){ //got timeout
@@ -71,10 +71,10 @@ void FrameDown::onMessage(Controller* c, Message* m){
 
                 //stop frame movement
                 timeout_occured = true;
-                Message::createCylinderRequest(c, getType(),communication_id, Cylinder::FRAME, CylinderDirection::STOP);
+                Message::createCylinderRequest(c, getType(), communication_id, CylinderId::FRAME, CylinderDirection::STOP);
 
                 //close the framelock on timeout
-                Message::createMovePositionRequest(c, getType(), communication_id, Cylinder::FRAME_LOCK, CylinderPosition::CLOSED);
+                Message::createMovePositionRequest(c, getType(), communication_id, CylinderId::FRAME_LOCK, CylinderPosition::CLOSED);
 
             }
         break;

@@ -7,35 +7,34 @@
 
 #include "interfaces.h"
 #include "constants.h"
+#include "constants_io.h"
 
-class Input : public Producer{
 
-};
-struct InputData {
+class InputData {
+public:
+    InputData(int input_pin);
 
     int input_pin;
-    int input_type;
-    bool debounced_state;
-    bool temp_state;
-    unsigned int temp_change_time;
-    bool active;
-    bool state_changed;
+    //int input_type;
+    IOState debounced_state;
+    IOState temp_state;
+    unsigned long temp_change_time;
 };
 
-class InputObject{
+class Input : public Producer{
 public:
-    void onMessage(Controller* c, Message* m);
+    Input(InputData inputs[], int inputs_len);
     void produce(Controller* c);
+    virtual ActionType getType();
+
 private:
-    InputObject();
-    bool getInputState(int input_id);
-    //void setTaskMonitor(TaskMonitor *tm);
-    void readInput(Controller* c);
-    //bool hasInputChanged(int input_id);
-    InputData input_data[INPUT_ID_COUNT];
+    InputData inputs[];
+    int inputs_len;
+    int communication_id;
+    bool first_run;
 };
 
-//todo input task darf nicht starten wenn Bedienteil nicht korrekt verbunden (verbindung unterbrochen).
+
 
 
 #endif //GEARRAKE_INPUT_H

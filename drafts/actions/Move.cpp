@@ -7,7 +7,7 @@
 #include "constants_message.h"
 #include "ConfigStore.h"
 
-MovePosition::MovePosition(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderPosition position) {
+MovePosition::MovePosition(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderPosition position) {
     this->parent_communication_id = parent_communication_id;
     this->cylinder = cylinder;
     this->position = position;
@@ -28,13 +28,15 @@ void MovePosition::onMessage(Controller* c, Message* m) {
     if (m->getType() == MessageType::POSITION_STATE // start moving the cylinder when direction is known
             && m->getCommunicationId() == communication_id
             && m->getValue(MessageField::POSITION_STATE__CYLINDER) == (int)cylinder) {
-        CylinderPosition current_position = static_cast<CylinderPosition>(m->getValue(MessageField::POSITION_STATE__POSITION));
+        CylinderPosition current_position = (CylinderPosition)(m->getValue(MessageField::POSITION_STATE__POSITION));
 
         if(current_position < position) {
-            Message::createCylinderRequest(c, getType(), communication_id, cylinder, CylinderDirection::UP);
-        } else if(current_position > position) {
+            direction = CylinderDirection::UP;
+            Message::createCylinderRequest(c, getType(), communication_id, cylinder, direction);
 
-            Message::createCylinderRequest(c, getType(), communication_id, cylinder, CylinderDirection::DOWN);
+        } else if(current_position > position) {
+            direction = CylinderDirection::DOWN;
+            Message::createCylinderRequest(c, getType(), communication_id, cylinder, direction);
 
         } else {
             if (parent_communication_id != 0) {
@@ -47,16 +49,25 @@ void MovePosition::onMessage(Controller* c, Message* m) {
 
 
     } else if (m->getType() == MessageType::POSITION_CHANGE // stop when given position is reached
-               && (int)position == m->getValue(MessageField::POSITION_CHANGE__POSITION)
                 && (int)cylinder == m->getValue(MessageField::POSITION_STATE__CYLINDER)) {
 
-        Message::createCylinderRequest(c, getType(), cylinder, CylinderDirection::STOP);
+        if(
+                (
+                    direction == CylinderDirection::UP
+                    && (int)position >= m->getValue(MessageField::POSITION_CHANGE__POSITION)
+                ) || (
+                    direction == CylinderDirection::DOWN
+                    && (int)position <= m->getValue(MessageField::POSITION_CHANGE__POSITION)
+                )) {
 
-        if (parent_communication_id != 0) {
-            Message::createActionState(c, getType(), parent_communication_id,ActionState::STOPPED_OK);
+            Message::createCylinderRequest(c, getType(), cylinder, CylinderDirection::STOP);
+
+            if (parent_communication_id != 0) {
+                Message::createActionState(c, getType(), parent_communication_id, ActionState::STOPPED_OK);
+            }
+            //end
+            c->removeConsumer(this);
         }
-        //end
-        c->removeConsumer(this);
 
     } else if (m->getType() == MessageType::ACTION_STATE//stop when in stop signal from parent is send
                && parent_communication_id == m->getCommunicationId()
@@ -85,7 +96,7 @@ void MovePosition::onMessage(Controller* c, Message* m) {
 }
 
 
-MoveTime::MoveTime(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderDirection direction, Timing timer) {
+MoveTime::MoveTime(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction, Timing timer) {
     this->parent_communication_id = parent_communication_id;
     this->cylinder = cylinder;
 
@@ -133,7 +144,7 @@ void MoveTime::onMessage(Controller* c, Message* m) {
 }
 
 
-MoveDirection::MoveDirection(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderDirection direction) {
+MoveDirection::MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction) {
     this->parent_communication_id = parent_communication_id;
     this->cylinder = cylinder;
     this->direction = direction;

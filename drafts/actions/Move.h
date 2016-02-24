@@ -9,7 +9,7 @@
 
 class MovePosition : public Consumer{
 public:
-    MovePosition(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderPosition position);
+    MovePosition(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderPosition position);
 
     //inherited:
     virtual ActionType getType();
@@ -17,7 +17,7 @@ public:
 private:
     CylinderDirection direction;
     CylinderPosition position;
-    Cylinder cylinder;
+    CylinderId cylinder;
     int parent_communication_id;
     int communication_id;
     bool is_frame_down;
@@ -25,7 +25,7 @@ private:
 };
 class MoveDirection : public Consumer{
 public:
-    MoveDirection(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderDirection direction);
+    MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction);
 
     //inherited:
     virtual ActionType getType();
@@ -33,13 +33,13 @@ public:
 private:
     CylinderDirection direction;
     CylinderPosition position;
-    Cylinder cylinder;
+    CylinderId cylinder;
     int parent_communication_id;
     int communication_id;
 };
 class MoveTime : public Consumer{
 public:
-    MoveTime(Controller* c, int parent_communication_id, Cylinder cylinder, CylinderDirection direction, Timing timer);
+    MoveTime(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction, Timing timer);
 
     //inherited:
     virtual ActionType getType();
@@ -47,7 +47,7 @@ public:
 private:
     CylinderDirection direction;
     CylinderPosition position;
-    Cylinder cylinder;
+    CylinderId cylinder;
     int parent_communication_id;
     int communication_id;
 };

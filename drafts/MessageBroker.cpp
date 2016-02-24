@@ -3,6 +3,7 @@
 //
 #include "MessageBroker.h"
 #include "constants.h"
+#include "util.h"
 
 
 void MessageBroker::registerConsumer(Consumer *c) {
@@ -20,7 +21,7 @@ void MessageBroker::removeConsumer(Consumer *c) {
     for (int j = 0; j < consumers->getSize(); ++j) {
         if(consumers->get(j) == c){
             consumers->remove(j);
-            j--; //goto the place of the now deleted element aain, because the next elemement is now there
+            j--; //goto the place of the now deleted element again, because the next elemement is now there
         }
     }
 

@@ -1,6 +1,9 @@
 #ifndef MYSTD_H
 #define MYSTD_H
 
+#define NOT_POSSIBLE 99
+#define OK 0
+
 template<typename QueueItemType>
 class CircularQueue {
 public:
@@ -320,6 +323,133 @@ template<class T>
 class LinkedList;
 template<class T>
 class CircularQueue;
+
+
+
+
+
+template<typename ArrayListItemType>
+class ArrayList {
+private:
+	int max_size;
+	int size;
+
+	ArrayListItemType data[];
+
+public:
+	ArrayList(int max_size);
+	~ArrayList();
+
+	int insertAt(int insert_position, ArrayListItemType item);
+	int append(ArrayListItemType item);
+    int remove(int position);
+    int set(int position, ArrayListItemType item);
+	ArrayListItemType get(int position);
+
+	int getSize();
+	bool isEmpty();
+
+};
+
+/**
+* Create array list
+*/
+template<typename ArrayListItemType>
+ArrayList<ArrayListItemType>::ArrayList(int max_size) {
+	this->max_size = max_size;
+	this->size = 0;
+	this->data = new ArrayListItemType[max_size];
+}
+
+/**
+ * Destroy list
+ */
+template<typename ArrayListItemType>
+ArrayList<ArrayListItemType>::~ArrayList() {
+	delete[] data;
+}
+
+/**
+ * Get the wanted element
+ */
+template<typename ArrayListItemType>
+ArrayListItemType ArrayList<ArrayListItemType>::get(int position) {
+	return data[position];
+}
+/**
+ * set (overwrite) the element in the given position
+ */
+template<typename ArrayListItemType>
+int ArrayList<ArrayListItemType>::set(int position, ArrayListItemType item){
+    if(position > getSize() - 1){
+        return NOT_POSSIBLE;
+    } else {
+        data[position] = item;
+        return OK;
+    }
+}
+
+/**
+ * Moves the list pointer to the last element of the list.
+ */
+template<typename ArrayListItemType>
+int ArrayList<ArrayListItemType>::insertAt(int insert_position, ArrayListItemType item) {
+	if (getSize() >= max_size + 1){
+		return NOT_POSSIBLE;
+	} else {
+		for(int i = insert_position; i < getSize(); i++){
+			data[(i+1)] = data[i];
+		}
+		data[insert_position] = item;
+		size++;
+		return OK;
+	}
+}
+
+template<typename ArrayListItemType>
+int ArrayList<ArrayListItemType>::append(ArrayListItemType item) {
+	return insertAt(getSize(), item);
+}
+/**
+ * removes the element at the given position
+ */
+template<typename ArrayListItemType>
+int ArrayList<ArrayListItemType>::remove(int position){
+    if(position > getSize() - 1){
+        return NOT_POSSIBLE;
+    } else {
+        for(int i = position; i < getSize(); i++){
+            data[i] = data[(i+1)];
+            size--;
+        }
+        return OK;
+    }
+
+}
+
+
+/**
+ * Returns the current size of the list.
+ */
+template<typename ArrayListItemType>
+int ArrayList<ArrayListItemType>::getSize() {
+	return size;
+}
+
+/**
+ * Returns true if the list is empty, false otherwise.
+ */
+template<typename ArrayListItemType>
+bool ArrayList<ArrayListItemType>::isEmpty() {
+	if (size == 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+template<class T>
+class ArrayList;
 
 #endif /*MYSTD_H*/
 

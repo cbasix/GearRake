@@ -103,7 +103,7 @@ void Diagnose::produce(Controller *c) {
             int setting_val = m.getValue(MessageField::SETTING_UPDATE__VALUE);
 
             if(setting_type == (int)SettingType::TIMEOUT
-                    && setting_id < (int)CylinderPosition::ENUM_COUNT
+                    && setting_id < (int) CylinderPosition::ENUM_COUNT
                     && setting_id > 0){
                 ConfigStore::setTimeout((CylinderPosition) setting_id, setting_val);
 

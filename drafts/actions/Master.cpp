@@ -3,3 +3,8 @@
 //
 
 #include "Master.h"
+#include "interfaces.h"
+
+Master::Master(Controller* c) {
+
+}

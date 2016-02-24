@@ -24,11 +24,11 @@ TEST(MoveTimeTest, Setup) {
     request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::UP);
 
     Message request_stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::STOP);
 
     Message action_state(MessageType::ACTION_STATE, ActionType::MOVE_TIME, child_comm_id);
@@ -39,7 +39,7 @@ TEST(MoveTimeTest, Setup) {
 
 
     //start move time should produce request_timer and request_start cylinder
-    MoveTime mt(&c, parent_comm_id, Cylinder::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
+    MoveTime mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
 
 }
 
@@ -52,11 +52,11 @@ TEST(MoveTimeTest, StopRequest) {
     request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::UP);
 
     Message request_stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::STOP);
 
     Message action_state(MessageType::ACTION_STATE, ActionType::MOVE_TIME, parent_comm_id);
@@ -69,7 +69,7 @@ TEST(MoveTimeTest, StopRequest) {
     EXPECT_CALL(c, removeConsumer(_)).Times(1);
 
     //start move time should produce request_timer and request_start cylinder
-    MoveTime mt(&c, parent_comm_id, Cylinder::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
+    MoveTime mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
 
     //send timer status should produce request_stop_cylinder
     Message parent_stop(MessageType::ACTION_STATE, ActionType::INPUT, parent_comm_id);
@@ -92,11 +92,11 @@ TEST(MoveTimeTest, TimeStop) {
     request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::UP);
 
     Message request_stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::STOP);
 
     Message action_state(MessageType::ACTION_STATE, ActionType::MOVE_TIME, parent_comm_id);
@@ -109,7 +109,7 @@ TEST(MoveTimeTest, TimeStop) {
     EXPECT_CALL(c, removeConsumer(_)).Times(1);
 
     //start move time should produce request_timer and request_start cylinder
-    MoveTime mt(&c, parent_comm_id, Cylinder::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
+    MoveTime mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP, Timing::SHORT);
 
     //send timer status should produce request_stop_cylinder
     Message timer_status(MessageType::TIMER_STATE, ActionType::TIMER, child_comm_id);
@@ -127,11 +127,11 @@ TEST(MoveDirectionTest, StopRequest) {
     int child_comm_id = parent_comm_id+1;
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_DIRECTION, child_comm_id);
-    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::UP);
 
     Message request_stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_DIRECTION, child_comm_id);
-    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int)Cylinder::SPINNER_RIGHT);
+    request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
     request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int)CylinderDirection::STOP);
 
     Message action_state(MessageType::ACTION_STATE, ActionType::MOVE_DIRECTION, parent_comm_id);
@@ -143,7 +143,7 @@ TEST(MoveDirectionTest, StopRequest) {
     EXPECT_CALL(c, removeConsumer(_)).Times(1);
 
     //start move time should produce request_timer and request_start cylinder
-    MoveDirection mt(&c, parent_comm_id, Cylinder::SPINNER_RIGHT, CylinderDirection::UP);
+    MoveDirection mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP);
 
     //send timer status should produce request_stop_cylinder
     Message parent_stop(MessageType::ACTION_STATE, ActionType::INPUT, parent_comm_id);
@@ -169,15 +169,15 @@ TEST(MovePositionTest, Timeout) {
                                  ConfigStore::getTimeoutValue(CylinderPosition::GROUND)); //timeout is defined in config_store
 
         Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_POSITION, child_comm_id);
-        request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) Cylinder::FRAME);
+        request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::FRAME);
         request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int) CylinderDirection::UP);
 
         Message request_stop_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_POSITION, child_comm_id);
-        request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) Cylinder::FRAME);
+        request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::FRAME);
         request_stop_cylinder.setValue(MessageField::CYLINDER_REQUEST__DIRECTION, (int) CylinderDirection::STOP);
 
         Message position_request(MessageType::POSITION_REQUEST, ActionType::MOVE_POSITION, child_comm_id);
-        position_request.setValue(MessageField::POSITION_REQUEST__CYLINDER, (int)Cylinder::FRAME);
+        position_request.setValue(MessageField::POSITION_REQUEST__CYLINDER, (int) CylinderId::FRAME);
 
         Message timeout(MessageType::TIMEOUT, ActionType::MOVE_POSITION, parent_comm_id);
 
@@ -191,12 +191,12 @@ TEST(MovePositionTest, Timeout) {
         EXPECT_CALL(c, removeConsumer(_)).Times(1);
 
         //start move time should produce request_timeout and a position_request
-        MovePosition mt(&c, parent_comm_id, Cylinder::FRAME, CylinderPosition::MIDDLE);
+        MovePosition mt(&c, parent_comm_id, CylinderId::FRAME, CylinderPosition::MIDDLE);
 
         //the position answer should produce request_start cylinder
         Message position_state(MessageType::POSITION_STATE, ActionType::INPUT, child_comm_id);
-        position_state.setValue(MessageField::POSITION_STATE__CYLINDER, (int)Cylinder::FRAME);
-        position_state.setValue(MessageField::POSITION_STATE__POSITION, (int)CylinderPosition::GROUND);
+        position_state.setValue(MessageField::POSITION_STATE__CYLINDER, (int) CylinderId::FRAME);
+        position_state.setValue(MessageField::POSITION_STATE__POSITION, (int) CylinderPosition::GROUND);
         mt.onMessage(&c, &position_state);
 
         //the timout should produce a stop_cylinder and an timeout_message for the parent

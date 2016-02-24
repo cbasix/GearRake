@@ -10,6 +10,8 @@
 #include "interfaces.h"
 #include "constants.h"
 #include "constants_message.h"
+#include "constants_io.h"
+
 class Controller;
 
 class Message {
@@ -47,21 +49,21 @@ public:
     static int createTimerRequest(Controller* c, ActionType type, Timing timer);
     static void createTimerRequest(Controller* c, ActionType type, int timeout_communication_id, Timing timer);
 
-    static int createCylinderRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction);
-    static void createCylinderRequest(Controller* c, ActionType type, int timeout_communication_id, Cylinder cylinder,
+    static int createCylinderRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction);
+    static void createCylinderRequest(Controller* c, ActionType type, int timeout_communication_id, CylinderId cylinder,
                                       CylinderDirection direction);
 
-    static int createMoveTimeRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction, int timer);
-    static void createMoveTimeRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder, CylinderDirection direction, int timer);
+    static int createMoveTimeRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction, int timer);
+    static void createMoveTimeRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderDirection direction, int timer);
 
-    static int createMovePositionRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderPosition position);
-    static void createMovePositionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder, CylinderPosition position);
+    static int createMovePositionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderPosition position);
+    static void createMovePositionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderPosition position);
 
-    static int createMoveDirectionRequest(Controller* c, ActionType type, Cylinder cylinder, CylinderDirection direction);
-    static void createMoveDirectionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder, CylinderDirection direction);
+    static int createMoveDirectionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction);
+    static void createMoveDirectionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderDirection direction);
 
-    static int createPositionRequest(Controller* c, ActionType type, Cylinder cylinder);
-    static void createPositionRequest(Controller* c, ActionType type, int communication_id, Cylinder cylinder);
+    static int createPositionRequest(Controller* c, ActionType type, CylinderId cylinder);
+    static void createPositionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder);
 
     //static void createActionRequest(Controller c, ActionType type, int communication_id, ActionType recipient, ActionState::);
 
@@ -70,11 +72,11 @@ public:
     static void createActionState(Controller* c, ActionType type, int parent_communication_id, ActionState state);
     static void createTimeout(Controller* c, ActionType type, int parent_communication_id, int status);
     static void createTimerState(Controller* c, ActionType type, int parent_communication_id);
-    static void createPositionState(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder, CylinderPosition position);
+    static void createPositionState(Controller* c, ActionType type, int parent_communication_id, CylinderId cylinder, CylinderPosition position);
 
     //producers
-    static void createPositionChange(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder, CylinderPosition position);
-    static void createInputChange(Controller* c, ActionType type, int parent_communication_id, Cylinder cylinder, CylinderPosition position);
+    static void createPositionChange(Controller* c, ActionType type, int parent_communication_id, CylinderId cylinder, CylinderPosition position);
+    static void createInputChange(Controller* c, ActionType type, int parent_communication_id, ManualInputId input_id, IOState input_state);
 
 
 
