@@ -6,8 +6,8 @@
 #define GEARRAKE_LOW_H
 
 
-class Low {
-
+class Low : public Consumer{
+    //todo implement
 };
 
 

@@ -36,3 +36,17 @@ WeelTeleRight::WeelTeleRight() {
     tele_in = IOState::INACTIVE;
 
 }
+
+OutputId WeelTeleRight::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::OUT){
+        return OutputId::WEEL_TELE_RIGHT_OUT;
+    } else if(direction == CylinderDirection::IN) {
+        return OutputId::WEEL_TELE_RIGHT_IN;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool WeelTeleRight::downNeedsPressure() {
+    return true;
+}

@@ -5,10 +5,6 @@ o//
 #ifndef GEARRAKE_CONSTANTS_IO_H
 #define GEARRAKE_CONSTANTS_IO_H
 
-#define EXP1_ADDR 0
-#define EXP2_ADDR 1
-#define EXP3_ADDR 2
-
 //pin ranges on different devices--------------------------------------------------------
 #define PIN_ARDUINO_START 0
 #define PIN_ARDUINO_END 99
@@ -36,6 +32,12 @@ o//
 #define JOY_MIDDLE 512
 
 #define DEBOUNCE_TIME 5
+
+class ManualInputPin {
+public:
+    static int getPin(ManualInputId id);
+};
+
 enum class ManualInputId : int {
     SPINNER_LEFT_UP,
     SPINNER_LEFT_FLOAT,
@@ -68,7 +70,7 @@ enum class ManualInputId : int {
     MOD_LR_WEEL_LEFT_TELE,
 
     //Modifier Buttons oben unten
-    MOD_OU_SPINNER_BACK,
+            MOD_OU_SPINNER_REAR,
     MOD_OU_FRAME,
 
     REAR_SPINNER_REAR_UP,
@@ -76,12 +78,6 @@ enum class ManualInputId : int {
 
     ENUM_COUNT
 };
-
-class ManualInputPin {
-public:
-    static int getPin(ManualInputId id);
-};
-
 
 enum class SensorInputId {
     //Sensors
@@ -126,6 +122,7 @@ public:
 };
 
 enum class OutputId {
+    NONE, //todo good idea? test & think trought
     SPINNER_RIGHT_UP,
     SPINNER_LEFT_UP,
     SPINNER_REAR_UP,

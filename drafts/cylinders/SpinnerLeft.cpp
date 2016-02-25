@@ -39,3 +39,17 @@ SpinnerLeft::SpinnerLeft() {
     left_third = IOState::INACTIVE;
 
 }
+
+OutputId SpinnerLeft::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::UP){
+        return OutputId::SPINNER_LEFT_UP;
+    } else if(direction == CylinderDirection::DOWN) {
+        return OutputId::SPINNER_LEFT_FLOAT;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool SpinnerLeft::downNeedsPressure() {
+    return false;
+}

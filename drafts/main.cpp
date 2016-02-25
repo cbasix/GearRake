@@ -2,9 +2,7 @@
 // Created by cyberxix on 24.02.16.
 //
 
-#include <actions/Output.h>
 #include <actions/Master.h>
-#include <actions/Position.h>
 #include <cylinders/Frame.h>
 #include <cylinders/FrameLock.h>
 #include <cylinders/SpinnerLeft.h>
@@ -14,9 +12,10 @@
 #include <cylinders/SpinnerTeleRight.h>
 #include <cylinders/WeelTeleRight.h>
 #include <cylinders/WeelSteer.h>
-#include "actions/Input.h"
-#include "wrapper.h"
-#include "constants_io.h"
+#include <actions/io/Position.h>
+#include <actions/io/Output.h>
+#include <actions/io/Input.h>
+#include <cylinders/SpinnerRear.h>
 #include "MessageBroker.h"
 
 void setup(MessageBroker* mb) {
@@ -39,7 +38,7 @@ void setup(MessageBroker* mb) {
     }
 
 
-    //Setup output list. put cylinder (normal) outputs and leds
+    //Setup output list. cylinder outputs and leds
     OutputData outputs[(int)OutputId::ENUM_COUNT];
     for (int i = 0; i < (int)OutputId::ENUM_COUNT; ++i) {
         outputs[i] = OutputData(OutputPin::getPin((OutputId) i));
@@ -56,15 +55,14 @@ void setup(MessageBroker* mb) {
     cylinders[(int)CylinderId::WEEL_TELE_LEFT] = new WeelTeleLeft;
     cylinders[(int)CylinderId::WEEL_TELE_RIGHT] = new WeelTeleRight;
     cylinders[(int)CylinderId::WEEL_STEER] = new WeelSteer;
-    cylinders[(int)CylinderId::SPINNER_BACK] = new SpinnerBack;
+    cylinders[(int)CylinderId::SPINNER_REAR] = new SpinnerRear;
 
 
-
-
+    //todo test is that all we need?
     //setup io-tasks and master task which starts all other needed tasks
     mb->registerProducer((Producer *) new Input(manual_inputs, (int)ManualInputId::ENUM_COUNT)); //one input task for whe manual inputs
     mb->registerProducer((Producer *) new Input(sensor_inputs, (int)SensorInputId::ENUM_COUNT)); //and a second one for the sensor inputs
-    mb->registerConsumer((Consumer *) new Output(exp, EXP_LEN, outputs, (int)OutputId::ENUM_COUNT));
+    mb->registerConsumer((Consumer *) new Output(exp, EXP_LEN, outputs, (int)OutputId::ENUM_COUNT, cylinders, (int)CylinderId::ENUM_COUNT));
     mb->registerConsumer((Consumer *) new Position(cylinders, (int)CylinderId::ENUM_COUNT));
     mb->registerConsumer((Consumer *) new Master(mb));
 

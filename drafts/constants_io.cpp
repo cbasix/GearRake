@@ -63,13 +63,13 @@ int ManualInputPin::getPin(ManualInputId id){
      } else
 
         //Modifier Buttons oben unten
-    if(id == (ManualInputId)ManualInputId::MOD_OU_SPINNER_BACK){
+    if(id == (ManualInputId)ManualInputId::MOD_OU_SPINNER_REAR){
          return PIN_ARDUINO_START + 5;
      } else if(id == (ManualInputId)ManualInputId::MOD_OU_FRAME){
          return PIN_ARDUINO_START + 7;
-     } else if(id == (ManualInputId)ManualInputId::REAR_SPINNER_REAR_UP){
+     } else if(id == (ManualInputId)ManualInputId::SPINNER_REAR_UP){
          return PIN_ARDUINO_START + 10;
-     } else if(id == (ManualInputId)ManualInputId::REAR_SPINNER_REAR_DOWN){
+     } else if(id == (ManualInputId)ManualInputId::SPINNER_REAR_FLOAT){
          return PIN_ARDUINO_START + 11;
      }
 

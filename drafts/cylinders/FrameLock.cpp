@@ -39,3 +39,16 @@ FrameLock::FrameLock() {
 
 }
 
+OutputId FrameLock::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::UP){
+        return OutputId::FRAME_LOCK_UP;
+    } else if(direction == CylinderDirection::DOWN) {
+        return OutputId::FRAME_LOCK_DOWN;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool FrameLock::downNeedsPressure() {
+    return true;
+}

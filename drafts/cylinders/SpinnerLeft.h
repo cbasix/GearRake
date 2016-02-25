@@ -13,6 +13,9 @@ public:
     SpinnerLeft();
     virtual CylinderPosition getPosition();
     virtual void update(SensorInputId id, IOState value);
+    OutputId getOutputId(CylinderDirection direction);
+
+    virtual bool downNeedsPressure();
 
 private:
     IOState left_third;

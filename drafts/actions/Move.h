@@ -25,7 +25,7 @@ private:
 };
 class MoveDirection : public Consumer{
 public:
-    MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction);
+    MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction, bool instant_quit=false);
 
     //inherited:
     virtual ActionType getType();

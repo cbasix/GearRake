@@ -40,3 +40,18 @@ SpinnerRight::SpinnerRight() {
     right_third = IOState::INACTIVE;
 
 }
+
+
+OutputId SpinnerRight::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::UP){
+        return OutputId::SPINNER_RIGHT_UP;
+    } else if(direction == CylinderDirection::DOWN) {
+        return OutputId::SPINNER_RIGHT_FLOAT;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool SpinnerRight::downNeedsPressure() {
+    return false;
+}

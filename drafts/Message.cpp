@@ -164,6 +164,22 @@ void Message::createPositionRequest(Controller *c, ActionType type, int communic
     c->queueMessage(m);
 }
 
+int Message::createLedRequest(Controller* c, ActionType type, OutputId led_id, IOState value){
+    int com_id = generateCommunicationId();
+    createLedRequest(c, type, com_id, led_id, value);
+    return com_id;
+}
+
+void Message::createLedRequest(Controller *c, ActionType type, int communication_id, OutputId led_id, IOState state) {
+    Message m;
+    m.type = MessageType::LED_REQUEST;
+    m.communication_id = communication_id;
+    m.sender_action_type = type;
+    m.setValue(MessageField::LED_REQUEST__ID, static_cast<int>(led_id));
+    m.setValue(MessageField::LED_REQUEST__STATE, static_cast<int>(state));
+    c->queueMessage(m);
+}
+
 void Message::createActionState(Controller* c, ActionType type, int parent_communication_id, ActionState state) {
     Message m;
     m.type = MessageType::ACTION_STATE;
@@ -221,6 +237,7 @@ void Message::createInputChange(Controller* c, ActionType type, int parent_commu
     m.setValue(MessageField::INPUT_CHANGE__POSITION, static_cast<int>(position));
     c->queueMessage(m);
 }
+
 
 ActionType Message::getSenderActionType() {
     return sender_action_type;

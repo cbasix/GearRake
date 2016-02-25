@@ -37,3 +37,17 @@ SpinnerTeleRight::SpinnerTeleRight() {
     tele_in = IOState::INACTIVE;
 
 }
+
+OutputId SpinnerTeleRight::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::UP){
+        return OutputId::SPINNER_RIGHT_TELE_OUT;
+    } else if(direction == CylinderDirection::DOWN) {
+        return OutputId::SPINNER_RIGHT_TELE_IN;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool SpinnerTeleRight::downNeedsPressure() {
+    return true;
+}

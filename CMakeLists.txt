@@ -24,8 +24,8 @@ set(SOURCE_FILES
         test/gtest_main.cpp
         drafts/MessageBroker.h
         drafts/constants.h
-        drafts/actions/Input.cpp
-        drafts/actions/Input.h
+        drafts/actions/io/Input.cpp
+        drafts/actions/io/Input.h
         drafts/interfaces.h
         drafts/Message.cpp
         drafts/Message.h
@@ -34,12 +34,12 @@ set(SOURCE_FILES
         drafts/constants_message.h
         drafts/actions/Move.cpp
         drafts/actions/Move.h
-        drafts/actions/Led.cpp
-        drafts/actions/Led.h
+        drafts/actions/io/Led.cpp
+        drafts/actions/io/Led.h
         drafts/ConfigStore.cpp
         drafts/ConfigStore.h
-        drafts/actions/FrameDown.cpp
-        drafts/actions/FrameDown.h
+        drafts/actions/auto/FrameDown.cpp
+        drafts/actions/auto/FrameDown.h
         test/mocks.h
         test/gtest_move.cpp
         test/gtest_frame_down.cpp
@@ -58,15 +58,15 @@ set(SOURCE_FILES
         test/gtest_serial_protocol.cpp
         drafts/MessageBroker.cpp
         drafts/constants_io.h
-        drafts/actions/Output.cpp
-        drafts/actions/Output.h
+        drafts/actions/io/Output.cpp
+        drafts/actions/io/Output.h
         drafts/actions/HealthChecker.cpp
         drafts/actions/HealthChecker.h
-        drafts/actions/Position.cpp
-        drafts/actions/Position.h
+        drafts/actions/io/Position.cpp
+        drafts/actions/io/Position.h
         drafts/wrapper.cpp
         drafts/wrapper.h
-        drafts/main.cpp drafts/constants_io.cpp drafts/cylinders/FrameLock.cpp drafts/cylinders/FrameLock.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/cylinders/SpinnerLeft.cpp drafts/cylinders/SpinnerLeft.h drafts/cylinders/SpinnerTeleLeft.cpp drafts/cylinders/SpinnerTeleLeft.h drafts/cylinders/SpinnerTeleRight.cpp drafts/cylinders/SpinnerTeleRight.h drafts/cylinders/Frame.cpp drafts/cylinders/Frame.h drafts/cylinders/WeelTeleRight.cpp drafts/cylinders/WeelTeleRight.h drafts/cylinders/WeelTeleLeft.cpp drafts/cylinders/WeelTeleLeft.h drafts/cylinders/WeelSteer.cpp drafts/cylinders/WeelSteer.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/actions/auto/Transport.cpp drafts/actions/auto/Transport.h drafts/actions/auto/Work.cpp drafts/actions/auto/Work.h drafts/actions/auto/Low.cpp drafts/actions/auto/Low.h)
+        drafts/main.cpp drafts/constants_io.cpp drafts/cylinders/FrameLock.cpp drafts/cylinders/FrameLock.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/cylinders/SpinnerLeft.cpp drafts/cylinders/SpinnerLeft.h drafts/cylinders/SpinnerTeleLeft.cpp drafts/cylinders/SpinnerTeleLeft.h drafts/cylinders/SpinnerTeleRight.cpp drafts/cylinders/SpinnerTeleRight.h drafts/cylinders/Frame.cpp drafts/cylinders/Frame.h drafts/cylinders/WeelTeleRight.cpp drafts/cylinders/WeelTeleRight.h drafts/cylinders/WeelTeleLeft.cpp drafts/cylinders/WeelTeleLeft.h drafts/cylinders/WeelSteer.cpp drafts/cylinders/WeelSteer.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/actions/auto/Transport.cpp drafts/actions/auto/Transport.h drafts/actions/auto/Work.cpp drafts/actions/auto/Work.h drafts/actions/auto/Low.cpp drafts/actions/auto/Low.h drafts/actions/io/Led.cpp drafts/actions/io/Led.h drafts/actions/io/FailureStorage.cpp drafts/actions/io/FailureStorage.h drafts/cylinders/SpinnerRear.cpp drafts/cylinders/SpinnerRear.h)
 #FILE( GLOB_RECURSE SOURCE_FILES src/*.cpp test/*.cpp)
 
 

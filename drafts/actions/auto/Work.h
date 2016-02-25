@@ -7,7 +7,7 @@
 
 
 class Work {
-
+    //todo implement work
 };
 
 

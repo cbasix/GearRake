@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "constants_io.h"
 #include "Timer.h"
+#include "wrapper.h"
 #ifndef TESTING
     #include "Arduino.h"
 #endif //TESTING
@@ -22,18 +23,18 @@ Input::Input(InputData inputs[], int inputs_len) {
         if (inputs[input_id].input_pin >= PIN_ARDUINO_START &&
             inputs[input_id].input_pin <= PIN_ARDUINO_END) {
 
-            ReadWriteWrapper::pinMode(inputs[input_id].input_pin, ReadWriteWrapper::INPUT_PULLUP);
+            ReadWriteWrapper::pinMode(inputs[input_id].input_pin, ReadWriteWrapper::W_INPUT_PULLUP);
 
         } else if (inputs[input_id].input_pin >= PIN_ARDUINO_ANALOG_POSITIVE_START &&
                    inputs[input_id].input_pin <= PIN_ARDUINO_ANALOG_POSITIVE_END) {
 
-            ReadWriteWrapper::pinMode(ReadWriteWrapper::A0 + (inputs[input_id].input_pin - PIN_ARDUINO_ANALOG_POSITIVE_START), ReadWriteWrapper::INPUT_PULLUP);
+            ReadWriteWrapper::pinMode(ReadWriteWrapper::W_A0 + (inputs[input_id].input_pin - PIN_ARDUINO_ANALOG_POSITIVE_START), ReadWriteWrapper::INPUT_PULLUP);
 
 
         } else if (inputs[input_id].input_pin >= PIN_ARDUINO_ANALOG_NEGATIVE_START &&
                    inputs[input_id].input_pin <= PIN_ARDUINO_ANALOG_NEGATIVE_END) {
 
-            ReadWriteWrapper::pinMode(ReadWriteWrapper::A0 + (inputs[input_id].input_pin - PIN_ARDUINO_ANALOG_NEGATIVE_START), ReadWriteWrapper::INPUT_PULLUP);
+            ReadWriteWrapper::pinMode(ReadWriteWrapper::W_A0 + (inputs[input_id].input_pin - PIN_ARDUINO_ANALOG_NEGATIVE_START), ReadWriteWrapper::INPUT_PULLUP);
 
         }
     }
@@ -50,7 +51,7 @@ void Input::produce(Controller *c) {
                   && inda->input_pin <= PIN_ARDUINO_END){
 
             //inputs are all pulled up if input button is pressed digitalRead outputs 0 -> negate with !
-            readed = !ReadWriteWrapper::digitalRead(inda->input_pin);
+            readed = (IOState) !ReadWriteWrapper::digitalRead(inda->input_pin);
 
             //input is via analog joystick
         } else if(inda->input_pin >= PIN_ARDUINO_ANALOG_NEGATIVE_START

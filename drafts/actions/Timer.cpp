@@ -4,9 +4,6 @@
 
 #include "Timer.h"
 #include "wrapper.h"
-#ifndef TESTING //only include ardino.h on arduino
-#include "Arduino.h"
-#endif
 
 Timer::Timer(int parent_communication_id, int time_to_wait, bool is_timeout) {
     this->parent_communication_id = parent_communication_id;

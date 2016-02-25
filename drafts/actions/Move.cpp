@@ -92,6 +92,26 @@ void MovePosition::onMessage(Controller* c, Message* m) {
         //end
         c->removeConsumer(this);
 
+    // stop quietly if another task on the same cylinder has started
+    } else if (
+            (
+                m->getType() == MessageType::MOVE_POSITION_REQUEST
+                && m->getValue(MessageField::MOVE_POSITION_REQUEST__CYLINDER) == (int)cylinder
+            ) || (
+                m->getType() == MessageType::MOVE_DIRECTION_REQUEST
+                && m->getValue(MessageField::MOVE_DIRECTION_REQUEST__CYLINDER) == (int)cylinder
+            ) || (
+                 m->getType() == MessageType::MOVE_TIME_REQUEST
+                 && m->getValue(MessageField::MOVE_TIME_REQUEST__CYLINDER) == (int)cylinder
+            )
+    ) {
+        //if started by other Action forward the stopping
+        if (parent_communication_id != 0) {
+            Message::createActionState(c, getType(), parent_communication_id, ActionState::STOPPED_OK);
+        }
+        //end
+        c->removeConsumer(this);
+
     }
 }
 
@@ -144,7 +164,7 @@ void MoveTime::onMessage(Controller* c, Message* m) {
 }
 
 
-MoveDirection::MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction) {
+MoveDirection::MoveDirection(Controller* c, int parent_communication_id, CylinderId cylinder, CylinderDirection direction, bool instant_quit) {
     this->parent_communication_id = parent_communication_id;
     this->cylinder = cylinder;
     this->direction = direction;
@@ -159,6 +179,12 @@ MoveDirection::MoveDirection(Controller* c, int parent_communication_id, Cylinde
     //start moving in given direction
     communication_id = Message::createCylinderRequest(c, getType(), cylinder, direction);
 
+    if(instant_quit){
+        if(parent_communication_id != 0) {
+            Message::createActionState(c, getType(), parent_communication_id,ActionState::STOPPED_OK);
+        }
+        c->removeConsumer(this);
+    }
 }
 
 ActionType MoveDirection::getType() {

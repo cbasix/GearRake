@@ -186,7 +186,7 @@ enum class outputs {
 //#define INPUT_DATA_SIZE 1
 
 // NEW ##################################################
-
+//todo update constants
 
 #define MAX_SENSOR 6
 #define TESTING
@@ -221,6 +221,8 @@ enum class ActionType : int {
     DIAGNOSE,
     COMMAND,
     POSITION,
+    OUTPUT,
+    MASTER,
 
     ENUM_COUNT
 };
@@ -249,6 +251,8 @@ enum class CylinderId : int {
     WEEL_TELE_RIGHT,
     WEEL_TELE_LEFT,
     WEEL_STEER,
+    SPINNER_REAR,
+
     ENUM_COUNT
 };
 
@@ -277,6 +281,9 @@ enum class CylinderDirection : int {
 
     OPEN = (int)(UP),
     CLOSE = (int)(DOWN),
+
+    RIGHT = (int)(OUT), //TODO check if not the other way around
+    LEFT = (int)(IN),
 
     ENUM_COUNT = 4
 };
@@ -313,8 +320,12 @@ enum class CylinderPosition : int {
     BETWEEN_IN_AND_OUT = 4,
     OUT = 7,
 
-    //MIDDLE = 5,
+
     NOT_MIDDLE = 1,
+    //MIDDLE = 5,
+
+    UNDER_UP = 1,
+    //UP = 7,
 
     ENUM_COUNT = 8
 

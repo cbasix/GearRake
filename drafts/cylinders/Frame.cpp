@@ -54,3 +54,18 @@ Frame::Frame() {
     frame_up = IOState::INACTIVE;
     frame_middle = IOState::INACTIVE;
 }
+
+OutputId Frame::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::UP){
+        return OutputId::FRAME_UP;
+    } else if(direction == CylinderDirection::DOWN) {
+        return OutputId::FRAME_DOWN;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool Frame::downNeedsPressure() {
+    //TODO right? check it!
+    return false;
+}

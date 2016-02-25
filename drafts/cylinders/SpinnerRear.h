@@ -1,16 +1,16 @@
 //
-// Created by cyberxix on 24.02.16.
+// Created by cyberxix on 25.02.16.
 //
 
-#ifndef GEARRAKE_SPINNERRIGHT_H
-#define GEARRAKE_SPINNERRIGHT_H
+#ifndef GEARRAKE_SPINNERBACK_H
+#define GEARRAKE_SPINNERBACK_H
 
-
+#include <constants.h>
 #include <interfaces.h>
 
-class SpinnerRight : public Cylinder{
+class SpinnerRear : public Cylinder{
 public:
-    SpinnerRight();
+    SpinnerRear();
     virtual CylinderPosition getPosition();
     virtual void update(SensorInputId id, IOState value);
     OutputId getOutputId(CylinderDirection direction);
@@ -18,10 +18,8 @@ public:
     virtual bool downNeedsPressure();
 
 private:
-    IOState right_third;
-    IOState right_up;
+    IOState up;
 };
 
 
-
-#endif //GEARRAKE_SPINNERRIGHT_H
+#endif //GEARRAKE_SPINNERBACK_H

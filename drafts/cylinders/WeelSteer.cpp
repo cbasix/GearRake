@@ -24,6 +24,20 @@ void WeelSteer::update(SensorInputId id, IOState value) {
     }
 }
 
-WeelSteer::SpinnerTeleRight() {
+WeelSteer::WeelSteer() {
     middle = IOState::INACTIVE;
+}
+
+OutputId WeelSteer::getOutputId(CylinderDirection direction) {
+    if(direction == CylinderDirection::LEFT){
+        return OutputId::STEER_LEFT;
+    } else if(direction == CylinderDirection::RIGHT) {
+        return OutputId::STEER_RIGHT;
+    } else {
+        return OutputId::NONE;
+    }
+}
+
+bool WeelSteer::downNeedsPressure() {
+    return true;
 }
