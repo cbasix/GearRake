@@ -223,6 +223,10 @@ enum class ActionType : int {
     POSITION,
     OUTPUT,
     MASTER,
+    DELAYED,
+    LOW,
+    TRANSPORT,
+    WORK,
 
     ENUM_COUNT
 };
@@ -348,6 +352,7 @@ enum class Timing : int {
     SHORT,
     MEDIUM,
     LONG,
+    WAIT_AUTO,
 
     ENUM_COUNT
 };

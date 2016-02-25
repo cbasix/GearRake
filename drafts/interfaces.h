@@ -36,8 +36,8 @@ public:
     virtual void registerProducer(Producer* p) = 0;
     virtual void removeProducer(Producer* p) = 0;
 
-    virtual ArrayList<Consumer*>* getConsumer() = 0;
-    virtual ArrayList<Producer*>* getProducer() = 0;
+    virtual ArrayList<Consumer*>*getConsumers() = 0;
+    virtual ArrayList<Producer*>*getProducers() = 0;
 
     virtual void queueMessage(Message m) = 0;
 

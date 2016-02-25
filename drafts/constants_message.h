@@ -145,6 +145,7 @@ enum class ActionState : int {
     STARTED,
     STOPPING,
     STOPPED_OK,
+    STOPPED_ERROR
 };
 
 

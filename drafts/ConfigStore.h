@@ -10,6 +10,7 @@
 
 class ConfigStore {
 public:
+    //todo cylinder positons are not unique so timeout must consider the cylinder too
     static int getTimeoutValue(CylinderPosition position);
     static void  setTimeout(CylinderPosition position, int value);
     static int getTimerValue(Timing timing);

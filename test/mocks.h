@@ -18,8 +18,10 @@ public:
     MOCK_METHOD1(registerProducer, void(Producer* p));
     MOCK_METHOD1(removeProducer, void(Producer* p));
     MOCK_METHOD1(queueMessage, void(Message m));
-    MOCK_METHOD0(getConsumer, ArrayList<Consumer*>*());
-    MOCK_METHOD0(getProducer, ArrayList<Producer*>*());
+
+    MOCK_METHOD0(getConsumers, ArrayList<Consumer *>*());
+
+    MOCK_METHOD0(getProducers, ArrayList<Producer *>*());
 };
 
 class EmptyController : public Controller{
@@ -29,8 +31,8 @@ public:
     virtual void registerProducer(Producer *p);
     virtual void removeProducer(Producer *p);
     virtual void queueMessage(Message m);
-    virtual ArrayList<Consumer*>* getConsumer();
-    virtual ArrayList<Producer*>* getProducer();
+    virtual ArrayList<Consumer*>*getConsumers();
+    virtual ArrayList<Producer*>*getProducers();
 };
 
 

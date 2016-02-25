@@ -76,10 +76,10 @@ void MessageBroker::processMessageQueue() {
     }
 }
 
-ArrayList<Consumer*>* MessageBroker::getConsumer() {
+ArrayList<Consumer*>* MessageBroker::getConsumers() {
     return consumers;
 }
 
-ArrayList<Producer*>* MessageBroker::getProducer() {
+ArrayList<Producer*>* MessageBroker::getProducers() {
     return producers;
 }

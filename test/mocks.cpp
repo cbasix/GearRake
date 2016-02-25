@@ -9,5 +9,5 @@ void EmptyController::registerProducer(Producer *p) {}
 void EmptyController::removeProducer(Producer *p) {}
 void EmptyController::queueMessage(Message m) {}
 
-ArrayList<Consumer *> *EmptyController::getConsumer() {}
-ArrayList<Producer *> *EmptyController::getProducer() {}
+ArrayList<Consumer *> *EmptyController::getConsumers() {}
+ArrayList<Producer *> *EmptyController::getProducers() {}

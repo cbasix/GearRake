@@ -55,7 +55,7 @@ void Diagnose::produce(Controller *c) {
             active_update = m.getValue(MessageField::ACTIVE_UPDATE_REQUEST__ACTIVE) != 0;
             if(active_update){
                 Message m;
-                ArrayList<Consumer*>* cons = c->getConsumer();
+                ArrayList<Consumer*>* cons = c->getConsumers();
                 for (int i = 0; i < cons->getSize(); ++i) {
                     Consumer* s = cons->get(i);
                     m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
@@ -65,7 +65,7 @@ void Diagnose::produce(Controller *c) {
 
                     proto.send(&m);
                 }
-                ArrayList<Producer*>* prods = c->getProducer();
+                ArrayList<Producer*>* prods = c->getProducers();
                 for (int i = 0; i < prods->getSize(); ++i) {
                     Producer* s = prods->get(i);
                     m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
