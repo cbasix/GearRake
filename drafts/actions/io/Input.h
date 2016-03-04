@@ -12,23 +12,26 @@
 
 class InputData {
 public:
-    InputData(int input_pin);
+    InputData(int input_pin = 999);
 
-    int input_pin;
+    int getInputPin();
     //int input_type;
     IOState debounced_state;
     IOState temp_state;
     unsigned long temp_change_time;
+
+private:
+    int input_pin;
 };
 
 class Input : public Producer{
 public:
-    Input(InputData inputs[], int inputs_len);
+    Input(InputData* inputs, int inputs_len);
     void produce(Controller* c);
     virtual ActionType getType();
 
 private:
-    InputData inputs[];
+    InputData* inputs;
     int inputs_len;
     int communication_id;
     bool first_run;

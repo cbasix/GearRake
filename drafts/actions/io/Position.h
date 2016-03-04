@@ -16,7 +16,7 @@ public:
     virtual void onMessage(Controller *c, Message *m);
 
 private:
-    Cylinder* cylinders[];
+    Cylinder** cylinders;
     CylinderPosition cylinder_pos[(int) CylinderId::ENUM_COUNT];
     int cyl_len;
 };

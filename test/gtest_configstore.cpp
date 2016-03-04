@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "mocks.h"
-#include "FrameDown.h"
+#include "actions/auto/FrameDown.h"
 #include "MessageGenerator.h"
 
 using ::testing::Exactly;

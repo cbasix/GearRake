@@ -20,7 +20,7 @@ void Led::onMessage(Controller *c, Message *m) {
             //led on when framelock not closed
             led_state = IOState::ACTIVE;
         }
-        Message::createLedRequest(c, getType(), OutputId::LED_FRAME_LOCK, led_state);
+        Message::createLedRequest(c, getType(), comm_id, OutputId::LED_FRAME_LOCK, led_state);
     }
 
     if(m->getType() == MessageType::SENSOR_INPUT_CHANGE
@@ -32,6 +32,10 @@ void Led::onMessage(Controller *c, Message *m) {
         } else {
             //Message::createLedRequest(OFF)
         }
-        Message::createLedRequest(c, getType(), OutputId::LED_WEEL_TRACK_MIDDLE, led_state);
+        Message::createLedRequest(c, getType(), comm_id, OutputId::LED_WEEL_TRACK_MIDDLE, led_state);
     }
+}
+
+Led::Led() {
+    comm_id = Message::generateCommunicationId();
 }

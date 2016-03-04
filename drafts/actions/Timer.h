@@ -11,7 +11,7 @@
 
 class Timer : public Producer{
 public:
-    Timer(int parent_communication_id, int time_to_wait, bool is_timeout);
+    Timer(int parent_communication_id, Timing timing, bool is_timeout);
     virtual ActionType getType();
     virtual void produce(Controller *c);
 

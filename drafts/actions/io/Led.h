@@ -11,9 +11,13 @@
 class Led : public Consumer{
 
 public:
+    Led();
     virtual ActionType getType();
 
     virtual void onMessage(Controller *c, Message *m);
+
+private:
+    int comm_id;
 };
 
 

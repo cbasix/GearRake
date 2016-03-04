@@ -11,7 +11,17 @@
 //todo write tests
 class MessageBroker : public Controller{
 private:
+    Producer* producer_data[MAX_PRODUCER];//
+    Consumer* consumer_data[MAX_CONSUMER];//
+    Message message_data[MAX_MSG];
+
+    ArrayList<Producer*> producers = ArrayList<Producer*>(producer_data, MAX_PRODUCER);//
+    ArrayList<Consumer*> consumers = ArrayList<Consumer*>(consumer_data, MAX_CONSUMER);//
+    CircularQueue<Message> messages = CircularQueue<Message>(message_data, MAX_MSG);
+
+
 public:
+    MessageBroker();
     virtual void registerConsumer(Consumer *c);
     virtual void removeConsumer(Consumer *c);
     virtual void registerProducer(Producer *p);
@@ -25,10 +35,6 @@ public:
     virtual void runProducers();
     virtual void processMessageQueue();
 
-
-    ArrayList<Consumer*>* consumers;
-    ArrayList<Producer*>* producers;
-    CircularQueue<Message>* messages;
 };
 
 

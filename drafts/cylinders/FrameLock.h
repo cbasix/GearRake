@@ -11,15 +11,15 @@
 class FrameLock : public Cylinder{
 public:
     FrameLock();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState frame_lock_open;
-    IOState frame_lock_closed;
+    bool frame_lock_open;
+    bool frame_lock_closed;
 };
 
 

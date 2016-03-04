@@ -23,7 +23,7 @@ void Position::onMessage(Controller *c, Message *m) {
         SensorInputId sensor_id = (SensorInputId) m->getValue(MessageField::SENSOR_INPUT_CHANGE__ID);
         IOState state = (IOState) m->getValue(MessageField::SENSOR_INPUT_CHANGE__VALUE);
         for (int i = 0; i < cyl_len ; ++i) {
-            cylinders[i]->update(sensor_id, state);
+            cylinders[i]->update(sensor_id, (bool)state);
             CylinderPosition new_pos = cylinders[i]->getPosition();
 
             if(cylinder_pos[i] != new_pos){
@@ -35,7 +35,7 @@ void Position::onMessage(Controller *c, Message *m) {
 
         int id = m->getValue(MessageField::POSITION_REQUEST__CYLINDER);
         //return saved position for cylinder
-        if (id < cyl_len) { }
+        if (id < cyl_len) {
             CylinderPosition pos = cylinder_pos[id];
 
             Message::createPositionState(c, getType(), m->getCommunicationId(), (CylinderId)id, pos);

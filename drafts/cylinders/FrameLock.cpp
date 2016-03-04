@@ -3,7 +3,7 @@
 //
 
 #include <constants_io.h>
-#include <constants.h>
+#include "constants.h"
 #include "FrameLock.h"
 CylinderPosition FrameLock::getPosition() {
     //
@@ -18,7 +18,7 @@ CylinderPosition FrameLock::getPosition() {
     }
 }
 
-void FrameLock::update(SensorInputId id, IOState value) {
+void FrameLock::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::FRAME_LOCK_CLOSED:
             frame_lock_closed = value;
@@ -34,8 +34,8 @@ void FrameLock::update(SensorInputId id, IOState value) {
 }
 
 FrameLock::FrameLock() {
-    frame_lock_closed = IOState::INACTIVE;
-    frame_lock_open = IOState::INACTIVE;
+    frame_lock_closed = false;
+    frame_lock_open = false;
 
 }
 

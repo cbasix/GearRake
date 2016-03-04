@@ -23,7 +23,10 @@ private:
 
     void switchMode(Controller* c, MasterMode new_active_mode, bool first_init=true);
 
-
+    void handleStateDependentMessages(Controller *c, const ManualInputId &input_id);
+    void handleStateChangeMesages( Controller *c, const ManualInputId &input_id);
+    void handleStandardMoveMessages(Controller *c, const ManualInputId &input_id);
+    void handleAutoMoveMessages(Controller *c, const ManualInputId &input_id);
 };
 
 

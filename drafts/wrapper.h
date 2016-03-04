@@ -13,7 +13,7 @@
 
 class ExpanderWrapper{
 public:
-    ExpanderWrapper(int address);
+    ExpanderWrapper(int address = 0);
     void digitalWrite(int pin_on_expander, bool state);
     void pinMode(int pin, int mode);
 

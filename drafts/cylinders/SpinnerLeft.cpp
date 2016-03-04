@@ -18,7 +18,7 @@ CylinderPosition SpinnerLeft::getPosition() {
     }
 }
 
-void SpinnerLeft::update(SensorInputId id, IOState value) {
+void SpinnerLeft::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::SPINNER_LEFT_THIRD:
             left_third = value;
@@ -35,8 +35,8 @@ void SpinnerLeft::update(SensorInputId id, IOState value) {
 }
 
 SpinnerLeft::SpinnerLeft() {
-    left_up = IOState::INACTIVE;
-    left_third = IOState::INACTIVE;
+    left_up = false;
+    left_third = false;
 
 }
 

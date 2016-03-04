@@ -21,7 +21,7 @@ TEST(MoveTimeTest, Setup) {
     int child_comm_id = parent_comm_id+1;
 
     Message request_timer(MessageType::TIMER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
+    request_timer.setValue(MessageField::TIMER_REQUEST__TIMING, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
@@ -49,7 +49,7 @@ TEST(MoveTimeTest, StopRequest) {
     int child_comm_id = parent_comm_id+1;
 
     Message request_timer(MessageType::TIMER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
+    request_timer.setValue(MessageField::TIMER_REQUEST__TIMING, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
@@ -89,7 +89,7 @@ TEST(MoveTimeTest, TimeStop) {
     int child_comm_id = parent_comm_id+1;
 
     Message request_timer(MessageType::TIMER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
-    request_timer.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)Timing::SHORT);
+    request_timer.setValue(MessageField::TIMER_REQUEST__TIMING, (int)Timing::SHORT);
 
     Message request_start_cylinder(MessageType::CYLINDER_REQUEST, ActionType::MOVE_TIME, child_comm_id);
     request_start_cylinder.setValue(MessageField::CYLINDER_REQUEST__CYLINDER, (int) CylinderId::SPINNER_RIGHT);
@@ -143,7 +143,7 @@ TEST(MoveDirectionTest, StopRequest) {
     EXPECT_CALL(c, removeConsumer(_)).Times(1);
 
     //start move time should produce request_timer and request_start cylinder
-    MoveDirection mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP);
+    MoveDirection mt(&c, parent_comm_id, CylinderId::SPINNER_RIGHT, CylinderDirection::UP, false);
 
     //send timer status should produce request_stop_cylinder
     Message parent_stop(MessageType::ACTION_STATE, ActionType::INPUT, parent_comm_id);

@@ -59,3 +59,30 @@ void EepromWrapper::put(int idx, const int t) {
     return EEPROM.put(idx, t)
 #endif //testing
 }
+
+void ExpanderWrapper::digitalWrite(int pin_on_expander, bool state) {
+#ifndef TESTING
+    exp.digitalWrite(pin_on_expander, state);
+#endif
+
+}
+
+void ExpanderWrapper::pinMode(int pin, int mode) {
+//todo implement expander wrapper
+}
+
+void ReadWriteWrapper::digitalWrite(int pin, bool value) {
+//todo implement rw wrappwer
+}
+
+void ReadWriteWrapper::pinMode(int pin, int mode) {
+
+}
+
+bool ReadWriteWrapper::digitalRead(int pin) {
+    return false;
+}
+
+int ReadWriteWrapper::analogRead(int pin) {
+    return 0;
+}

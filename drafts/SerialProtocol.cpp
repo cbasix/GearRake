@@ -11,24 +11,24 @@
 
 
 SerialProtocol::SerialProtocol() {
-    this->out_buf = new CircularQueue<char>((int)SerialConf::BUF_SIZE);
-    this->in_buf = new CircularQueue<char>((int)SerialConf::BUF_SIZE);
+    //out_buf = CircularQueue<char>(out_data, (int)SerialConf::BUF_SIZE);
+    //in_buf = CircularQueue<char>(in_data, (int)SerialConf::BUF_SIZE);
 }
 
 
 void SerialProtocol::send(Message* m) {
     char binary_msg[MSG_BIN_LEN];
     SerialProtocol::serialize(m, binary_msg, MSG_BIN_LEN);
-    SerialProtocol::packetize(binary_msg, MSG_BIN_LEN, this->out_buf);
+    SerialProtocol::packetize(binary_msg, MSG_BIN_LEN, &out_buf);
 }
 
 bool SerialProtocol::readMessage(Message* m) {
-    if(this->in_buf->size() < MIN_FRAME_LEN){
+    if(this->in_buf.size() < MIN_FRAME_LEN){
         return false;
     }
 
     char binary_msg[MSG_BIN_LEN];
-    if(SerialProtocol::depacketize(this->in_buf, binary_msg, MSG_BIN_LEN)){
+    if(SerialProtocol::depacketize(&in_buf, binary_msg, MSG_BIN_LEN)){
         SerialProtocol::deserialize(binary_msg, MSG_BIN_LEN, m);
         return true;
     }
@@ -36,7 +36,7 @@ bool SerialProtocol::readMessage(Message* m) {
 }
 
 void SerialProtocol::addIn(char c) {
-    in_buf->add(c);
+    in_buf.add(c);
 }
 
 
@@ -195,15 +195,12 @@ char SerialProtocol::getChecksum(char const binary_msg[], int msg_len) {
     return (~sum);
 }
 
-SerialProtocol::~SerialProtocol() {
-    delete in_buf;
-    delete out_buf;
-}
+SerialProtocol::~SerialProtocol() {}
 
 int SerialProtocol::getOutSize() {
-    return out_buf->size();
+    return out_buf.size();
 }
 
 char SerialProtocol::getOut() {
-    return out_buf->get();
+    return out_buf.get();
 }

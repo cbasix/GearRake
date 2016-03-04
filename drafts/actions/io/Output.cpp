@@ -89,7 +89,7 @@ void Output::setOutput(OutputId output_id, IOState value, bool initalize) {
         out[i_output_id].output_pin <= PIN_ARDUINO_END) {
 
         out[i_output_id].state = value;
-        ReadWriteWrapper::digitalWrite(out[i_output_id].output_pin - PIN_ARDUINO_START, !value);
+        ReadWriteWrapper::digitalWrite(out[i_output_id].output_pin - PIN_ARDUINO_START, !(bool)value);
         if (initalize) {
             ReadWriteWrapper::pinMode(out[i_output_id].output_pin - PIN_ARDUINO_START, ReadWriteWrapper::W_OUTPUT);
         }
@@ -106,7 +106,7 @@ void Output::setOutput(OutputId output_id, IOState value, bool initalize) {
         int pin_on_expander = out[i_output_id].output_pin % expander_no;
 
         out[i_output_id].state = value;
-        exp[expander_no].digitalWrite(pin_on_expander, !value);
+        exp[expander_no].digitalWrite(pin_on_expander, !(bool)value);
         if (initalize) {
             exp[expander_no].pinMode(out[i_output_id].output_pin - PIN_EXP1_START, ReadWriteWrapper::W_OUTPUT);
         }
@@ -155,8 +155,8 @@ void Output::onMessage(Controller *c, Message *m) {
         IOState isPressure = IOState::INACTIVE;
         for (int i = 0; i < cyl_len; ++i) {
             Cylinder* l_cyl = cylinders[i];
-            IOState up_active = out[(int) l_cyl->getOutputId(CylinderDirection::UP)].state;
-            IOState down_active = out[(int) l_cyl->getOutputId(CylinderDirection::UP)].state;
+            bool up_active = (bool)out[(int) l_cyl->getOutputId(CylinderDirection::UP)].state;
+            bool down_active = (bool)out[(int) l_cyl->getOutputId(CylinderDirection::UP)].state;
 
             if (up_active || (down_active && l_cyl->downNeedsPressure())) {
                 isPressure = IOState::ACTIVE;

@@ -11,15 +11,15 @@
 class SpinnerLeft : public Cylinder{
 public:
     SpinnerLeft();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState left_third;
-    IOState left_up;
+    bool left_third;
+    bool left_up;
 };
 
 

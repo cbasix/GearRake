@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "mocks.h"
-#include "FrameDown.h"
+#include "actions/auto/FrameDown.h"
 #include "MessageGenerator.h"
 #include "Timer.h"
 #include "SerialProtocol.h"
@@ -36,7 +36,7 @@ public:
 
 
 TEST(SerialProto, Serialize){
-    char should[] = {0, 0x09, 0, 0x08, 0, 0x05, 0, 0, 0, 0, 0, 0};
+    char should[] = {0, (int)MessageType::TIMER_STATE, 0, (int)ActionType::TIMER, 0, 0x05, 0, 0, 0, 0, 0, 0};
     char bin_msg[TEST_MSG_BIN_LEN];
     Message m = Message(MessageType::TIMER_STATE, ActionType::TIMER, 5);
     SerialProtocol::serialize(&m, bin_msg, TEST_MSG_BIN_LEN);
@@ -47,7 +47,7 @@ TEST(SerialProto, Serialize){
 }
 
 TEST(SerialProto, Deserialize){
-    char bin_msg[] = {0, 0x09, 0, 0x08, 0, 0x05, 0, 0, 0, 0, 0, 0};
+    char bin_msg[] = {0, (int)MessageType::TIMER_STATE, 0, (int)ActionType::TIMER, 0, 0x05, 0, 0, 0, 0, 0, 0};
     Message should = Message(MessageType::TIMER_STATE, ActionType::TIMER, 5);
     Message m;
 
@@ -60,8 +60,9 @@ TEST(SerialProto, Packetize){
     char checksum = 236;
     char bin_packet_should[] = {SerialChar::START, checksum, 0, 0x09, 0, 0x08, 0,  0x1b, 0x02, 0, 0, 0, 0, 0, 0, SerialChar::END};
     char bin_msg[] = {0, 0x09, 0, 0x08, 0, 0x02, 0, 0, 0, 0, 0, 0};
+    char q_data[(int)SerialConf::BUF_SIZE];
 
-    CircularQueue<char> q = CircularQueue<char>((int)SerialConf::BUF_SIZE);
+    CircularQueue<char> q = CircularQueue<char>(q_data, (int)SerialConf::BUF_SIZE);
 
 
     SerialProtocol::packetize(bin_msg, TEST_MSG_BIN_LEN, &q);
@@ -80,7 +81,9 @@ TEST(SerialProto, Depacketize){
     char checksum = 236;
     char bin_packet[] = {SerialChar::START, wrong_checksum, 0, 0x09, 0, 0x08, 0, 0x02, 0, 0, 0, 0, 0, 0, SerialChar::END};
 
-    CircularQueue<char> q = CircularQueue<char>((int)SerialConf::BUF_SIZE);
+    char q_data[(int)SerialConf::BUF_SIZE];
+
+    CircularQueue<char> q = CircularQueue<char>(q_data, (int)SerialConf::BUF_SIZE);
     char bin_msg[TEST_MSG_BIN_LEN];
 
     for (int i = 0; i < sizeof(bin_packet); ++i) {

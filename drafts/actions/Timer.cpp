@@ -2,12 +2,14 @@
 // Created by cyberxix on 16.02.16.
 //
 
+#include <ConfigStore.h>
 #include "Timer.h"
 #include "wrapper.h"
 
-Timer::Timer(int parent_communication_id, int time_to_wait, bool is_timeout) {
+//todo possability to stop timer?
+Timer::Timer(int parent_communication_id, Timing timing, bool is_timeout) {
     this->parent_communication_id = parent_communication_id;
-    this->time_to_wait = time_to_wait;
+    this->time_to_wait = ConfigStore::getTimerValue(timing);
     this->is_timeout = is_timeout;
     this->start_time = ClockWrapper::getTime();
 }

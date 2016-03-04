@@ -9,7 +9,7 @@
 
 class OutputData {
 public:
-    OutputData(int output_pin);
+    OutputData(int output_pin = 99999);
     int output_pin;
     IOState state;
 };
@@ -23,9 +23,9 @@ public:
 private:
     ExpanderWrapper* exp;
     int exp_len;
-    OutputData out[];
+    OutputData* out;
     int out_len;
-    Cylinder* cylinders[];
+    Cylinder** cylinders;
     int cyl_len;
 
     void setOutput(OutputId output_id, IOState value, bool initialize=false);

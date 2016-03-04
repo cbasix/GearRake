@@ -10,8 +10,9 @@
 FrameDown::FrameDown(Controller* c, int parent_communication_id){
     this->parent_communication_id = parent_communication_id;
     state = LocalState::SHORT_FRAME_UP;
-    communication_id = Message::createMoveTimeRequest(c, getType(), CylinderId::FRAME, CylinderDirection::UP,
-                                                      ConfigStore::getTimerValue(Timing::SHORT));
+    communication_id = Message::generateCommunicationId();
+    Message::createMoveTimeRequest(c, getType(), communication_id, CylinderId::FRAME, CylinderDirection::UP,
+                                                      Timing::SHORT);
     timeout_occured = false;
 
 }

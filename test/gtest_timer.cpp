@@ -1,12 +1,12 @@
 //
 // Created by cyberxix on 19.02.16.
 //
-
+//todo fix imports
 #include <ConfigStore.h>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "mocks.h"
-#include "FrameDown.h"
+#include "actions/auto/FrameDown.h"
 #include "MessageGenerator.h"
 #include "Timer.h"
 
@@ -19,7 +19,7 @@ using ::testing::InSequence;
 
 
 
-class TimerTest : public ::testing::Test {
+/*class TimerTest : public ::testing::Test {
 private:
 
 public:
@@ -31,19 +31,19 @@ public:
     TimerTest(){
         parent_comm_id = Message::generateCommunicationId();
         child_comm_id = parent_comm_id+1;
-        int time_to_wait = 0;//ConfigStore::getTimerValue(Timing::SHORT);
+        Timing timer = TIMING::SHORT;//ConfigStore::getTimerValue(Timing::SHORT);
         bool is_timeout = true;
 
         //ignore constructor calls we want to test something different
-        this->t = new Timer(parent_comm_id, time_to_wait, is_timeout);
+        this->t = new Timer(parent_comm_id, timer, is_timeout);
     }
     ~TimerTest() {
         delete t;
     }
-};
+};*/
 
 
-TEST_F(TimerTest, Complete){
+TEST(TimerTest, Complete){
     InSequence s;
 
     MockController c;
@@ -63,7 +63,8 @@ TEST_F(TimerTest, Complete){
 
     //request timeout
     ClockWrapper::setReturnValue(1000);
-    Timer lt(parent_comm_id, 100, true);
+    ConfigStore::setTimer(Timing::HUNDRED, 100);
+    Timer lt(parent_comm_id, Timing::HUNDRED, true);
 
     //should not produce anything (timer not over)
     ClockWrapper::setReturnValue(1080);
@@ -75,7 +76,7 @@ TEST_F(TimerTest, Complete){
 
     //request timer
     ClockWrapper::setReturnValue(1000);
-    Timer lt2(parent_comm_id, 100, false);
+    Timer lt2(parent_comm_id, Timing::HUNDRED, false);
 
     //should not produce anything (timer not over)
     ClockWrapper::setReturnValue(1080);

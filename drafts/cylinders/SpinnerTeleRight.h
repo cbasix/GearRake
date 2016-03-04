@@ -10,15 +10,15 @@
 class SpinnerTeleRight : public Cylinder{
 public:
     SpinnerTeleRight();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState tele_out;
-    IOState tele_in;
+    bool tele_out;
+    bool tele_in;
 };
 
 

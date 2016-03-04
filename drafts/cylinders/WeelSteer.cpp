@@ -13,7 +13,7 @@ CylinderPosition WeelSteer::getPosition() {
     }
 }
 
-void WeelSteer::update(SensorInputId id, IOState value) {
+void WeelSteer::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::WEEL_TRACK_MIDDLE:
             middle = value;
@@ -25,7 +25,7 @@ void WeelSteer::update(SensorInputId id, IOState value) {
 }
 
 WeelSteer::WeelSteer() {
-    middle = IOState::INACTIVE;
+    middle = false;
 }
 
 OutputId WeelSteer::getOutputId(CylinderDirection direction) {

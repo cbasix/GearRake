@@ -13,7 +13,7 @@ set(EXTRA_LIBS ${EXTA_LIBS} ${CMAKE_THREAD_LIBS_INIT} gmock gtest)
 
 # GearRake build config
 set(INCLUDE_LIST ${INCLUDE_LIST}
-        test libDummys drafts drafts/actions)
+        test drafts drafts/actions drafts/action/io drafts/actions/starter drafts/actions/diag drafts/cylinders)
 set(SOURCE_FILES
 #        src/schwader0_2.cpp
 #        src/input_output.cpp
@@ -21,7 +21,7 @@ set(SOURCE_FILES
 #        src/task_management.cpp
 #        src/tasks.cpp
 #        libDummys/Adafruit_MCP23017.cpp
-        test/gtest_main.cpp
+        #test/gtest_main.cpp
         drafts/MessageBroker.h
         drafts/constants.h
         drafts/actions/io/Input.cpp
@@ -66,13 +66,49 @@ set(SOURCE_FILES
         drafts/actions/io/Position.h
         drafts/wrapper.cpp
         drafts/wrapper.h
-        drafts/main.cpp drafts/constants_io.cpp drafts/cylinders/FrameLock.cpp drafts/cylinders/FrameLock.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/cylinders/SpinnerLeft.cpp drafts/cylinders/SpinnerLeft.h drafts/cylinders/SpinnerTeleLeft.cpp drafts/cylinders/SpinnerTeleLeft.h drafts/cylinders/SpinnerTeleRight.cpp drafts/cylinders/SpinnerTeleRight.h drafts/cylinders/Frame.cpp drafts/cylinders/Frame.h drafts/cylinders/WeelTeleRight.cpp drafts/cylinders/WeelTeleRight.h drafts/cylinders/WeelTeleLeft.cpp drafts/cylinders/WeelTeleLeft.h drafts/cylinders/WeelSteer.cpp drafts/cylinders/WeelSteer.h drafts/cylinders/SpinnerRight.cpp drafts/cylinders/SpinnerRight.h drafts/actions/auto/Transport.cpp drafts/actions/auto/Transport.h drafts/actions/auto/Work.cpp drafts/actions/auto/Work.h drafts/actions/auto/Low.cpp drafts/actions/auto/Low.h drafts/actions/io/Led.cpp drafts/actions/io/Led.h drafts/actions/io/FailureStorage.cpp drafts/actions/io/FailureStorage.h drafts/cylinders/SpinnerRear.cpp drafts/cylinders/SpinnerRear.h drafts/actions/starter/DelayedStarter.cpp drafts/actions/starter/DelayedStarter.h)
+        drafts/constants_io.cpp
+        drafts/cylinders/FrameLock.cpp
+        drafts/cylinders/FrameLock.h
+        drafts/cylinders/SpinnerRight.cpp
+        drafts/cylinders/SpinnerRight.h
+        drafts/cylinders/SpinnerLeft.cpp
+        drafts/cylinders/SpinnerLeft.h
+        drafts/cylinders/SpinnerTeleLeft.cpp
+        drafts/cylinders/SpinnerTeleLeft.h
+        drafts/cylinders/SpinnerTeleRight.cpp
+        drafts/cylinders/SpinnerTeleRight.h
+        drafts/cylinders/Frame.cpp
+        drafts/cylinders/Frame.h
+        drafts/cylinders/WeelTeleRight.cpp
+        drafts/cylinders/WeelTeleRight.h
+        drafts/cylinders/WeelTeleLeft.cpp
+        drafts/cylinders/WeelTeleLeft.h
+        drafts/cylinders/WeelSteer.cpp
+        drafts/cylinders/WeelSteer.h
+        drafts/cylinders/SpinnerRight.cpp
+        drafts/cylinders/SpinnerRight.h
+        drafts/actions/auto/Transport.cpp
+        drafts/actions/auto/Transport.h
+        drafts/actions/auto/Work.cpp
+        drafts/actions/auto/Work.h
+        drafts/actions/auto/Low.cpp
+        drafts/actions/auto/Low.h
+        drafts/actions/io/Led.cpp
+        drafts/actions/io/Led.h
+        drafts/actions/io/FailureStorage.cpp
+        drafts/actions/io/FailureStorage.h
+        drafts/cylinders/SpinnerRear.cpp
+        drafts/cylinders/SpinnerRear.h
+        drafts/constants.cpp)
 #FILE( GLOB_RECURSE SOURCE_FILES src/*.cpp test/*.cpp)
 
 
 # actually do it
 include_directories(${INCLUDE_LIST})
-add_executable(GearRake ${SOURCE_FILES})
+add_executable(GtestGearRake test/gtest_main.cpp ${SOURCE_FILES} test/gtest_util.cpp test/gtest_array_list.cpp)
+target_link_libraries(GtestGearRake ${EXTRA_LIBS})
+
+add_executable(GearRake ${SOURCE_FILES} drafts/main.cpp )
 target_link_libraries(GearRake ${EXTRA_LIBS})
 
 #add_executable(firstgtest ${SOURCE_FILES})

@@ -187,6 +187,10 @@ enum class outputs {
 
 // NEW ##################################################
 //todo update constants
+#define MAX_MSG 100
+#define MAX_CONSUMER 30
+#define MAX_PRODUCER 10
+
 
 #define MAX_SENSOR 6
 #define TESTING
@@ -232,18 +236,9 @@ enum class ActionType : int {
 };
 
 #ifdef TESTING
-const std::string ActionTypeStr[] = {
-        "NONE",
-        "MOVE_POSITION",
-        "MOVE_TIME",
-        "MOVE_DIRECTION",
-        "INPUT",
-        "LED",
-        "COMPLEX_MOVE",
-        "FRAME_DOWN",
-        "TIMER"
-};
+std::string ActionTypeStr[(int)ActionType::ENUM_COUNT];
 #endif
+
 enum class CylinderId : int {
     NONE,
     SPINNER_RIGHT,
@@ -262,17 +257,7 @@ enum class CylinderId : int {
 
 
 #ifdef TESTING
-const std::string CylinderStr[] = {
-        "SPINNER_RIGHT",
-        "SPINNER_LEFT",
-        "SPINNER_TELE_RIGHT",
-        "SPINNER_TELE_LEFT",
-        "FRAME",
-        "FRAME_LOCK",
-        "WEEL_TELE_RIGHT",
-        "WEEL_TELE_LEFT",
-        "WEEL_STEER"
-};
+std::string CylinderStr[(int)CylinderId::ENUM_COUNT];
 #endif
 enum class CylinderDirection : int {
     NONE = 0,
@@ -292,12 +277,7 @@ enum class CylinderDirection : int {
     ENUM_COUNT = 4
 };
 #ifdef TESTING
-const std::string CylinderDirectionStr[] = {
-        "NONE",
-        "UP",
-        "DOWN",
-
-};
+std::string CylinderDirectionStr[(int)CylinderDirection::ENUM_COUNT];
 #endif
 
 // From bottom to top
@@ -335,16 +315,7 @@ enum class CylinderPosition : int {
 
 };
 #ifdef TESTING
-const std::string CylinderPositionStr[] = {
-        "NONE",
-        "GROUND",
-        "CLOSED",
-        "LOW",
-        "MIDDLE",
-        "UP",
-        "OPEN"
-
-};
+std::string CylinderPositionStr[(int)CylinderPosition::ENUM_COUNT];
 #endif
 
 enum class Timing : int {
@@ -353,16 +324,12 @@ enum class Timing : int {
     MEDIUM,
     LONG,
     WAIT_AUTO,
+    HUNDRED,
 
     ENUM_COUNT
 };
 #ifdef TESTING
-const std::string TimingStr[] = {
-        "SHORT",
-        "MEDIUM",
-        "LONG"
-
-};
+std::string TimingStr[(int)Timing::ENUM_COUNT];
 #endif //testing
 
 //TODO on update (new setting) the old settings should be preserved !!!

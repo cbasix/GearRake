@@ -13,7 +13,8 @@ MovePosition::MovePosition(Controller* c, int parent_communication_id, CylinderI
     this->position = position;
 
     //save the communication id, when timeout occurs this communication id is send back
-    communication_id = Message::createTimeoutRequest(c, getType(), ConfigStore::getTimeoutValue(position));
+    communication_id = Message::generateCommunicationId();
+    Message::createTimeoutRequest(c, getType(), communication_id,  ConfigStore::getTimeoutValue(position));
 
     //get the direction to move to
     Message::createPositionRequest(c, getType(), communication_id, cylinder);
@@ -60,7 +61,7 @@ void MovePosition::onMessage(Controller* c, Message* m) {
                     && (int)position <= m->getValue(MessageField::POSITION_CHANGE__POSITION)
                 )) {
 
-            Message::createCylinderRequest(c, getType(), cylinder, CylinderDirection::STOP);
+            Message::createCylinderRequest(c, getType(), communication_id, cylinder, CylinderDirection::STOP);
 
             if (parent_communication_id != 0) {
                 Message::createActionState(c, getType(), parent_communication_id, ActionState::STOPPED_OK);
@@ -128,7 +129,8 @@ MoveTime::MoveTime(Controller* c, int parent_communication_id, CylinderId cylind
     }
 
     //save the communication id, when timer occurs this communication id is send back
-    communication_id = Message::createTimerRequest(c, getType(), timer);
+    communication_id = Message::generateCommunicationId();
+    Message::createTimerRequest(c, getType(), communication_id, timer);
     //start moving cylinder
     Message::createCylinderRequest(c, getType(), communication_id, cylinder, direction);
 
@@ -169,7 +171,7 @@ MoveDirection::MoveDirection(Controller* c, int parent_communication_id, Cylinde
     this->cylinder = cylinder;
     this->direction = direction;
 
-    //bushit input dont to anything. instant ready ...
+    //bulshit input dont to anything. instant ready ...
     if(direction == CylinderDirection::NONE){
         Message::createActionState(c, getType(), parent_communication_id, ActionState::STOPPED_OK);
         c->removeConsumer(this);
@@ -177,7 +179,8 @@ MoveDirection::MoveDirection(Controller* c, int parent_communication_id, Cylinde
     }
 
     //start moving in given direction
-    communication_id = Message::createCylinderRequest(c, getType(), cylinder, direction);
+    communication_id = Message::generateCommunicationId();
+    Message::createCylinderRequest(c, getType(), communication_id, cylinder, direction);
 
     if(instant_quit){
         if(parent_communication_id != 0) {

@@ -17,7 +17,7 @@ CylinderPosition WeelTeleLeft::getPosition() {
     }
 }
 
-void WeelTeleLeft::update(SensorInputId id, IOState value) {
+void WeelTeleLeft::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::SPINNER_RIGHT_TELE_IN:
             tele_in = value;
@@ -33,8 +33,8 @@ void WeelTeleLeft::update(SensorInputId id, IOState value) {
 }
 
 WeelTeleLeft::WeelTeleLeft() {
-    tele_out = IOState::INACTIVE;
-    tele_in = IOState::INACTIVE;
+    tele_out = false;
+    tele_in = false;
 
 }
 

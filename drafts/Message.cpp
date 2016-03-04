@@ -49,11 +49,11 @@ int Message::generateCommunicationId() {
     return com_id;
 }
 
-int Message::createTimeoutRequest(Controller* c, ActionType type, int timeout) {
+/*int Message::createTimeoutRequest(Controller* c, ActionType type, int timeout) {
     int com_id = generateCommunicationId();
     createTimeoutRequest(c, type, com_id, timeout);
     return com_id;
-}
+}*/
 
 void Message::createTimeoutRequest(Controller* c, ActionType type, int communication_id, int timeout) {
     Message m;
@@ -64,26 +64,26 @@ void Message::createTimeoutRequest(Controller* c, ActionType type, int communica
     c->queueMessage(m);
 }
 
-int Message::createTimerRequest(Controller* c, ActionType type, Timing timer) {
+/*int Message::createTimerRequest(Controller* c, ActionType type, Timing timer) {
     int com_id = generateCommunicationId();
     createTimerRequest(c, type, com_id, timer);
     return com_id;
-}
+}*/
 
 void Message::createTimerRequest(Controller* c, ActionType type, int communication_id, Timing timer) {
     Message m;
     m.type = MessageType::TIMER_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
-    m.setValue(MessageField::TIMER_REQUEST__STOP_AFTER, (int)timer);
+    m.setValue(MessageField::TIMER_REQUEST__TIMING, (int)timer);
     c->queueMessage(m);
 }
 
-int Message::createCylinderRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction) {
+/*int Message::createCylinderRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction) {
     int com_id = generateCommunicationId();
     createCylinderRequest(c, type, com_id, cylinder, direction);
     return com_id;
-}
+}*/
 
 void Message::createCylinderRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder,
                                     CylinderDirection direction) {
@@ -96,30 +96,30 @@ void Message::createCylinderRequest(Controller* c, ActionType type, int communic
     c->queueMessage(m);
 }
 
-int Message::createMoveTimeRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction,
+/*int Message::createMoveTimeRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction,
                                    int timer) {
     int com_id = generateCommunicationId();
     createMoveTimeRequest(c, type, com_id, cylinder, direction, timer);
     return com_id;
-}
+}*/
 
 void Message::createMoveTimeRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder,
-                                    CylinderDirection direction, int timer) {
+                                    CylinderDirection direction, Timing timing) {
     Message m;
     m.type = MessageType::MOVE_TIME_REQUEST;
     m.communication_id = communication_id;
     m.sender_action_type = type;
     m.setValue(MessageField::MOVE_TIME_REQUEST__CYLINDER, static_cast<int>(cylinder));
     m.setValue(MessageField::MOVE_TIME_REQUEST__DIRECTION, static_cast<int>(direction));
-    m.setValue(MessageField::MOVE_TIME_REQUEST__TIMER, timer);
+    m.setValue(MessageField::MOVE_TIME_REQUEST__TIMING, (int) timing);
     c->queueMessage(m);
 }
 
-int Message::createMovePositionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderPosition position) {
+/*int Message::createMovePositionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderPosition position) {
     int com_id = generateCommunicationId();
     createMovePositionRequest(c, type, com_id, cylinder, position);
     return com_id;
-}
+}*/
 
 void Message::createMovePositionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder,
                                        CylinderPosition position) {
@@ -132,11 +132,11 @@ void Message::createMovePositionRequest(Controller* c, ActionType type, int comm
     c->queueMessage(m);
 }
 
-int Message::createMoveDirectionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction) {
+/*int Message::createMoveDirectionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction) {
     int com_id = generateCommunicationId();
     createMoveDirectionRequest(c, type, com_id, cylinder, direction);
     return com_id;
-}
+}*/
 
 void Message::createMoveDirectionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder,
                                          CylinderDirection direction) {
@@ -149,11 +149,11 @@ void Message::createMoveDirectionRequest(Controller* c, ActionType type, int com
     c->queueMessage(m);
 }
 
-int Message::createPositionRequest(Controller *c, ActionType type, CylinderId cylinder) {
+/*int Message::createPositionRequest(Controller *c, ActionType type, CylinderId cylinder) {
     int com_id = generateCommunicationId();
     createPositionRequest(c, type, com_id, cylinder);
     return com_id;
-}
+}*/
 
 void Message::createPositionRequest(Controller *c, ActionType type, int communication_id, CylinderId cylinder) {
     Message m;
@@ -164,11 +164,11 @@ void Message::createPositionRequest(Controller *c, ActionType type, int communic
     c->queueMessage(m);
 }
 
-int Message::createLedRequest(Controller* c, ActionType type, OutputId led_id, IOState value){
+/*int Message::createLedRequest(Controller* c, ActionType type, OutputId led_id, IOState value){
     int com_id = generateCommunicationId();
     createLedRequest(c, type, com_id, led_id, value);
     return com_id;
-}
+}*/
 
 void Message::createLedRequest(Controller *c, ActionType type, int communication_id, OutputId led_id, IOState state) {
     Message m;
@@ -230,11 +230,11 @@ void Message::createPositionChange(Controller* c, ActionType type, int parent_co
 void Message::createInputChange(Controller* c, ActionType type, int parent_communication_id, ManualInputId input_id,
                                 IOState in_state) {
     Message m;
-    m.type = MessageType::SENSOR_INPUT_CHANGE;
+    m.type = MessageType::MANUAL_INPUT_CHANGE;
     m.communication_id = parent_communication_id;
     m.sender_action_type = type;
-    m.setValue(MessageField::INPUT_CHANGE__CYLINDER, static_cast<int>(cylinder));
-    m.setValue(MessageField::INPUT_CHANGE__POSITION, static_cast<int>(position));
+    m.setValue(MessageField::MANUAL_INPUT_CHANGE__ID, static_cast<int>(input_id));
+    m.setValue(MessageField::MANUAL_INPUT_CHANGE__VALUE, static_cast<int>(in_state));
     c->queueMessage(m);
 }
 

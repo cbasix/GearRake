@@ -5,20 +5,20 @@
 #ifndef GEARRAKE_SPINNERBACK_H
 #define GEARRAKE_SPINNERBACK_H
 
-#include <constants.h>
+#include "constants.h"
 #include <interfaces.h>
 
 class SpinnerRear : public Cylinder{
 public:
     SpinnerRear();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState up;
+    bool up;
 };
 
 

@@ -17,7 +17,7 @@ CylinderPosition SpinnerTeleRight::getPosition() {
     }
 }
 
-void SpinnerTeleRight::update(SensorInputId id, IOState value) {
+void SpinnerTeleRight::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::SPINNER_RIGHT_TELE_IN:
             tele_in = value;
@@ -33,8 +33,8 @@ void SpinnerTeleRight::update(SensorInputId id, IOState value) {
 }
 
 SpinnerTeleRight::SpinnerTeleRight() {
-    tele_out = IOState::INACTIVE;
-    tele_in = IOState::INACTIVE;
+    tele_out = false;
+    tele_in = false;
 
 }
 

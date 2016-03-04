@@ -1,4 +1,4 @@
-o//
+//
 // Created by cyberxix on 24.02.16.
 //
 
@@ -33,10 +33,6 @@ o//
 
 #define DEBOUNCE_TIME 5
 
-class ManualInputPin {
-public:
-    static int getPin(ManualInputId id);
-};
 
 enum class ManualInputId : int {
     SPINNER_LEFT_UP,
@@ -62,7 +58,7 @@ enum class ManualInputId : int {
     //Top Buttons
     AUTO_TRANSPORT,
     AUTO_LOW,
-    AUTO_WORK,
+    AUTO_WORK, // 17
 
     //Modifier Buttons Links Rechts
     MOD_LR_STEER,
@@ -78,6 +74,12 @@ enum class ManualInputId : int {
 
     ENUM_COUNT
 };
+
+class ManualInputPin {
+public:
+    static int getPin(ManualInputId id);
+};
+
 
 enum class SensorInputId {
     //Sensors
@@ -108,6 +110,7 @@ enum class SensorInputId {
     WEEL_TELE_LEFT_IN,
 
     WEEL_TRACK_MIDDLE,
+
     ENUM_COUNT
 };
 
@@ -116,10 +119,7 @@ public:
     static int getPin(SensorInputId id);
 };
 
-class OutputPin {
-public:
-    static int getPin(OutputId id);
-};
+
 
 enum class OutputId {
     NONE, //todo good idea? test & think trought
@@ -178,6 +178,11 @@ enum class OutputId {
     LED_MOD_OU_FRAME,
 
     ENUM_COUNT
+};
+
+class OutputPin {
+public:
+    static int getPin(OutputId id);
 };
 
 enum class IOState : bool{

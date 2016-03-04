@@ -12,7 +12,7 @@ CylinderPosition SpinnerRear::getPosition() {
     }
 }
 
-void SpinnerRear::update(SensorInputId id, IOState value) {
+void SpinnerRear::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::SPINNER_REAR_UP:
             up = value;

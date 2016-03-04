@@ -11,15 +11,15 @@
 class WeelTeleLeft : public Cylinder{
 public:
     WeelTeleLeft();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState tele_out;
-    IOState tele_in;
+    bool tele_out;
+    bool tele_in;
 };
 
 #endif //GEARRAKE_WEELTELELEFT_H

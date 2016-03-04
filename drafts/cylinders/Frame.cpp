@@ -25,7 +25,7 @@ CylinderPosition Frame::getPosition() {
     }
 }
 
-void Frame::update(SensorInputId id, IOState value) {
+void Frame::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::FRAME_GROUND:
             frame_ground = value;
@@ -48,11 +48,11 @@ void Frame::update(SensorInputId id, IOState value) {
     }
 }
 
-Frame::Frame() {
-    frame_ground = IOState::INACTIVE;
-    frame_low = IOState::INACTIVE;
-    frame_up = IOState::INACTIVE;
-    frame_middle = IOState::INACTIVE;
+Frame::Frame(){
+    frame_ground = false;
+    frame_low = false;
+    frame_up = false;
+    frame_middle = false;
 }
 
 OutputId Frame::getOutputId(CylinderDirection direction) {
@@ -69,3 +69,5 @@ bool Frame::downNeedsPressure() {
     //TODO right? check it!
     return false;
 }
+
+

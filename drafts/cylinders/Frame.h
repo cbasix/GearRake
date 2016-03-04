@@ -12,17 +12,17 @@ class Frame : public Cylinder{
 
 public:
     Frame();
-    virtual CylinderPosition getPosition();
-    virtual void update(SensorInputId id, IOState value);
+    CylinderPosition getPosition();
+    void update(SensorInputId id, bool value);
     OutputId getOutputId(CylinderDirection direction);
 
-    virtual bool downNeedsPressure();
+    bool downNeedsPressure();
 
 private:
-    IOState frame_up;
-    IOState frame_middle;
-    IOState frame_low;
-    IOState frame_ground;
+    bool frame_up;
+    bool frame_middle;
+    bool frame_low;
+    bool frame_ground;
 };
 
 

@@ -67,9 +67,11 @@ int ManualInputPin::getPin(ManualInputId id){
          return PIN_ARDUINO_START + 5;
      } else if(id == (ManualInputId)ManualInputId::MOD_OU_FRAME){
          return PIN_ARDUINO_START + 7;
-     } else if(id == (ManualInputId)ManualInputId::SPINNER_REAR_UP){
+     } else
+        //spinner rear buttons on the back
+    if(id == (ManualInputId)ManualInputId::REAR_SPINNER_REAR_UP){
          return PIN_ARDUINO_START + 10;
-     } else if(id == (ManualInputId)ManualInputId::SPINNER_REAR_FLOAT){
+     } else if(id == (ManualInputId)ManualInputId::REAR_SPINNER_REAR_DOWN){
          return PIN_ARDUINO_START + 11;
      }
 
@@ -149,7 +151,7 @@ int SensorInputPin::getPin(SensorInputId id) {
 int OutputPin::getPin(OutputId id) {
     //NOTE numbers on relay boards are higher by one because pin numbering on relay board starts with 1
     if(id == (OutputId)OutputId::SPINNER_RIGHT_UP){
-         return PIN_EXP1_START + 2, //3;
+         return PIN_EXP1_START + 2; //3;
     } else
     if(id == (OutputId)OutputId::SPINNER_LEFT_UP){
          return PIN_EXP1_START + 0; //1

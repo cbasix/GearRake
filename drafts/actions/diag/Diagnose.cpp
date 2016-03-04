@@ -36,29 +36,29 @@ void Diagnose::produce(Controller *c) {
     Message m;
     //read input messages
     if(proto.readMessage(&m)){
-        if(m.getType() == MessageType::LOG_REQUEST){
+        if(m.getType() == MessageType::DIAG_LOG_REQUEST){
             log_update = m.getValue(MessageField::LOG_REQUEST__ACTIVE) != 0;
 
-        } else if(m.getType() == MessageType::FAILURE_STORAGE_REQUEST){
+        } else if(m.getType() == MessageType::DIAG_FAILURE_STORAGE_REQUEST){
             failure_storage_update = m.getValue(MessageField::FAILURE_STORAGE_REQUEST__ACTIVE) != 0;
             if(failure_storage_update){
                 //TODO request all from in failure storage
             }
 
-        } else if(m.getType() == MessageType::STATUS_UPDATE_REQUEST){
+        } else if(m.getType() == MessageType::DIAG_INPUT_UPDATE_REQUEST){
             status_update = m.getValue(MessageField::STATUS_UPDATE_REQUEST__ACTIVE) != 0;
             if(status_update){
                 //TODO send all status
             }
 
-        } else if(m.getType() == MessageType::ACTIVE_UPDATE_REQUEST){
+        } else if(m.getType() == MessageType::DIAG_ACTIVE_UPDATE_REQUEST){
             active_update = m.getValue(MessageField::ACTIVE_UPDATE_REQUEST__ACTIVE) != 0;
             if(active_update){
                 Message m;
                 ArrayList<Consumer*>* cons = c->getConsumers();
                 for (int i = 0; i < cons->getSize(); ++i) {
                     Consumer* s = cons->get(i);
-                    m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
+                    m = Message(MessageType::DIAG_ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
                     m.setValue(MessageField::ACTIVE_STATUS__TYPE, (int)s->getType());
                     m.setValue(MessageField::ACTIVE_STATUS__CLASS, (int)ActionClass::CONSUMER);
                     m.setValue(MessageField::ACTIVE_STATUS__ACTIVE, true);
@@ -68,7 +68,7 @@ void Diagnose::produce(Controller *c) {
                 ArrayList<Producer*>* prods = c->getProducers();
                 for (int i = 0; i < prods->getSize(); ++i) {
                     Producer* s = prods->get(i);
-                    m = Message(MessageType::ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
+                    m = Message(MessageType::DIAG_ACTIVE_STATUS, ActionType::DIAGNOSE, m.getCommunicationId());
                     m.setValue(MessageField::ACTIVE_STATUS__TYPE, (int)s->getType());
                     m.setValue(MessageField::ACTIVE_STATUS__CLASS, (int)ActionClass::PRODUCER);
                     m.setValue(MessageField::ACTIVE_STATUS__ACTIVE, true);
@@ -77,7 +77,7 @@ void Diagnose::produce(Controller *c) {
                 }
             }
 
-        } else if(m.getType() == MessageType::SETTING_REQUEST){
+        } else if(m.getType() == MessageType::DIAG_SETTING_REQUEST){
             int setting_type = m.getValue(MessageField::SETTING_REQUEST__TYPE);
             int setting_id = m.getValue(MessageField::SETTING_REQUEST__ID);
             Message answ;
@@ -97,7 +97,7 @@ void Diagnose::produce(Controller *c) {
                     sendTimerSettingState(m, answ, setting_id);
                 }
             }
-        } else if(m.getType() == MessageType::SETTING_UPDATE) {
+        } else if(m.getType() == MessageType::DIAG_SETTING_UPDATE) {
             int setting_type = m.getValue(MessageField::SETTING_UPDATE__TYPE);
             int setting_id = m.getValue(MessageField::SETTING_UPDATE__ID);
             int setting_val = m.getValue(MessageField::SETTING_UPDATE__VALUE);
@@ -131,18 +131,18 @@ void Diagnose::produce(Controller *c) {
 
 void Diagnose::sendTimerSettingState(Message &m, Message &answ, int setting_id) {
     int val = ConfigStore::getTimerValue((Timing) setting_id);
-    answ = Message(MessageType::SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
-    answ.setValue(MessageField::SETTING_STATE__TYPE, (int)SettingType::TIMING);
-    answ.setValue(MessageField::SETTING_STATE__ID, setting_id);
-    answ.setValue(MessageField::SETTING_STATE__VALUE, val);
+    answ = Message(MessageType::DIAG_SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
+    answ.setValue(MessageField::DIAG_SETTING_STATE__TYPE, (int)SettingType::TIMING);
+    answ.setValue(MessageField::DIAG_SETTING_STATE__ID, setting_id);
+    answ.setValue(MessageField::DIAG_SETTING_STATE__VALUE, val);
     proto.send(&answ);
 }
 
 void Diagnose::sendTimeoutSettingState(Message &m, Message &answ, int setting_id) {
     int val = ConfigStore::getTimeoutValue((CylinderPosition) setting_id);
-    answ = Message(MessageType::SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
-    answ.setValue(MessageField::SETTING_STATE__TYPE, (int)SettingType::TIMEOUT);
-    answ.setValue(MessageField::SETTING_STATE__ID, setting_id);
-    answ.setValue(MessageField::SETTING_STATE__VALUE, val);
+    answ = Message(MessageType::DIAG_SETTING_STATE, ActionType::DIAGNOSE, m.getCommunicationId());
+    answ.setValue(MessageField::DIAG_SETTING_STATE__TYPE, (int)SettingType::TIMEOUT);
+    answ.setValue(MessageField::DIAG_SETTING_STATE__ID, setting_id);
+    answ.setValue(MessageField::DIAG_SETTING_STATE__VALUE, val);
     proto.send(&answ);
 }

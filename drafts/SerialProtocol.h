@@ -36,8 +36,11 @@ public:
     static bool depacketize(CircularQueue<char>*from_buf, char* return_msg, int return_bin_msg_len);
     static char getChecksum(char const binary_msg[], int msg_len);
 private:
-    CircularQueue<char>* in_buf;
-    CircularQueue<char>* out_buf;
+    char out_data[(int)SerialConf::BUF_SIZE];
+    char in_data[(int)SerialConf::BUF_SIZE];
+    CircularQueue<char> in_buf = CircularQueue<char>(in_data, (int)SerialConf::BUF_SIZE);
+    CircularQueue<char> out_buf = CircularQueue<char>(out_data, (int)SerialConf::BUF_SIZE);
+
 };
 
 

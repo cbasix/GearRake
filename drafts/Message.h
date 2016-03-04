@@ -54,7 +54,7 @@ public:
                                       CylinderDirection direction);
 
     //static int createMoveTimeRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderDirection direction, int timer);
-    static void createMoveTimeRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderDirection direction, int timer);
+    static void createMoveTimeRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderDirection direction, Timing timing);
 
     //static int createMovePositionRequest(Controller* c, ActionType type, CylinderId cylinder, CylinderPosition position);
     static void createMovePositionRequest(Controller* c, ActionType type, int communication_id, CylinderId cylinder, CylinderPosition position);

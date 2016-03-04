@@ -2,10 +2,10 @@
 // Created by cyberxix on 18.02.16.
 //
 #include <ConfigStore.h>
+#include <actions/auto/FrameDown.h>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "mocks.h"
-#include "FrameDown.h"
 #include "MessageGenerator.h"
 
 using ::testing::Exactly;
@@ -44,7 +44,7 @@ TEST_F(FrameDownTest, Constructor) {
     Message request_short_up(MessageType::MOVE_TIME_REQUEST, ActionType::FRAME_DOWN, child_comm_id);
     request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__CYLINDER, (int) CylinderId::FRAME);
     request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__DIRECTION, (int)CylinderDirection::UP);
-    request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__TIMER, ConfigStore::getTimerValue(Timing::SHORT));
+    request_short_up.setValue(MessageField::MOVE_TIME_REQUEST__TIMING, (int)Timing::SHORT);
 
     EXPECT_CALL(c, queueMessage(request_short_up)).Times(1);
 

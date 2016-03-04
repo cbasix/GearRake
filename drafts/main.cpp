@@ -1,8 +1,8 @@
 //
-// Created by cyberxix on 24.02.16.
+// Created by cyberxix on 26.02.16.
 //
 
-#include <actions/Master.h>
+#include <actions/starter/Master.h>
 #include <cylinders/Frame.h>
 #include <cylinders/FrameLock.h>
 #include <cylinders/SpinnerLeft.h>
@@ -16,9 +16,11 @@
 #include <actions/io/Output.h>
 #include <actions/io/Input.h>
 #include <cylinders/SpinnerRear.h>
+#include <actions/Move.h>
 #include "MessageBroker.h"
 
-void setup(MessageBroker* mb) {
+int main(){
+    MessageBroker mb;
 
     //Setup expanders
     ExpanderWrapper exp[EXP_LEN];
@@ -46,30 +48,53 @@ void setup(MessageBroker* mb) {
 
     //Setup cylinders
     Cylinder* cylinders[(int)CylinderId::ENUM_COUNT];
-    cylinders[(int)CylinderId::FRAME] = new Frame;
-    cylinders[(int)CylinderId::FRAME_LOCK] = new FrameLock;
-    cylinders[(int)CylinderId::SPINNER_LEFT] = new SpinnerLeft;
-    cylinders[(int)CylinderId::SPINNER_RIGHT] = new SpinnerRight;
-    cylinders[(int)CylinderId::SPINNER_TELE_LEFT] = new SpinnerTeleLeft;
-    cylinders[(int)CylinderId::SPINNER_TELE_RIGHT] = new SpinnerTeleRight;
-    cylinders[(int)CylinderId::WEEL_TELE_LEFT] = new WeelTeleLeft;
-    cylinders[(int)CylinderId::WEEL_TELE_RIGHT] = new WeelTeleRight;
-    cylinders[(int)CylinderId::WEEL_STEER] = new WeelSteer;
-    cylinders[(int)CylinderId::SPINNER_REAR] = new SpinnerRear;
+    Frame f = Frame();
+    cylinders[(int)CylinderId::FRAME] = &f;
+    FrameLock fl = FrameLock();
+    cylinders[(int)CylinderId::FRAME_LOCK] = &fl;
+    SpinnerLeft sl = SpinnerLeft();
+    cylinders[(int)CylinderId::SPINNER_LEFT] = &sl;
+    SpinnerRight sr = SpinnerRight();
+    cylinders[(int)CylinderId::SPINNER_RIGHT] = &sr;
+    SpinnerTeleLeft stl = SpinnerTeleLeft();
+    cylinders[(int)CylinderId::SPINNER_TELE_LEFT] = &stl;
+    SpinnerTeleRight str = SpinnerTeleRight();
+    cylinders[(int)CylinderId::SPINNER_TELE_RIGHT] = &str;
+    WeelTeleLeft wtl = WeelTeleLeft();
+    cylinders[(int)CylinderId::WEEL_TELE_LEFT] = &wtl;
+    WeelTeleRight wtr = WeelTeleRight();
+    cylinders[(int)CylinderId::WEEL_TELE_RIGHT] = &wtr;
+    WeelSteer ws = WeelSteer();
+    cylinders[(int)CylinderId::WEEL_STEER] = &ws;
+    SpinnerRear srea = SpinnerRear();
+    cylinders[(int)CylinderId::SPINNER_REAR] = &srea;
+
+
 
 
     //todo test is that all we need?
     //setup io-tasks and master task which starts all other needed tasks
-    mb->registerProducer((Producer *) new Input(manual_inputs, (int)ManualInputId::ENUM_COUNT)); //one input task for whe manual inputs
-    mb->registerProducer((Producer *) new Input(sensor_inputs, (int)SensorInputId::ENUM_COUNT)); //and a second one for the sensor inputs
-    mb->registerConsumer((Consumer *) new Output(exp, EXP_LEN, outputs, (int)OutputId::ENUM_COUNT, cylinders, (int)CylinderId::ENUM_COUNT));
-    mb->registerConsumer((Consumer *) new Position(cylinders, (int)CylinderId::ENUM_COUNT));
-    mb->registerConsumer((Consumer *) new Master(mb));
+    Input i = Input(manual_inputs, (int)ManualInputId::ENUM_COUNT);
+    Producer * pnt = &i;
+    ActionType t = pnt->getType();
+    mb.registerProducer(&i); //one input task for whe manual inputs
+    Input i2 = Input(sensor_inputs, (int)SensorInputId::ENUM_COUNT);
+    mb.registerProducer(&i2); //and a second one for the sensor inputs
+    Output o = Output(exp, EXP_LEN, outputs, (int)OutputId::ENUM_COUNT, cylinders, (int)CylinderId::ENUM_COUNT);
+    mb.registerConsumer(&o);
+    Position p = Position(cylinders, (int)CylinderId::ENUM_COUNT);
+    mb.registerConsumer(&p);
+    Master m = Master(&mb);
+    mb.registerConsumer(&m);
+    MovePosition mp = MovePosition(&mb, 14, CylinderId::SPINNER_REAR, CylinderPosition::GROUND);
+    mb.registerConsumer(&mp);
+    MoveDirection md = MoveDirection(&mb, 14, CylinderId::SPINNER_REAR, CylinderDirection::UP, false);
+    mb.registerConsumer(&md);
 
-};
 
-void loop(MessageBroker* mb){
-    mb->runProducers();
-    mb->processMessageQueue();
+
+    while(true){
+        mb.runProducers();
+        mb.processMessageQueue();
+    }
 }
-

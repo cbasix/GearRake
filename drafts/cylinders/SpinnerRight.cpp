@@ -2,7 +2,7 @@
 // Created by cyberxix on 24.02.16.
 //
 
-#include <constants.h>
+#include "constants.h"
 #include "SpinnerRight.h"
 
 
@@ -19,7 +19,7 @@ CylinderPosition SpinnerRight::getPosition() {
     }
 }
 
-void SpinnerRight::update(SensorInputId id, IOState value) {
+void SpinnerRight::update(SensorInputId id, bool value) {
     switch(id){
         case SensorInputId::SPINNER_LEFT_THIRD:
             right_third = value;
@@ -36,8 +36,8 @@ void SpinnerRight::update(SensorInputId id, IOState value) {
 }
 
 SpinnerRight::SpinnerRight() {
-    right_up = IOState::INACTIVE;
-    right_third = IOState::INACTIVE;
+    right_up = false;
+    right_third = false;
 
 }
 

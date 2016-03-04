@@ -46,7 +46,7 @@ public:
 class Cylinder{
 public:
     virtual CylinderPosition getPosition() = 0;
-    virtual void update(SensorInputId, IOState value) = 0;
+    virtual void update(SensorInputId, bool value) = 0;
     virtual OutputId getOutputId(CylinderDirection direction) = 0;
     virtual bool downNeedsPressure() = 0;
 };
