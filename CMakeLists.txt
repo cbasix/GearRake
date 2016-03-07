@@ -98,8 +98,7 @@ set(SOURCE_FILES
         drafts/actions/io/FailureStorage.cpp
         drafts/actions/io/FailureStorage.h
         drafts/cylinders/SpinnerRear.cpp
-        drafts/cylinders/SpinnerRear.h
-        drafts/constants.cpp)
+        drafts/cylinders/SpinnerRear.h)
 #FILE( GLOB_RECURSE SOURCE_FILES src/*.cpp test/*.cpp)
 
 
