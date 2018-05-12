@@ -597,7 +597,7 @@ ModeTask::ModeTask() {
 	task_state = STATE_STOPPED;
 	task_id = TSK_MODE;
 
-	active_mode = NULL;
+	active_mode = 99;
 }
 
 void ModeTask::testStartConditions(EventData* inp){
@@ -712,7 +712,7 @@ void ModeTask::timer() {
 
 void ModeTask::setActiveMode(int new_active_mode){
 
-	if(new_active_mode != active_mode){
+	if(active_mode == 99 || new_active_mode != active_mode){
 		//disable old mode led
 		if(active_mode == IN_MOD_LR_STEER){
 			tm->outp->setLed(LED_MOD_LR_STEER, INACTIVE);
@@ -1223,7 +1223,7 @@ void AutoLowTask::exit() {
 	tm->outp->setLed(LED_AUTO_LOW, INACTIVE);
 	//todo other exit values for cylinders
 
-	//tm->resetTasks();
+	tm->resetTasks();
 }
 
 void AutoLowTask::timer() {
@@ -1456,7 +1456,7 @@ void AutoWorkTask::exit() {
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT, INACTIVE, task_id);
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT, INACTIVE, task_id);
 
-	//tm->resetTasks();
+	tm->resetTasks();
 	//todo other exit values for cylinders
 }
 
@@ -1724,7 +1724,7 @@ void AutoTransportTask::exit() {
 	//close framelock on exit!
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);
 
-	//tm->resetTasks();
+	tm->resetTasks();
 }
 
 void AutoTransportTask::timer() {
