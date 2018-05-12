@@ -7,8 +7,8 @@ class TaskManager;
 #include "task_management.h"
 #include "Adafruit_MCP23017.h"
 
-#define HIGH true
-#define LOW false
+//#define HIGH true
+//#define LOW false
 
 #define ACTIVE true
 #define INACTIVE false

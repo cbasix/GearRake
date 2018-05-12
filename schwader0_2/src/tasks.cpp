@@ -1120,6 +1120,8 @@ void FrameDownTask::update(EventData *inp) {
 		//step4 close framelock done -> exit
 		tm->stopTask(task_id);
 	}
+
+	// here stop self !!! ???
 }
 
 void FrameDownTask::timer() {
@@ -1220,6 +1222,8 @@ void AutoLowTask::exit() {
 	tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE, task_id);
 	tm->outp->setLed(LED_AUTO_LOW, INACTIVE);
 	//todo other exit values for cylinders
+
+	//tm->resetTasks();
 }
 
 void AutoLowTask::timer() {
@@ -1452,7 +1456,7 @@ void AutoWorkTask::exit() {
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_LEFT_TO_OUT, INACTIVE, task_id);
 	tm->addMessage(MSG_TSKPART_SPINNER_TELE_RIGHT_TO_OUT, INACTIVE, task_id);
 
-
+	//tm->resetTasks();
 	//todo other exit values for cylinders
 }
 
@@ -1719,6 +1723,8 @@ void AutoTransportTask::exit() {
 
 	//close framelock on exit!
 	//tm->addMessage(MSG_TSKPART_FRAME_TO_LOW, INACTIVE);
+
+	//tm->resetTasks();
 }
 
 void AutoTransportTask::timer() {
